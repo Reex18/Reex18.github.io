@@ -6,13 +6,56 @@
   
   <title>Reex</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta property="og:type" content="website">
+  <meta name="description" content="01讲 | 基础架构：一条SQL查询语句是如何执行的？下图是MySQL的逻辑架构图   大体来说，MySQL可以分为Server层和存储引擎层两部分 Server层包括：连接器、查询缓存、分析器、优化器和执行器等。而不同的存储引擎共用一个Server层。 1.连接器连接器负责跟客户端建立连接、获取权限、维持和管理连接。 2.查询缓存MySQL拿到一个查询请求之后，会先到查询缓存中看看，之前查没查过">
+<meta property="og:type" content="article">
 <meta property="og:title" content="Reex">
-<meta property="og:url" content="http://example.com/index.html">
+<meta property="og:url" content="http://example.com/2022/05/11/MySQL%E4%B8%AA%E4%BA%BA%E6%80%BB%E7%BB%93/index.html">
 <meta property="og:site_name" content="Reex">
+<meta property="og:description" content="01讲 | 基础架构：一条SQL查询语句是如何执行的？下图是MySQL的逻辑架构图   大体来说，MySQL可以分为Server层和存储引擎层两部分 Server层包括：连接器、查询缓存、分析器、优化器和执行器等。而不同的存储引擎共用一个Server层。 1.连接器连接器负责跟客户端建立连接、获取权限、维持和管理连接。 2.查询缓存MySQL拿到一个查询请求之后，会先到查询缓存中看看，之前查没查过">
 <meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://static001.geekbang.org/resource/image/0d/d9/0d2070e8f84c4801adbfa03bda1f98d9.png">
+<meta property="og:image" content="https://static001.geekbang.org/resource/image/3e/86/3e30d9a5e67f711f5af2e2599e800286.png">
+<meta property="og:image" content="https://static001.geekbang.org/resource/image/50/28/5008d7e9e22be88a9c80916df4f4b328.png">
+<meta property="og:image" content="https://static001.geekbang.org/resource/image/74/ca/742249a31b83f4858c51bfe106a5daca.png">
+<meta property="og:image" content="https://static001.geekbang.org/resource/image/2d/24/2d8250398bc7f8f7dce8b6b1923c3724.png">
+<meta property="og:image" content="https://static001.geekbang.org/resource/image/2b/9c/2bbc77cfdb118b0d9ef3fdd679d0a69c.png">
+<meta property="og:image" content="https://static001.geekbang.org/resource/image/3e/75/3e68326b967701c59770612183277475.png">
+<meta property="og:image" content="https://static001.geekbang.org/resource/image/d8/18/d8603aeb4eaad3326699c13c46379118.png">
+<meta property="og:image" content="https://static001.geekbang.org/resource/image/84/ff/84667a3449dc846e393142600ee7a2ff.png">
+<meta property="og:image" content="https://static001.geekbang.org/resource/image/46/8c/46bb9f5e27854678bfcaeaf0c3b8a98c.png">
+<meta property="og:image" content="https://static001.geekbang.org/resource/image/e7/61/e7f7ca0d3dab2f48c588d714ee3ac861.png">
+<meta property="og:image" content="https://static001.geekbang.org/resource/image/df/be/df37bf0bb9f85ea59f0540e24eb6bcbe.png">
+<meta property="og:image" content="https://static001.geekbang.org/resource/image/58/6c/585dfa8d0dd71171a6fa16bed4ba816c.png">
+<meta property="og:image" content="https://static001.geekbang.org/resource/image/46/65/465990fe8f6b418ca3f9992bd1bb5465.png">
+<meta property="og:image" content="https://static001.geekbang.org/resource/image/30/80/30b839bf941f109b04f1a36c302aea80.png">
+<meta property="og:image" content="https://static001.geekbang.org/resource/image/73/7a/7381475e9e951628c9fc907f5a57697a.png">
+<meta property="og:image" content="https://static001.geekbang.org/resource/image/b1/6d/b105f8c4633e8d3a84e6422b1b1a316d.png">
+<meta property="og:image" content="https://static001.geekbang.org/resource/image/c1/59/c1fda36c1502606eb5be3908011ba159.png">
+<meta property="og:image" content="https://static001.geekbang.org/resource/image/b5/78/b55fb0a1cac3500b60e1cf9779d2da78.png">
+<meta property="og:image" content="https://static001.geekbang.org/resource/image/bb/24/bb0ad92483d71f0dcaeeef278f89cb24.png">
+<meta property="og:image" content="https://static001.geekbang.org/resource/image/af/2e/afc3a08ae7a254b3251e41b2a6dae02e.png">
+<meta property="og:image" content="https://static001.geekbang.org/resource/image/e5/d5/e5408ed94b3d44985073255db63bd0d5.png">
+<meta property="og:image" content="https://static001.geekbang.org/resource/image/7b/06/7b911a4c995706e8aa2dd96ff0f36506.png">
+<meta property="og:image" content="https://static001.geekbang.org/resource/image/9e/3e/9ed86644d5f39efb0efec595abb92e3e.png">
+<meta property="og:image" content="https://static001.geekbang.org/resource/image/9d/d4/9d057f61d3962407f413deebc80526d4.png">
+<meta property="og:image" content="https://static001.geekbang.org/resource/image/fd/10/fd75a2b37ae6ca709b7f16fe060c2c10.png">
+<meta property="og:image" content="https://static001.geekbang.org/resource/image/a6/a3/a66c154c1bc51e071dd2cc8c1d6ca6a3.png">
+<meta property="og:image" content="https://static001.geekbang.org/resource/image/b9/31/b9818f73cd7d38a96ddcb75350b52931.png">
+<meta property="og:image" content="https://static001.geekbang.org/resource/image/96/2b/96c2be9c0fcbff66883118526b26652b.png">
+<meta property="og:image" content="https://static001.geekbang.org/resource/image/d6/26/d67a38db154afff610ae3bb64e266826.png">
+<meta property="og:image" content="https://static001.geekbang.org/resource/image/20/56/20ad4e163115198dc6cf372d5116c956.png">
+<meta property="og:image" content="c:/Users/Reex/AppData/Roaming/Typora/typora-user-images/image-20220424142142508.png">
+<meta property="og:image" content="https://static001.geekbang.org/resource/image/37/3a/3786bd6ad37faa34aca25bf1a1d8af3a.png">
+<meta property="og:image" content="https://static001.geekbang.org/resource/image/b8/43/b8d2229b2b40dd087fd3b111d1bdda43.png">
+<meta property="og:image" content="https://static001.geekbang.org/resource/image/1a/ef/1a85a3bac30a32438bfd8862e5a34eef.png">
+<meta property="og:image" content="https://static001.geekbang.org/resource/image/bc/45/bcf75aa3b0f496699fd7885426bc6245.png">
+<meta property="og:image" content="https://static001.geekbang.org/resource/image/8b/76/8b6976fedd6e644022d4026581fb8d76.png">
+<meta property="og:image" content="https://static001.geekbang.org/resource/image/00/53/0014f97423bd75235a9187f492fb2453.png">
+<meta property="article:published_time" content="2022-05-11T03:37:29.914Z">
+<meta property="article:modified_time" content="2022-05-02T09:43:38.767Z">
 <meta property="article:author" content="John Doe">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://static001.geekbang.org/resource/image/0d/d9/0d2070e8f84c4801adbfa03bda1f98d9.png">
   
     <link rel="alternate" href="/atom.xml" title="Reex" type="application/atom+xml">
   
@@ -69,47 +112,7 @@
 </header>
 
       <div class="outer">
-        <section id="main">
-  
-    <article id="post-MySQL总结" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2022/05/11/MySQL%E6%80%BB%E7%BB%93/" class="article-date">
-  <time class="dt-published" datetime="2022-05-11T03:55:15.000Z" itemprop="datePublished">2022-05-11</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2022/05/11/MySQL%E6%80%BB%E7%BB%93/">MySQL总结</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://example.com/2022/05/11/MySQL%E6%80%BB%E7%BB%93/" data-id="cl311vq5600004gv6d84j45sh" data-title="MySQL总结" class="article-share-link">Share</a>
-      
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-MySQL个人总结" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+        <section id="main"><article id="post-MySQL个人总结" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
     <a href="/2022/05/11/MySQL%E4%B8%AA%E4%BA%BA%E6%80%BB%E7%BB%93/" class="article-date">
   <time class="dt-published" datetime="2022-05-11T03:37:29.914Z" itemprop="datePublished">2022-05-11</time>
@@ -555,62 +558,28 @@
     </footer>
   </div>
   
-</article>
-
-
-
+    
+<nav id="article-nav">
   
-    <article id="post-hello-world" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2022/05/10/hello-world/" class="article-date">
-  <time class="dt-published" datetime="2022-05-10T13:37:18.021Z" itemprop="datePublished">2022-05-10</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
+    <a href="/2022/05/11/MySQL%E6%80%BB%E7%BB%93/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
         
+          MySQL总结
+        
+      </div>
+    </a>
   
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2022/05/10/hello-world/">Hello World</a>
-    </h1>
   
+    <a href="/2022/05/10/hello-world/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Hello World</div>
+    </a>
+  
+</nav>
 
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>Welcome to <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a target="_blank" rel="noopener" href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a target="_blank" rel="noopener" href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a target="_blank" rel="noopener" href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/writing.html">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/server.html">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/generating.html">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://example.com/2022/05/10/hello-world/" data-id="cl3078p1d0000csv61f399xnl" data-title="Hello World" class="article-share-link">Share</a>
-      
-      
-      
-    </footer>
-  </div>
   
 </article>
-
-
-
-  
 
 
 </section>
