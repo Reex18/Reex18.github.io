@@ -81,9 +81,19 @@
   <div class="article-inner">
     
     
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2022/05/11/leetcode%E5%88%B7%E9%A2%98%E7%AC%94%E8%AE%B0/">动态规划之序列问题</a>
+    </h1>
+  
+
+      </header>
+    
     <div class="e-content article-entry" itemprop="articleBody">
       
-        <h2 id="动态规划之序列问题"><a href="#动态规划之序列问题" class="headerlink" title="动态规划之序列问题"></a>动态规划之序列问题</h2><h3 id="1-单数组找子序列问题"><a href="#1-单数组找子序列问题" class="headerlink" title="1.单数组找子序列问题"></a>1.单数组找子序列问题</h3><h4 id="lt-300-最长递增子序列"><a href="#lt-300-最长递增子序列" class="headerlink" title="lt 300.最长递增子序列"></a>lt 300.最长递增子序列</h4><p>在一个整数数组nums中，找到最长的严格<strong>递增的子序列的长度</strong>，返回其<strong>长度</strong>。如[10,9,2,5,3,7,101,18]中的[2,3,7,101]</p>
+        <h3 id="1-单数组找子序列问题"><a href="#1-单数组找子序列问题" class="headerlink" title="1.单数组找子序列问题"></a>1.单数组找子序列问题</h3><h4 id="lt-300-最长递增子序列"><a href="#lt-300-最长递增子序列" class="headerlink" title="lt 300.最长递增子序列"></a>lt 300.最长递增子序列</h4><p>在一个整数数组nums中，找到最长的严格<strong>递增的子序列的长度</strong>，返回其<strong>长度</strong>。如[10,9,2,5,3,7,101,18]中的[2,3,7,101]</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">lengthOfLIS</span><span class="params">(<span class="type">int</span>[] nums)</span> &#123;</span><br><span class="line">        <span class="type">int</span>[] dp = <span class="keyword">new</span> <span class="title class_">int</span>[nums.length];</span><br><span class="line">        dp[<span class="number">0</span>] = <span class="number">1</span>;</span><br><span class="line">        <span class="type">int</span> <span class="variable">max</span> <span class="operator">=</span> <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">1</span>;i &lt; nums.length;i++)&#123;</span><br><span class="line">            dp[i] = <span class="number">1</span>;</span><br><span class="line">            <span class="keyword">for</span>(<span class="type">int</span> <span class="variable">j</span> <span class="operator">=</span> <span class="number">0</span>;j &lt; i;j++)&#123;</span><br><span class="line">                <span class="keyword">if</span>(nums[i] &gt; nums[j])&#123;</span><br><span class="line">                    dp[i] = Math.max(dp[i], dp[j] + <span class="number">1</span>);</span><br><span class="line">                    max = Math.max(dp[i], max);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> max;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>dp[i]是<strong>以nums[i]为结尾</strong>组成的最长递增子序列的<em><strong>长度</strong></em>。这是每个动态规划题目需要最先确定的。</p>
@@ -153,7 +163,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2022/05/11/leetcode%E5%88%B7%E9%A2%98%E7%AC%94%E8%AE%B0/" data-id="cl313c0r00000wkv6dvksf9r7" data-title="" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2022/05/11/leetcode%E5%88%B7%E9%A2%98%E7%AC%94%E8%AE%B0/" data-id="cl313c0r00000wkv6dvksf9r7" data-title="动态规划之序列问题" class="article-share-link">Share</a>
       
       
       
@@ -657,7 +667,7 @@
       <ul>
         
           <li>
-            <a href="/2022/05/11/leetcode%E5%88%B7%E9%A2%98%E7%AC%94%E8%AE%B0/">(no title)</a>
+            <a href="/2022/05/11/leetcode%E5%88%B7%E9%A2%98%E7%AC%94%E8%AE%B0/">动态规划之序列问题</a>
           </li>
         
           <li>
