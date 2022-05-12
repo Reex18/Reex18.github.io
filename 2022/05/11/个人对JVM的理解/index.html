@@ -6,17 +6,19 @@
   
   <title>个人对JVM的理解 | Reex</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="JVM内存结构：首先给出JVM的结构图，包括了类装载器子系统、运行时数据区、执行引擎、本地方法接口、本地方法库（这里不确定） 而内存结构呢，就是运行时数据区部分，也就包括了：程序计数器、虚拟机栈、本地方法栈、堆、方法区。其中方法区在jdk8以后就变成元数据区了。 程序计数器：是内存中很">
+  <meta name="description" content="JVM内存结构：首先给出JVM的结构图，包括了类装载器子系统、运行时数据区、执行引擎、本地方法接口、垃圾回收（这里不确定） 而内存结构呢，就是运行时数据区部分，也就包括了：程序计数器、虚拟机栈、本地方法栈、堆、方法区。其中方法区在jdk8以后就变成元数据区了。 程序计数器： 是内存中很小的一个存储空间，可以看作是当前线程所执行的字节码的行号指示器。在程序运行过程中，线程是非常多的，但是CPU的核心">
 <meta property="og:type" content="article">
 <meta property="og:title" content="个人对JVM的理解">
 <meta property="og:url" content="http://example.com/2022/05/11/%E4%B8%AA%E4%BA%BA%E5%AF%B9JVM%E7%9A%84%E7%90%86%E8%A7%A3/index.html">
 <meta property="og:site_name" content="Reex">
-<meta property="og:description" content="JVM内存结构：首先给出JVM的结构图，包括了类装载器子系统、运行时数据区、执行引擎、本地方法接口、本地方法库（这里不确定） 而内存结构呢，就是运行时数据区部分，也就包括了：程序计数器、虚拟机栈、本地方法栈、堆、方法区。其中方法区在jdk8以后就变成元数据区了。 程序计数器：是内存中很">
+<meta property="og:description" content="JVM内存结构：首先给出JVM的结构图，包括了类装载器子系统、运行时数据区、执行引擎、本地方法接口、垃圾回收（这里不确定） 而内存结构呢，就是运行时数据区部分，也就包括了：程序计数器、虚拟机栈、本地方法栈、堆、方法区。其中方法区在jdk8以后就变成元数据区了。 程序计数器： 是内存中很小的一个存储空间，可以看作是当前线程所执行的字节码的行号指示器。在程序运行过程中，线程是非常多的，但是CPU的核心">
 <meta property="og:locale" content="en_US">
+<meta property="og:image" content="c:/Users/Reex/AppData/Roaming/Typora/typora-user-images/image-20220512150709656.png">
 <meta property="article:published_time" content="2022-05-11T12:04:43.000Z">
-<meta property="article:modified_time" content="2022-05-12T01:55:24.061Z">
+<meta property="article:modified_time" content="2022-05-12T11:31:42.566Z">
 <meta property="article:author" content="John Doe">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="c:/Users/Reex/AppData/Roaming/Typora/typora-user-images/image-20220512150709656.png">
   
     <link rel="alternate" href="/atom.xml" title="Reex" type="application/atom+xml">
   
@@ -95,10 +97,34 @@
     
     <div class="e-content article-entry" itemprop="articleBody">
       
-        <h1 id="JVM内存结构："><a href="#JVM内存结构：" class="headerlink" title="JVM内存结构："></a>JVM内存结构：</h1><p>首先给出JVM的结构图，包括了类装载器子系统、运行时数据区、执行引擎、本地方法接口、本地方法库（<strong>这里不确定</strong>）</p>
+        <h1 id="JVM内存结构："><a href="#JVM内存结构：" class="headerlink" title="JVM内存结构："></a>JVM内存结构：</h1><p>首先给出JVM的结构图，包括了类装载器子系统、运行时数据区、执行引擎、本地方法接口、垃圾回收（<strong>这里不确定</strong>）</p>
 <p>而内存结构呢，就是运行时数据区部分，也就包括了：程序计数器、虚拟机栈、本地方法栈、堆、方法区。其中方法区在jdk8以后就变成元数据区了。</p>
-<p>程序计数器：是内存中很</p>
-
+<p><u>程序计数器</u>：</p>
+<p>是内存中很小的一个存储空间，可以看作是<strong>当前线程所执行的字节码的行号指示器</strong>。在程序运行过程中，线程是非常多的，但是CPU的核心数却是有限的，所以我们必须要通过不断切换线程来来为处理器分配时间，进而完成程序的执行。程序计数器就是为了实现线程切换用的，<strong>每个线程都用独立的程序计数器</strong>，两两互不干扰，其生命周期也与线程保持一致。</p>
+<p>垃圾回收和内存溢出都与程序计数器无关。</p>
+<h1 id="谈一谈类加载机制，整个过程是怎么样的："><a href="#谈一谈类加载机制，整个过程是怎么样的：" class="headerlink" title="谈一谈类加载机制，整个过程是怎么样的："></a>谈一谈类加载机制，整个过程是怎么样的：</h1><p><img src="C:\Users\Reex\AppData\Roaming\Typora\typora-user-images\image-20220512150709656.png" alt="image-20220512150709656"></p>
+<p>类加载机制的过程：首先Java虚拟机将描述类的数据从Class文件中<strong>加载到内存</strong>，然后对数据进行<strong>连接以及初始化</strong>的过程，最终形成了可以被JVM可以直接使用的类型。</p>
+<h2 id="1-加载"><a href="#1-加载" class="headerlink" title="1.加载"></a>1.加载</h2><p>加载只是整个“类加载”过程的第一步。这个过程Java虚拟机完成了三件事：</p>
+<p>1）通过一个类的全限定名来<strong>获取定义此类的二进制字节流</strong>。</p>
+<p>2）将这个字节流代表的静态存储结构<strong>转化</strong>为方法区的运行时数据结构（注意：这里仅仅是转化）。</p>
+<p>3）在内存中生成一个代表这个类的java.lang.Class对象，<strong>作为方法区这个类的各种数据访问入口</strong>。</p>
+<h2 id="2-验证"><a href="#2-验证" class="headerlink" title="2.验证"></a>2.验证</h2><p>作为连接的第一步，验证的目的主要是确保加载的Class字节流不会危害到虚拟机自身安全（本步骤对应的代码如果已经在之前执行过程中反复验证过了，就可以关掉该步骤，以缩短虚拟机类加载时间）：</p>
+<p>1）文件格式验证：验证字节流<strong>是否符合Class文件格式规范</strong></p>
+<p>2）元数据验证：对字节码进行<strong>语义分析</strong>，比如某个类有无父类，是否继承了不允许继承的类等一些违规的语义</p>
+<p>3）字节码验证：确定程序语义的<strong>合法性、逻辑性</strong>，较复杂，具体见《深入理解JVM》P270</p>
+<p>4）符号引用验证：这个验证要在后面的解析阶段发生，通俗来讲，就是<strong>检验该类是否缺少或者被禁止访问它依赖的某些资源</strong>。</p>
+<h2 id="3-准备"><a href="#3-准备" class="headerlink" title="3.准备"></a>3.准备</h2><p>本阶段开始正式为类中定义的<strong>静态变量分配内存</strong>并<strong>设置初始零值</strong>。注意：JDK 7之前，这部分变量分配在方法区中，而JDK 8之后，则分配到堆中。以下两点需要注意：</p>
+<p>1）这里分配内存和设置零值都<strong>仅限于类变量</strong>（静态变量），实例变量将在<strong>对象实例化时随着对象一起分配到Java堆中</strong>。</p>
+<p>2）注意是设置零值，<strong>通常情况不是初始化</strong>。</p>
+<p>3）特殊情况就是<strong>static final定义的变量</strong>，Javac<strong>编译时</strong>就已经为该变量生成ConstantValue属性（可以理解为<strong>设置初始零值</strong>），类加载的准备阶段，就<strong>直接为其赋值</strong>了。</p>
+<h2 id="4-解析"><a href="#4-解析" class="headerlink" title="4.解析"></a>4.解析</h2><p>将字节码中常量池内的符号引用替换为直接引用。</p>
+<p>1）符号引用：是任何形式的字面量，只要使用时能无歧义的“精准定位”即可。</p>
+<p>2）直接引用：可以是<strong>直接指向</strong>目标的<strong>指针</strong>、<strong>相对偏移量</strong>或能<strong>间接定位</strong>到目标的<strong>句柄</strong>。一旦有直接引用，那么相对应的<strong>目标必定在虚拟机内存中存在</strong>。</p>
+<h2 id="5-初始化"><a href="#5-初始化" class="headerlink" title="5.初始化"></a>5.初始化</h2><p>该阶段，虚拟机才正式开始执行类中编写的Java程序代码，将主导权移交给应用程序。在前面的”准备“阶段中，我们已经为类变量进行分配内存和设置零值的操作，接下来就轮到初始化阶段真正为这些变量赋值了。</p>
+<p>1）直接来讲，初始化就是执行类构造器<clinit>()方法的过程，<clinit>()是Javac编译器的自动生成物。</p>
+<p>2）<clinit>()是编译器自动收集类中所有的类变量的复制动作和静态语句块中的语句合并而成的，收集顺序就是源代码书写顺序。</p>
+<p>3）在子类执行<clinit>()方法前，先要执行其父类<clinit>()，这也是为什么父类静态语句块要先执行的原因。与类的构造函数（虚拟机视角的实例构造器<init>()方法）不同，不需要显示调用父类构造器。</p>
+<h1 id="双亲委派模型及其优点"><a href="#双亲委派模型及其优点" class="headerlink" title="双亲委派模型及其优点"></a>双亲委派模型及其优点</h1>
       
     </div>
     <footer class="article-footer">
