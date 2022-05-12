@@ -93,12 +93,13 @@
     
     <div class="e-content article-entry" itemprop="articleBody">
       
-        <h2 id="☆JVM内存结构："><a href="#☆JVM内存结构：" class="headerlink" title="☆JVM内存结构："></a>☆JVM内存结构：</h2><p>首先给出JVM的结构图，包括了类装载器子系统、运行时数据区、执行引擎、本地方法接口、垃圾回收（<strong>这里不确定</strong>）</p>
+        <h2 id="☆JVM内存结构："><a href="#☆JVM内存结构：" class="headerlink" title="☆JVM内存结构："></a>☆JVM内存结构：</h2><p><img src="D:\Picgo\img\image-20220511200810603.png" alt="image-20220511200810603"></p>
+<p>首先给出JVM的结构图，包括了类装载器子系统、运行时数据区、执行引擎、本地方法接口、垃圾回收（<strong>这里不确定</strong>）</p>
 <p>而内存结构呢，就是运行时数据区部分，也就包括了：程序计数器、虚拟机栈、本地方法栈、堆、方法区。其中方法区在jdk8以后就变成元数据区了。</p>
 <p><u>程序计数器</u>：</p>
 <p>是内存中很小的一个存储空间，可以看作是<strong>当前线程所执行的字节码的行号指示器</strong>。在程序运行过程中，线程是非常多的，但是CPU的核心数却是有限的，所以我们必须要通过不断切换线程来来为处理器分配时间，进而完成程序的执行。程序计数器就是为了实现线程切换用的，<strong>每个线程都用独立的程序计数器</strong>，两两互不干扰，其生命周期也与线程保持一致。</p>
 <p>垃圾回收和内存溢出都与程序计数器无关。</p>
-<h2 id="☆类加载机制整个过程是怎么样的"><a href="#☆类加载机制整个过程是怎么样的" class="headerlink" title="☆类加载机制整个过程是怎么样的"></a>☆类加载机制整个过程是怎么样的</h2><p><img src="C:\Users\Reex\AppData\Roaming\Typora\typora-user-images\image-20220512150709656.png" alt="image-20220512150709656"></p>
+<h2 id="☆类加载机制整个过程是怎么样的"><a href="#☆类加载机制整个过程是怎么样的" class="headerlink" title="☆类加载机制整个过程是怎么样的"></a>☆类加载机制整个过程是怎么样的</h2><p><img src="D:\Picgo\img\image-20220512150709656.png" alt="image-20220512150709656"></p>
 <p>类加载机制的过程：首先Java虚拟机将描述类的数据从Class文件中<strong>加载到内存</strong>，然后对数据进行<strong>连接以及初始化</strong>的过程，最终形成了可以被JVM可以直接使用的类型。</p>
 <h3 id="1-加载"><a href="#1-加载" class="headerlink" title="1.加载"></a>1.加载</h3><p>加载只是整个“类加载”过程的第一步。这个过程Java虚拟机完成了三件事：</p>
 <p>1）通过一个类的全限定名来<strong>获取定义此类的二进制字节流</strong>。</p>
@@ -120,9 +121,9 @@
 <p>1）直接来讲，<strong>初始化就是执行类构造器clinit&gt;()方法的过程</strong>，clinit&gt;()是Javac编译器的自动生成物。</p>
 <p>2）clinit&gt;()是编译器自动收集类中<strong>所有的静态变量的赋值动作和静态语句块中的语句</strong>合并而成的，收集顺序就是源代码书写顺序。</p>
 <p>3）在子类执行clinit&gt;()方法前，**先要执行其父类clinit&gt;()**，这也是为什么父类静态语句块要先执行的原因。与类的构造函数（虚拟机视角的实例构造器init&gt;()方法）不同，不需要显示调用父类构造器。</p>
-<h2 id="☆类加载器"><a href="#☆类加载器" class="headerlink" title="☆类加载器"></a>☆类加载器</h2><p><img src="C:\Users\Reex\AppData\Roaming\Typora\typora-user-images\image-20220512194439270.png" alt="image-20220512194439270"></p>
+<h2 id="☆类加载器"><a href="#☆类加载器" class="headerlink" title="☆类加载器"></a>☆类加载器</h2><p><img src="D:\Picgo\img\image-20220512194439270.png" alt="image-20220512194439270"></p>
 <p>前面提到，类加载机制的第一步就是加载，我们用到的工具自然是类加载器。其实类加载器分类很简单，就是C&#x2F;C++写的启动类加载器和Java写的类加载器，具体分类如下：</p>
-<p><img src="C:\Users\Reex\AppData\Roaming\Typora\typora-user-images\image-20220512194934161.png" alt="image-20220512194934161"></p>
+<p><img src="D:\Picgo\img\image-20220512194934161.png" alt="image-20220512194934161"></p>
 <h3 id="1-启动类加载器（引导类加载器-Bootstrap-ClassLoader）"><a href="#1-启动类加载器（引导类加载器-Bootstrap-ClassLoader）" class="headerlink" title="1.启动类加载器（引导类加载器, Bootstrap ClassLoader）"></a>1.启动类加载器（引导类加载器, Bootstrap ClassLoader）</h3><p>1）<strong>虚拟机自带</strong>，C++编写</p>
 <p>2）用来<strong>加载Java核心库</strong></p>
 <p>3）<strong>没有父加载器，也没有父类</strong></p>
@@ -788,8 +789,7 @@
 <p>​		1).<strong>一主多从</strong>。一个主库对应一个备库和多个从库。</p>
 <p>​		2).<strong>binlog输出到外部系统</strong>，如Hadoop，让外部系统<strong>提供统计类查询</strong>的能力。</p>
 <h5 id="3-大事务"><a href="#3-大事务" class="headerlink" title="3.大事务"></a>3.大事务</h5><p>因为<strong>主库必须等待事务执行完成才会写入binlog，再传给备库B</strong>。如果主库有个大事务需要长时间执行，那么主备切换的延迟自然就很大了。比如<strong>一次性delete太多数据</strong>或<strong>大表的DDL</strong>。</p>
-<h5 id="4-备库并行复制（下一讲）"><a href="#4-备库并行复制（下一讲）" class="headerlink" title="4.备库并行复制（下一讲）"></a>4.备库并行复制（下一讲）</h5><h3 id="2-可靠性优先策略"><a href="#2-可靠性优先策略" class="headerlink" title="2.可靠性优先策略"></a>2.可靠性优先策略</h3><img src="C:\Users\Reex\AppData\Roaming\Typora\typora-user-images\image-20220424142142508.png" alt="image-20220424142142508"  />
-
+<h5 id="4-备库并行复制（下一讲）"><a href="#4-备库并行复制（下一讲）" class="headerlink" title="4.备库并行复制（下一讲）"></a>4.备库并行复制（下一讲）</h5><h3 id="2-可靠性优先策略"><a href="#2-可靠性优先策略" class="headerlink" title="2.可靠性优先策略"></a>2.可靠性优先策略</h3><p><img src="D:\Picgo\img\image-20220424142142508.png" alt="image-20220424142142508"></p>
 <p>图是双M结构，SBM指的是seconds_behind_master，也就是前面提到的T3-T1，以上的主备切换流程如下：</p>
 <p>1.首先需要等到SBM小于某个值（这里是5s）才能进入下一步，否则持续等待</p>
 <p>2.把主库A改为只读(readonly&#x3D;true)</p>
