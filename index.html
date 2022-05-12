@@ -93,13 +93,12 @@
     
     <div class="e-content article-entry" itemprop="articleBody">
       
-        <p>[TOC]</p>
-<h2 id="JVM内存结构："><a href="#JVM内存结构：" class="headerlink" title="JVM内存结构："></a>JVM内存结构：</h2><p>首先给出JVM的结构图，包括了类装载器子系统、运行时数据区、执行引擎、本地方法接口、垃圾回收（<strong>这里不确定</strong>）</p>
+        <h2 id="☆JVM内存结构："><a href="#☆JVM内存结构：" class="headerlink" title="☆JVM内存结构："></a>☆JVM内存结构：</h2><p>首先给出JVM的结构图，包括了类装载器子系统、运行时数据区、执行引擎、本地方法接口、垃圾回收（<strong>这里不确定</strong>）</p>
 <p>而内存结构呢，就是运行时数据区部分，也就包括了：程序计数器、虚拟机栈、本地方法栈、堆、方法区。其中方法区在jdk8以后就变成元数据区了。</p>
 <p><u>程序计数器</u>：</p>
 <p>是内存中很小的一个存储空间，可以看作是<strong>当前线程所执行的字节码的行号指示器</strong>。在程序运行过程中，线程是非常多的，但是CPU的核心数却是有限的，所以我们必须要通过不断切换线程来来为处理器分配时间，进而完成程序的执行。程序计数器就是为了实现线程切换用的，<strong>每个线程都用独立的程序计数器</strong>，两两互不干扰，其生命周期也与线程保持一致。</p>
 <p>垃圾回收和内存溢出都与程序计数器无关。</p>
-<h2 id="类加载机制整个过程是怎么样的"><a href="#类加载机制整个过程是怎么样的" class="headerlink" title="类加载机制整个过程是怎么样的"></a>类加载机制整个过程是怎么样的</h2><p><img src="C:\Users\Reex\AppData\Roaming\Typora\typora-user-images\image-20220512150709656.png" alt="image-20220512150709656"></p>
+<h2 id="☆类加载机制整个过程是怎么样的"><a href="#☆类加载机制整个过程是怎么样的" class="headerlink" title="☆类加载机制整个过程是怎么样的"></a>☆类加载机制整个过程是怎么样的</h2><p><img src="C:\Users\Reex\AppData\Roaming\Typora\typora-user-images\image-20220512150709656.png" alt="image-20220512150709656"></p>
 <p>类加载机制的过程：首先Java虚拟机将描述类的数据从Class文件中<strong>加载到内存</strong>，然后对数据进行<strong>连接以及初始化</strong>的过程，最终形成了可以被JVM可以直接使用的类型。</p>
 <h3 id="1-加载"><a href="#1-加载" class="headerlink" title="1.加载"></a>1.加载</h3><p>加载只是整个“类加载”过程的第一步。这个过程Java虚拟机完成了三件事：</p>
 <p>1）通过一个类的全限定名来<strong>获取定义此类的二进制字节流</strong>。</p>
@@ -121,7 +120,7 @@
 <p>1）直接来讲，<strong>初始化就是执行类构造器clinit&gt;()方法的过程</strong>，clinit&gt;()是Javac编译器的自动生成物。</p>
 <p>2）clinit&gt;()是编译器自动收集类中<strong>所有的静态变量的赋值动作和静态语句块中的语句</strong>合并而成的，收集顺序就是源代码书写顺序。</p>
 <p>3）在子类执行clinit&gt;()方法前，**先要执行其父类clinit&gt;()**，这也是为什么父类静态语句块要先执行的原因。与类的构造函数（虚拟机视角的实例构造器init&gt;()方法）不同，不需要显示调用父类构造器。</p>
-<h2 id="类加载器"><a href="#类加载器" class="headerlink" title="类加载器"></a>类加载器</h2><p><img src="C:\Users\Reex\AppData\Roaming\Typora\typora-user-images\image-20220512194439270.png" alt="image-20220512194439270"></p>
+<h2 id="☆类加载器"><a href="#☆类加载器" class="headerlink" title="☆类加载器"></a>☆类加载器</h2><p><img src="C:\Users\Reex\AppData\Roaming\Typora\typora-user-images\image-20220512194439270.png" alt="image-20220512194439270"></p>
 <p>前面提到，类加载机制的第一步就是加载，我们用到的工具自然是类加载器。其实类加载器分类很简单，就是C&#x2F;C++写的启动类加载器和Java写的类加载器，具体分类如下：</p>
 <p><img src="C:\Users\Reex\AppData\Roaming\Typora\typora-user-images\image-20220512194934161.png" alt="image-20220512194934161"></p>
 <h3 id="1-启动类加载器（引导类加载器-Bootstrap-ClassLoader）"><a href="#1-启动类加载器（引导类加载器-Bootstrap-ClassLoader）" class="headerlink" title="1.启动类加载器（引导类加载器, Bootstrap ClassLoader）"></a>1.启动类加载器（引导类加载器, Bootstrap ClassLoader）</h3><p>1）<strong>虚拟机自带</strong>，C++编写</p>
@@ -136,16 +135,16 @@
 <p>3）父类加载器就是上边的Extension ClassLoader</p>
 <p>4）负责加载环境变量和系统属性指定路径下的类库</p>
 <p>5）程序的默认类加载器，<strong>一般Java应用类都是它加载的</strong>。</p>
-<h3 id="4-用户自定义类加载器"><a href="#4-用户自定义类加载器" class="headerlink" title="4.用户自定义类加载器"></a>4.用户自定义类加载器</h3><h2 id="双亲委派模型"><a href="#双亲委派模型" class="headerlink" title="双亲委派模型"></a>双亲委派模型</h2><p>首先我们要知道，虚拟机对class文件是<strong>按需加载</strong>的，也就是只有在需要使用该类的时候，才将其class文件加载到内存中生成class对象。</p>
+<h3 id="4-用户自定义类加载器"><a href="#4-用户自定义类加载器" class="headerlink" title="4.用户自定义类加载器"></a>4.用户自定义类加载器</h3><h2 id="☆双亲委派模型"><a href="#☆双亲委派模型" class="headerlink" title="☆双亲委派模型"></a>☆双亲委派模型</h2><p>首先我们要知道，虚拟机对class文件是<strong>按需加载</strong>的，也就是只有在需要使用该类的时候，才将其class文件加载到内存中生成class对象。</p>
 <p>那么加载某个class文件的时候，具体的过程是怎么样的呢？这时候就要引入我们的一种特殊模式：双亲委派模式。工作原理如下：</p>
 <p>1）一个类加载器收到类加载请求，<strong>先把请求依次委托其父类加载器去执行</strong>，请求<strong>最终到达顶层</strong>的启动类加载器。</p>
 <p>2）如果父类加载器<strong>可以完成类加载的任务，就成功返回</strong>。若不能完成，<strong>才交给子加载器</strong>进行加载。</p>
 <h3 id="沙箱安全机制"><a href="#沙箱安全机制" class="headerlink" title="沙箱安全机制"></a>沙箱安全机制</h3><p>其实就是利用了双亲委派模型的特点，假如我们定义一个String类，那么加载这个自定义String类的时候，<strong>会先委派到顶部的引导类加载器加载</strong>，引导类发现自己可以加载，就<strong>接着加载JDK自带的文件java.lang.String</strong>，这样就可以避免我们自定义String类对核心源代码的破坏。</p>
 <h3 id="双亲委派机制的优势"><a href="#双亲委派机制的优势" class="headerlink" title="双亲委派机制的优势"></a>双亲委派机制的优势</h3><p>1）避免类的重复加载</p>
 <p>2）保护程序安全，避免核心API被随意篡改</p>
-<h2 id="判断两个class对象是否相同，我们需要看什么？"><a href="#判断两个class对象是否相同，我们需要看什么？" class="headerlink" title="判断两个class对象是否相同，我们需要看什么？"></a>判断两个class对象是否相同，我们需要看什么？</h2><p>1）类的名字首先得相同，包名也得一致</p>
+<h2 id="☆判断两个class对象是否相同，我们需要看什么？"><a href="#☆判断两个class对象是否相同，我们需要看什么？" class="headerlink" title="☆判断两个class对象是否相同，我们需要看什么？"></a>☆判断两个class对象是否相同，我们需要看什么？</h2><p>1）类的名字首先得相同，包名也得一致</p>
 <p>2）加载这个class的类加载器（<strong>ClassLoader实例对象</strong>）必须相同。</p>
-<h2 id="Java什么时候对类进行主动引用？"><a href="#Java什么时候对类进行主动引用？" class="headerlink" title="Java什么时候对类进行主动引用？"></a>Java什么时候对类进行主动引用？</h2><p>1）使用new关键字实例化对象的时候</p>
+<h2 id="☆Java什么时候对类进行主动引用？"><a href="#☆Java什么时候对类进行主动引用？" class="headerlink" title="☆Java什么时候对类进行主动引用？"></a>☆Java什么时候对类进行主动引用？</h2><p>1）使用new关键字实例化对象的时候</p>
 <p>2）访问某个<strong>类（或接口）的静态变量</strong>，或者对该静态变量<strong>赋值</strong></p>
 <p>3）调用某个类的<strong>静态方法</strong></p>
 <p>4）使用java.lang.reflect包的方法对某个类进行<strong>反射调用</strong></p>
