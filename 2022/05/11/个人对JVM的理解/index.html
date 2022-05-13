@@ -18,7 +18,7 @@
 <meta property="og:image" content="d:/Picgo/img/image-20220512194439270.png">
 <meta property="og:image" content="d:/Picgo/img/image-20220512194934161.png">
 <meta property="article:published_time" content="2022-05-11T12:04:43.000Z">
-<meta property="article:modified_time" content="2022-05-12T13:27:36.854Z">
+<meta property="article:modified_time" content="2022-05-13T12:10:49.318Z">
 <meta property="article:author" content="John Doe">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="d:/Picgo/img/image-20220511200810603.png">
@@ -160,6 +160,23 @@
 <p>6）虚拟机启动时，用户需要<strong>指定一个要执行的主类</strong>（包括main()方法的那个类），虚拟机先初始化该类</p>
 <p>7）JDK 7开始提供<strong>动态语言支持</strong>（不懂）</p>
 <p>8）JDK 8在**接口中定义了默认方法(**default标识)，如果这个接口的实现类发生了初始化，那么该接口要率先初始化。</p>
+<h1 id="☆虚拟机栈的作用是什么？"><a href="#☆虚拟机栈的作用是什么？" class="headerlink" title="☆虚拟机栈的作用是什么？"></a>☆虚拟机栈的作用是什么？</h1><p>栈是<strong>运行时</strong>的单位，而堆是<strong>存储的</strong>单位。栈解决的是程序如何执行，如何处理数据的问题；而堆是解决数据存储的问题。当然一些数据也会存在栈中，只能说栈的主要功能是处理数据，它<strong>是线程私有的</strong>。内部存储着一个个栈帧，<strong>每一个栈帧对应一个Java方法</strong>。</p>
+<p>上面是比较泛泛的总结，虚拟机栈具体是什么作用呢？它主管程序的运行，<strong>在每个栈帧的局部变量表中保存相应方法的局部变量</strong>（8种<strong>基本数据</strong>类型、引用类型变量的<strong>引用地址</strong>），一<strong>部分结果</strong>，并参与方法的<strong>调用和返回</strong>。</p>
+<p>栈操作只有两个：</p>
+<p>1）执行方法的时候，<strong>进栈</strong>（入栈、压栈）</p>
+<p>2）方法执行结束的时候，<strong>出栈</strong></p>
+<p>所以栈<strong>没有垃圾回收机制</strong>，只<strong>存在栈溢出</strong>的现象。</p>
+<h1 id="☆虚拟机栈的常见异常？如何设置栈的大小？"><a href="#☆虚拟机栈的常见异常？如何设置栈的大小？" class="headerlink" title="☆虚拟机栈的常见异常？如何设置栈的大小？"></a>☆虚拟机栈的常见异常？如何设置栈的大小？</h1><p>当<strong>某个线程请求分配的栈容量超过</strong>了Java虚拟机栈允许的最大容量，虚拟机会报<strong>StackOverflowError</strong>，即栈溢出。</p>
+<p>我们可以通过-Xxx设置虚拟机栈的大小。在Idea的Run中，找到Edit Configurations，在当前程序的VM options中写入-Xxx256k即可。</p>
+<p>如果Java虚拟机栈可以动态扩展，但<strong>扩展的时候无法申请到足够的内存</strong>，或者创建新线程的时候<strong>没有足够内存去创建对应的虚拟机栈</strong>，则虚拟机会报OutOfMemoryError异常，也就是我们所说的OOM。</p>
+<h1 id="☆栈帧的内部结构"><a href="#☆栈帧的内部结构" class="headerlink" title="☆栈帧的内部结构"></a>☆栈帧的内部结构</h1><p>栈帧内部包括：局部变量表、操作数栈、动态链接、方法返回地址、一些附加信息。其中，<strong>局部变量表和操作数栈占的内存最大</strong>，主要影响栈帧的大小，而栈帧的大小决定了每个线程的虚拟机栈能存放多少个栈帧。</p>
+<p>1）局部变量表：就是<strong>数字数组</strong>，主要用于<strong>存储方法参数和定义在方法体内的局部变量</strong>，包括基本数据类型、对象引用、returnAddress类型。<strong>slot(变量槽)<strong>是最基本的存储单元，对于byte、short、char在存储前，被</strong>转换为int</strong>,而boolean也被<strong>转换为int</strong>，false对应0，true对应非0。他们都<strong>占用一个slot</strong>。long和double类型的变量<strong>占两个slot</strong>。</p>
+<p>栈帧的<strong>局部变量表与性能调优关系最为密切</strong>，因为在垃圾回收过程中，表中的变量是重要的<strong>垃圾回收根节点</strong>，只要<strong>被表中直接或间接引用的对象</strong>都不会被回收。</p>
+<p>2）操作数栈：在方法执行过程中，根据字节码指令，往栈中写入数据或提取数据，例如执行<strong>复制、交换、求和</strong>等操作。主要用于<strong>保存计算过程中的中间结果</strong>，同时作为计算过程中的<strong>变量临时存储空间</strong>。</p>
+<p>注意：操作数栈<strong>并非通过访问索引来进行数据访问</strong>的，它只是入栈出栈的一个实现工具。</p>
+<p>3）动态链接：<strong>指向运行时常量池</strong>中的该栈帧所属<strong>方法的引用</strong>。在类加载之前，符号引用都在class文件的常量池中，类加载后，这些符号引用就被<strong>类加载阶段的“解析”过程</strong>转换为调用方法的直接引用。动态链接就是<strong>来实现这个“解析”过程的</strong>。</p>
+<h1 id="☆局部变量和静态变量的对比"><a href="#☆局部变量和静态变量的对比" class="headerlink" title="☆局部变量和静态变量的对比"></a>☆局部变量和静态变量的对比</h1><p>我们知道静态变量就是类变量，是在累加载阶段就有初始化操作的，其一是<strong>“准备”阶段的初始化零值</strong>，另一阶段是<strong>”初始化“阶段为类变量赋初始值</strong>。</p>
+<p>对于局部变量，<strong>因为要放在局部变量表中，表没有初始化过程</strong>，所以我们必须在写代码的时候，人为初始化。</p>
 
       
     </div>
@@ -224,6 +241,10 @@
       <ul>
         
           <li>
+            <a href="/2022/05/13/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E7%AC%94%E8%AE%B0/">计算机网络笔记</a>
+          </li>
+        
+          <li>
             <a href="/2022/05/13/%E6%93%8D%E4%BD%9C%E5%AD%97%E7%AC%A6%E4%B8%B2%E9%A2%98%E8%A7%A3/">操作字符串题解</a>
           </li>
         
@@ -237,10 +258,6 @@
         
           <li>
             <a href="/2022/05/11/%E5%8F%8C%E6%8C%87%E9%92%88%E9%A2%98%E8%A7%A3/">双指针题解</a>
-          </li>
-        
-          <li>
-            <a href="/2022/05/11/%E4%BA%8C%E5%88%86%E6%B3%95%E9%A2%98%E8%A7%A3/">二分法题解</a>
           </li>
         
       </ul>
