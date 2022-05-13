@@ -93,8 +93,7 @@
     
     <div class="e-content article-entry" itemprop="articleBody">
       
-        <h1 id="开发社区首页"><a href="#开发社区首页" class="headerlink" title="开发社区首页"></a>开发社区首页</h1><p>分页查询帖子功能：</p>
-<h2 id="1-创建实体类对象DiscussPost"><a href="#1-创建实体类对象DiscussPost" class="headerlink" title="1.创建实体类对象DiscussPost"></a>1.创建实体类对象DiscussPost</h2><p>先创建一个DiscussPost的实体类对象，与之对应的数据库数据是discuss_post</p>
+        <h1 id="开发社区首页——分页查询帖子功能"><a href="#开发社区首页——分页查询帖子功能" class="headerlink" title="开发社区首页——分页查询帖子功能"></a>开发社区首页——分页查询帖子功能</h1><h2 id="1-创建实体类对象DiscussPost"><a href="#1-创建实体类对象DiscussPost" class="headerlink" title="1.创建实体类对象DiscussPost"></a>1.创建实体类对象DiscussPost</h2><p>先创建一个DiscussPost的实体类对象，与之对应的数据库数据是discuss_post</p>
 <p>分别把id, userId, title, content, type, status, createTime, commentCount, score变量及其get, set方法, toString()方法定义出来。</p>
 <h2 id="2-开发DAO层——DiscussPostMapper"><a href="#2-开发DAO层——DiscussPostMapper" class="headerlink" title="2.开发DAO层——DiscussPostMapper"></a>2.开发DAO层——DiscussPostMapper</h2><p>首先定义一个查询帖子信息的方法selectDiscussPosts，形参包括userId, offset, limit，其中userId在后面个人主页的帖子才需要，offset是每一页起始行的行号，limit是每一页最多显示多少数据</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">List&lt;DiscussPost&gt; <span class="title function_">selectDiscussPosts</span><span class="params">(<span class="meta">@Param(&quot;userId&quot;)</span> <span class="type">int</span> userId, <span class="meta">@Param(&quot;offset&quot;)</span> <span class="type">int</span> offset, <span class="meta">@Param(&quot;limit&quot;)</span> <span class="type">int</span> limit)</span>;</span><br></pre></td></tr></table></figure>
