@@ -71,6 +71,59 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-哈希算法题目" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2022/05/13/%E5%93%88%E5%B8%8C%E7%AE%97%E6%B3%95%E9%A2%98%E7%9B%AE/" class="article-date">
+  <time class="dt-published" datetime="2022-05-13T02:21:16.000Z" itemprop="datePublished">2022-05-13</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2022/05/13/%E5%93%88%E5%B8%8C%E7%AE%97%E6%B3%95%E9%A2%98%E7%9B%AE/">哈希算法题目</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="leetcode-349-两个数组的交集"><a href="#leetcode-349-两个数组的交集" class="headerlink" title="leetcode 349.两个数组的交集"></a>leetcode 349.两个数组的交集</h1><p>给定两个数组 <code>nums1</code> 和 <code>nums2</code> ，返回 <em>它们的交集</em> 。输出结果中的每个元素一定是 <strong>唯一</strong> 的。我们可以 <strong>不考虑输出结果的顺序</strong> 。举例：</p>
+<p>输入：nums1 &#x3D; [1,2,2,1], nums2 &#x3D; [2,2]<br>输出：[2]</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span>[] intersection(<span class="type">int</span>[] nums1, <span class="type">int</span>[] nums2) &#123;</span><br><span class="line">        Set&lt;Integer&gt; set1 = <span class="keyword">new</span> <span class="title class_">HashSet</span>&lt;&gt;();</span><br><span class="line">        Set&lt;Integer&gt; resSet = <span class="keyword">new</span> <span class="title class_">HashSet</span>&lt;&gt;();</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> x : nums1)&#123;</span><br><span class="line">            set1.add(x);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> x : nums2)&#123;</span><br><span class="line">            <span class="keyword">if</span>(set1.contains(x))&#123;</span><br><span class="line">                resSet.add(x);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="type">int</span>[] ans = <span class="keyword">new</span> <span class="title class_">int</span>[resSet.size()];</span><br><span class="line">        <span class="type">int</span> <span class="variable">index</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> x : resSet)&#123;</span><br><span class="line">            ans[index++] = x;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>思路比较简单，注意审题，相同的元素我们只记录一次，所以用HashSet是一种很简单的方式。</p>
+<p>注意最后用数组记录即可。</p>
+<h1 id="☆leetcode-350-两个数组的交集II"><a href="#☆leetcode-350-两个数组的交集II" class="headerlink" title="☆leetcode 350.两个数组的交集II"></a>☆leetcode 350.两个数组的交集II</h1><p>给你两个整数数组 nums1 和 nums2 ，请你以数组形式返回两数组的交集。返回结果中每个元素出现的次数，应与元素在两个数组中都出现的次数一致（如果出现次数不一致，则考虑取较小值）。可以不考虑输出结果的顺序。举例：</p>
+<p>输入：nums1 &#x3D; [1,2,2,1], nums2 &#x3D; [2,2]<br>输出：[2,2]</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span>[] intersect(<span class="type">int</span>[] nums1, <span class="type">int</span>[] nums2) &#123;</span><br><span class="line">        <span class="keyword">if</span>(nums1.length &gt; nums2.length)&#123;</span><br><span class="line">            <span class="keyword">return</span> intersect(nums2, nums1);</span><br><span class="line">        &#125;</span><br><span class="line">        Map&lt;Integer, Integer&gt; map = <span class="keyword">new</span> <span class="title class_">HashMap</span>&lt;&gt;();</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> x : nums1)&#123;</span><br><span class="line">            <span class="type">int</span> <span class="variable">count</span> <span class="operator">=</span> map.getOrDefault(x, <span class="number">0</span>) + <span class="number">1</span>;</span><br><span class="line">            map.put(x, count);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="type">int</span>[] ans = <span class="keyword">new</span> <span class="title class_">int</span>[nums1.length];</span><br><span class="line">        <span class="type">int</span> <span class="variable">index</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> x : nums2)&#123;</span><br><span class="line">            <span class="keyword">if</span>(map.containsKey(x))&#123;</span><br><span class="line">                <span class="type">int</span> <span class="variable">count</span> <span class="operator">=</span> map.get(x);</span><br><span class="line">                <span class="keyword">if</span>(count &gt; <span class="number">0</span>)&#123;</span><br><span class="line">                    ans[index++] = x;</span><br><span class="line">                    count--;</span><br><span class="line">                    map.put(x, count);</span><br><span class="line">                &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">                    map.remove(x);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; </span><br><span class="line">        <span class="keyword">return</span> Arrays.copyOfRange(ans, <span class="number">0</span>, index);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>本题与上面一题的区别就是重复元素要全部记录了，所以HashSet显得力不从心了。我们选用能记录每个重复元素出现次数的HashMap，利用value来记录每个key值出现的次数。</p>
+<p><strong>为了节省哈希表得空间</strong>，我们用较小得数组存储到哈希表中。</p>
+<p>每次存储的时候需要注意，为了书写和判断方便，我们利用map的getOrDefault方法，这可以让我们轻松的写出统一的count值，然后执行map.put(x, count)。</p>
+<p>因为<strong>交集元素个数肯定 &lt;&#x3D; 较短的数组长度</strong>，所以我们记录交集元素只需要较短的长度即可。</p>
+<p>在判断长数组存不存在map元素的时候，要注意：一旦存在，<strong>我们添加后一定要判断当前的count值，并且更新count值</strong>，更重要的是，count &#x3D;&#x3D; 0了要及时<strong>删除其所对应的key值</strong>，如果还没等于0，也要<strong>及时更新map中的count值</strong>，即map.put(x, count)。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2022/05/13/%E5%93%88%E5%B8%8C%E7%AE%97%E6%B3%95%E9%A2%98%E7%9B%AE/" data-id="cl33tx2240000fkv6agf0ho2c" data-title="哈希算法题目" class="article-share-link">Share</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-个人对JVM的理解" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
     <a href="/2022/05/11/%E4%B8%AA%E4%BA%BA%E5%AF%B9JVM%E7%9A%84%E7%90%86%E8%A7%A3/" class="article-date">
@@ -237,7 +290,7 @@
 <p><u>找出该数组中满足其和 ≥ target 的长度最小的<strong>连续子数组</strong> [numsl, numsl+1, …, numsr-1, numsr]，并返回其长度。如果不存在符合条件的子数组，返回0。</u></p>
 <p><u><strong>示例 1：</strong></u></p>
 <p><u>输入：target &#x3D; 7, nums &#x3D; [2,3,1,2,4,3]</u><br><u>输出：2</u><br><u>解释：子数组 [4,3] 是该条件下的长度最小的子数组。</u></p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">minSubArrayLen</span><span class="params">(<span class="type">int</span> target, <span class="type">int</span>[] nums)</span> &#123;</span><br><span class="line">        <span class="type">int</span> <span class="variable">left</span> <span class="operator">=</span> <span class="number">0</span>, sum = <span class="number">0</span>, res = Integer.MAX_VALUE;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> <span class="variable">right</span> <span class="operator">=</span> <span class="number">0</span>;right &lt; nums.length;right++)&#123;</span><br><span class="line">            sum += nums[right];<span class="comment">//每次移动right指针都要将其所指元素添加进sum中</span></span><br><span class="line">            <span class="keyword">while</span>(sum &gt;= target)&#123;<span class="comment">//一旦总和大于目标值，就开始记录当前最短数组，并右移left指针</span></span><br><span class="line">                res = Math.min(res, right - left + <span class="number">1</span></span><br><span class="line">                sum -= nums[left++];<span class="comment">//记得删除left指针指向的元素</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="type">return</span> <span class="variable">res</span> <span class="operator">=</span>= Integer.MAX_VALUE ? <span class="number">0</span> : res;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">minSubArrayLen</span><span class="params">(<span class="type">int</span> target, <span class="type">int</span>[] nums)</span> &#123;</span><br><span class="line">        <span class="type">int</span> <span class="variable">left</span> <span class="operator">=</span> <span class="number">0</span>, sum = <span class="number">0</span>, res = Integer.MAX_VALUE;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> <span class="variable">right</span> <span class="operator">=</span> <span class="number">0</span>;right &lt; nums.length;right++)&#123;</span><br><span class="line">            sum += nums[right];<span class="comment">//每次移动right指针都要将其所指元素添加进sum中</span></span><br><span class="line">            <span class="keyword">while</span>(sum &gt;= target)&#123;<span class="comment">//一旦总和大于目标值，就开始记录当前最短数组，并右移left指针</span></span><br><span class="line">                res = Math.min(res, right - left + <span class="number">1</span>)</span><br><span class="line">                sum -= nums[left++];<span class="comment">//记得删除left指针指向的元素</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="type">return</span> <span class="variable">res</span> <span class="operator">=</span>= Integer.MAX_VALUE ? <span class="number">0</span> : res;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>本题一定要看清楚题意，是<strong>连续子数组！</strong></p>
 <p>这样我们才可以<strong>利用双指针来模拟滑动窗口</strong>，左指针就是滑动窗口的左边界，右指针对应着右边界。</p>
@@ -952,6 +1005,10 @@
       <ul>
         
           <li>
+            <a href="/2022/05/13/%E5%93%88%E5%B8%8C%E7%AE%97%E6%B3%95%E9%A2%98%E7%9B%AE/">哈希算法题目</a>
+          </li>
+        
+          <li>
             <a href="/2022/05/11/%E4%B8%AA%E4%BA%BA%E5%AF%B9JVM%E7%9A%84%E7%90%86%E8%A7%A3/">个人对JVM的理解</a>
           </li>
         
@@ -965,10 +1022,6 @@
         
           <li>
             <a href="/2022/05/11/leetcode%E5%88%B7%E9%A2%98%E7%AC%94%E8%AE%B0/">动态规划之序列问题</a>
-          </li>
-        
-          <li>
-            <a href="/2022/05/11/MySQL%E4%B8%AA%E4%BA%BA%E6%80%BB%E7%BB%93/">MySQL个人总结</a>
           </li>
         
       </ul>
