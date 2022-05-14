@@ -13,10 +13,12 @@
 <meta property="og:site_name" content="Reex">
 <meta property="og:description" content="路由器相关知识 MAC头部的作用就是将包传送到路由器，其中的接收方MAC地址，就是路由器端口的MAC地址。所以，当包到达了路由器，MAC头部任务就完成了，MAC头部即被丢弃。 在网络包的传输过程中，源IP和目标IP始终不变，而为了两两设备在以太网中传输，必须实时变化MAC地址。 在发送数据包的时候，如果目标主机不是本地局域网内的主机，那MAC地址填入的是路由器地址，通过路由器的层层转发，一直转发到">
 <meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://cdn.xiaolincoding.com/gh/xiaolincoder/ImageHost/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/HTTP/19-HTTPS%E4%B8%8EHTTP.png">
 <meta property="article:published_time" content="2022-05-13T06:38:33.000Z">
-<meta property="article:modified_time" content="2022-05-13T07:14:33.092Z">
+<meta property="article:modified_time" content="2022-05-14T07:28:19.435Z">
 <meta property="article:author" content="John Doe">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.xiaolincoding.com/gh/xiaolincoder/ImageHost/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/HTTP/19-HTTPS%E4%B8%8EHTTP.png">
   
     <link rel="alternate" href="/atom.xml" title="Reex" type="application/atom+xml">
   
@@ -100,6 +102,12 @@
 <li>在网络包的传输过程中，<strong>源IP和目标IP始终不变</strong>，而为了两两设备在以太网中传输，必须<strong>实时变化MAC地址</strong>。</li>
 <li>在发送数据包的时候，<strong>如果目标主机不是本地局域网内的主机，那MAC地址填入的是路由器地址</strong>，通过路由器的层层转发，<strong>一直转发到目标主机的路由器</strong>，发现IP地址是自己局域网内的主机，就会通过ARP请求<strong>获取目标主机的MAC地址</strong>，进而转发到这个服务器主机。</li>
 </ol>
+<h2 id="GET和POST区别？"><a href="#GET和POST区别？" class="headerlink" title="GET和POST区别？"></a>GET和POST区别？</h2><p>GET请求的参数一般<strong>写在URL中</strong>，URL规定<strong>只能支持ASCII</strong>，虽然HTTP协议并没有限制URL长度，但是<strong>浏览器自身会对URL长度有限制</strong>。</p>
+<p>POST请求的参数一般<strong>放在请求报文（body）中</strong>，body参数<strong>没有格式限制</strong>，只要浏览器和服务器都可接受即可，而且body参数的<strong>长度没有限制</strong>。</p>
+<h2 id="HTTPS和HTTP"><a href="#HTTPS和HTTP" class="headerlink" title="HTTPS和HTTP"></a>HTTPS和HTTP</h2><p>前者就是在HTTP的基础上，在TCP和HTTP之间添加了一层SSL&#x2F;TLS安全协议，使得报文能够加密传输。</p>
+<p>所以HTTPS不仅要进行TCP的三次握手，还要接着进行SSL&#x2F;TLS握手判断，才可以加密传输报文。</p>
+<img src="https://cdn.xiaolincoding.com/gh/xiaolincoder/ImageHost/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/HTTP/19-HTTPS%E4%B8%8EHTTP.png" alt="HTTP 与 HTTPS 网络层"  />
+
 
       
     </div>
@@ -164,6 +172,10 @@
       <ul>
         
           <li>
+            <a href="/2022/05/14/%E6%A0%88%E4%B8%8E%E9%98%9F%E5%88%97%E9%A2%98%E8%A7%A3/">栈与队列题解</a>
+          </li>
+        
+          <li>
             <a href="/2022/05/13/%E6%88%91%E7%9A%84%E9%A1%B9%E7%9B%AE/">我的项目</a>
           </li>
         
@@ -177,10 +189,6 @@
         
           <li>
             <a href="/2022/05/13/%E5%93%88%E5%B8%8C%E7%AE%97%E6%B3%95%E9%A2%98%E7%9B%AE/">哈希算法题目</a>
-          </li>
-        
-          <li>
-            <a href="/2022/05/11/%E4%B8%AA%E4%BA%BA%E5%AF%B9JVM%E7%9A%84%E7%90%86%E8%A7%A3/">个人对JVM的理解</a>
           </li>
         
       </ul>

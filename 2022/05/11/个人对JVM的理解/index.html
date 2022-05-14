@@ -18,7 +18,7 @@
 <meta property="og:image" content="d:/Picgo/img/image-20220512194439270.png">
 <meta property="og:image" content="d:/Picgo/img/image-20220512194934161.png">
 <meta property="article:published_time" content="2022-05-11T12:04:43.000Z">
-<meta property="article:modified_time" content="2022-05-13T12:10:49.318Z">
+<meta property="article:modified_time" content="2022-05-14T05:51:46.169Z">
 <meta property="article:author" content="John Doe">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="d:/Picgo/img/image-20220511200810603.png">
@@ -117,9 +117,9 @@
 <p>2）元数据验证：对字节码进行<strong>语义分析</strong>，比如某个类有无父类，是否继承了不允许继承的类等一些违规的语义</p>
 <p>3）字节码验证：确定程序语义的<strong>合法性、逻辑性</strong>，较复杂，具体见《深入理解JVM》P270</p>
 <p>4）符号引用验证：这个验证要在后面的解析阶段发生，通俗来讲，就是<strong>检验该类是否缺少或者被禁止访问它依赖的某些资源</strong>。</p>
-<h3 id="3-准备"><a href="#3-准备" class="headerlink" title="3.准备"></a>3.准备</h3><p>本阶段开始正式为类中定义的<strong>静态变量分配内存</strong>并<strong>设置初始零值</strong>。注意：JDK 7之前，这部分变量分配在方法区中，而JDK 8之后，则分配到堆中。以下两点需要注意：</p>
+<h3 id="3-准备"><a href="#3-准备" class="headerlink" title="3.准备"></a>3.准备</h3><p>本阶段开始正式为类中定义的<strong>静态变量分配内存</strong>并<strong>设置初始零值</strong>。注意：JDK 7之前，这部分变量分配在方法区中，而<strong>JDK 8之后，则分配到堆中</strong>。以下两点需要注意：</p>
 <p>1）这里分配内存和设置零值都<strong>仅限于类变量</strong>（静态变量），实例变量将在<strong>对象实例化时随着对象一起分配到Java堆中</strong>。</p>
-<p>2）注意是设置零值，<strong>通常情况不是初始化</strong>。</p>
+<p>2）注意是设置零值，<strong>一般情况不是初始化</strong>。</p>
 <p>3）特殊情况就是<strong>static final定义的变量</strong>，Javac<strong>编译时</strong>就已经为该变量生成ConstantValue属性（可以理解为<strong>设置初始零值</strong>），类加载的准备阶段，就<strong>直接为其赋值</strong>了。</p>
 <h3 id="4-解析"><a href="#4-解析" class="headerlink" title="4.解析"></a>4.解析</h3><p>将字节码中常量池内的符号引用替换为直接引用。</p>
 <p>1）符号引用：是任何形式的字面量，只要使用时能无歧义的“精准定位”即可。</p>
@@ -241,6 +241,10 @@
       <ul>
         
           <li>
+            <a href="/2022/05/14/%E6%A0%88%E4%B8%8E%E9%98%9F%E5%88%97%E9%A2%98%E8%A7%A3/">栈与队列题解</a>
+          </li>
+        
+          <li>
             <a href="/2022/05/13/%E6%88%91%E7%9A%84%E9%A1%B9%E7%9B%AE/">我的项目</a>
           </li>
         
@@ -254,10 +258,6 @@
         
           <li>
             <a href="/2022/05/13/%E5%93%88%E5%B8%8C%E7%AE%97%E6%B3%95%E9%A2%98%E7%9B%AE/">哈希算法题目</a>
-          </li>
-        
-          <li>
-            <a href="/2022/05/11/%E4%B8%AA%E4%BA%BA%E5%AF%B9JVM%E7%9A%84%E7%90%86%E8%A7%A3/">个人对JVM的理解</a>
           </li>
         
       </ul>

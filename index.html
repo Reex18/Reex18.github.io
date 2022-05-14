@@ -71,6 +71,92 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-栈与队列题解" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2022/05/14/%E6%A0%88%E4%B8%8E%E9%98%9F%E5%88%97%E9%A2%98%E8%A7%A3/" class="article-date">
+  <time class="dt-published" datetime="2022-05-14T08:58:47.000Z" itemprop="datePublished">2022-05-14</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2022/05/14/%E6%A0%88%E4%B8%8E%E9%98%9F%E5%88%97%E9%A2%98%E8%A7%A3/">栈与队列题解</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="leetcode-20-有效的括号"><a href="#leetcode-20-有效的括号" class="headerlink" title="leetcode 20.有效的括号"></a>leetcode 20.有效的括号</h1><p><u><strong>题目</strong>：给定一个只包括 ‘(‘，’)’，’{‘，’}’，’[‘，’]’ 的字符串 s ，判断字符串是否有效。</u></p>
+<p><u>有效字符串需满足：</u></p>
+<p><u>左括号必须用相同类型的右括号闭合。</u><br><u>左括号必须以正确的顺序闭合。</u></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">输入：s = &quot;()[]&#123;&#125;&quot;</span><br><span class="line">输出：true</span><br><span class="line"></span><br><span class="line">输入：s = &quot;([)]&quot;</span><br><span class="line">输出：false</span><br></pre></td></tr></table></figure>
+
+<p>代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">isValid</span><span class="params">(String s)</span> &#123;</span><br><span class="line">        Deque&lt;Character&gt; deque = <span class="keyword">new</span> <span class="title class_">LinkedList</span>&lt;&gt;();</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>;i &lt; s.length();i++)&#123;</span><br><span class="line">            <span class="type">char</span> <span class="variable">ch</span> <span class="operator">=</span> s.charAt(i);</span><br><span class="line">            <span class="keyword">if</span>(ch == <span class="string">&#x27;&#123;&#x27;</span>)&#123;</span><br><span class="line">                deque.push(<span class="string">&#x27;&#125;&#x27;</span>);</span><br><span class="line">            &#125;<span class="keyword">else</span> <span class="keyword">if</span>(ch == <span class="string">&#x27;(&#x27;</span>)&#123;</span><br><span class="line">                deque.push(<span class="string">&#x27;)&#x27;</span>);</span><br><span class="line">            &#125;<span class="keyword">else</span> <span class="keyword">if</span>(ch == <span class="string">&#x27;[&#x27;</span>)&#123;</span><br><span class="line">                deque.push(<span class="string">&#x27;]&#x27;</span>);</span><br><span class="line">            &#125;<span class="keyword">else</span> <span class="keyword">if</span>(deque.isEmpty() || deque.peek() != ch)&#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">            &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">                deque.pop();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> deque.isEmpty();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这道题是典型的用栈来解决的问题，因为我们需要左右括号两两出现，而且顺序不能打乱，栈的入栈出栈操作正好可以满足该要求。</p>
+<p>如果我们遍历到当前位置是左括号，那么就<strong>向栈中压入相对应的右括号</strong>；</p>
+<p>如果<strong>当前栈为空，或者当前的括号和栈顶括号不相等</strong>，那我们就直接返回false。因为这个时候我们还要继续判断ch呢，走到这一步肯定不是左括号了，那必然是右括号，<strong>如果这个时候栈没有元素了，那就说明右括号冗余了</strong>。</p>
+<p>上面都不满足，说明现在<strong>栈不是空栈</strong>，而且当前的ch是右括号，**而且！ch &#x3D;&#x3D; deque.peek()**，那么我们自然可以将栈顶元素弹出栈了。</p>
+<h1 id="leetcode-1047-删除字符串中的所有相邻重复项"><a href="#leetcode-1047-删除字符串中的所有相邻重复项" class="headerlink" title="leetcode 1047.删除字符串中的所有相邻重复项"></a>leetcode 1047.删除字符串中的所有相邻重复项</h1><p><u><strong>题目</strong>：给出由小写字母组成的字符串 S，重复项删除操作会选择两个相邻且相同的字母，并删除它们。</u></p>
+<p><u>在 S 上反复执行重复项删除操作，直到无法继续删除。</u></p>
+<p><u>在完成所有重复项删除操作后返回最终的字符串。答案保证唯一。</u></p>
+<p><u>示例：</u></p>
+<p><u>输入：”abbaca”</u><br><u>输出：”ca”</u></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//方法一：用栈</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">removeDuplicates</span><span class="params">(String s)</span> &#123;</span><br><span class="line">        Deque&lt;Character&gt; deque = <span class="keyword">new</span> <span class="title class_">ArrayDeque</span>&lt;&gt;();</span><br><span class="line">        deque.push(s.charAt(<span class="number">0</span>));</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">1</span>;i &lt; s.length();i++)&#123;</span><br><span class="line">            <span class="type">char</span> <span class="variable">ch</span> <span class="operator">=</span> s.charAt(i);</span><br><span class="line">            <span class="keyword">if</span>(deque.isEmpty() || deque.peek() != ch)&#123;</span><br><span class="line">                deque.push(ch);</span><br><span class="line">            &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">                deque.pop();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="type">String</span> <span class="variable">str</span> <span class="operator">=</span> <span class="string">&quot;&quot;</span>;</span><br><span class="line">        <span class="keyword">while</span>(!deque.isEmpty())&#123;</span><br><span class="line">            str = deque.pop() + str;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> str;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//用StringBuilder模拟栈</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">removeDuplicates</span><span class="params">(String s)</span> &#123;</span><br><span class="line">        <span class="type">StringBuilder</span> <span class="variable">sb</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">StringBuilder</span>();</span><br><span class="line">        sb.append(s.charAt(<span class="number">0</span>));</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">1</span>;i &lt; s.length();i++)&#123;</span><br><span class="line">            <span class="keyword">if</span>(sb.length() == <span class="number">0</span> || s.charAt(i) != sb.charAt(sb.length() - <span class="number">1</span>))&#123;</span><br><span class="line">                sb.append(s.charAt(i));</span><br><span class="line">            &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">                sb.deleteCharAt(sb.length() - <span class="number">1</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> sb.toString();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>方法一我们直接用栈来解决这道题：</p>
+<p>如果<strong>当前栈为空，或者栈顶元素和当前元素不相等</strong>，那么我们就把该元素压栈；</p>
+<p>如果当前栈不为空且栈顶元素等于当前元素，我们<strong>不仅不压入当前元素，还要弹出这个相同的元素</strong>，即把栈顶元素弹出栈。</p>
+<p>最后不要忘了返回值是String，<strong>记得写对str和deque.pop()相加的顺序</strong>，str +&#x3D; deque.pop()和str &#x3D; deque.pop() + str是相反的结果。</p>
+<p>方法二我们是用StringBuilder来模拟栈：</p>
+<p>思路与法一相似，注意sb要删除最后一位，且比较过程中，一定要拿s的当前值与sb的最后一位比，<strong>这里容易写成s自身比较的判断</strong>。</p>
+<p>最后直接返回字符串，不需要再次遍历，所以推荐方法二。</p>
+<h1 id="leetcode-150-逆波兰表达式求值"><a href="#leetcode-150-逆波兰表达式求值" class="headerlink" title="leetcode 150.逆波兰表达式求值"></a>leetcode 150.逆波兰表达式求值</h1><p><u><strong>题目</strong>：根据逆波兰表示法，求表达式的值。</u></p>
+<p><u>有效的算符包括 +、-、*、&#x2F; 。每个运算对象可以是整数，也可以是另一个逆波兰表达式。</u></p>
+<p><u>注意 两个整数之间的除法只保留整数部分。</u></p>
+<p><u>可以保证给定的逆波兰表达式总是有效的。换句话说，表达式总会得出有效数值且不存在除数为 0 的情况。</u></p>
+<p><u>输入：tokens &#x3D; [“2”,”1”,”+”,”3”,”*”]</u><br><u>输出：9</u><br><u>解释：该算式转化为常见的中缀算术表达式为：((2 + 1) * 3) &#x3D; 9</u></p>
+<p><u>输入：tokens &#x3D; [“4”,”13”,”5”,”&#x2F;“,”+”]</u><br><u>输出：6</u><br><u>解释：该算式转化为常见的中缀算术表达式为：(4 + (13 &#x2F; 5)) &#x3D; 6</u></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">evalRPN</span><span class="params">(String[] tokens)</span> &#123;</span><br><span class="line">        Deque&lt;Integer&gt; deque = <span class="keyword">new</span> <span class="title class_">ArrayDeque</span>&lt;&gt;();</span><br><span class="line">        <span class="type">int</span> <span class="variable">ans</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span>(String s : tokens)&#123;</span><br><span class="line">            <span class="keyword">if</span>(<span class="string">&quot;+&quot;</span>.equals(s))&#123;</span><br><span class="line">                deque.push(deque.pop() + deque.pop());</span><br><span class="line">            &#125;<span class="keyword">else</span> <span class="keyword">if</span>(<span class="string">&quot;-&quot;</span>.equals(s))&#123;</span><br><span class="line">                deque.push(-deque.pop() + deque.pop());</span><br><span class="line">            &#125;<span class="keyword">else</span> <span class="keyword">if</span>(<span class="string">&quot;*&quot;</span>.equals(s))&#123;</span><br><span class="line">                deque.push(deque.pop() * deque.pop());</span><br><span class="line">            &#125;<span class="keyword">else</span> <span class="keyword">if</span>(<span class="string">&quot;/&quot;</span>.equals(s))&#123;</span><br><span class="line">                <span class="type">int</span> <span class="variable">temp</span> <span class="operator">=</span> deque.pop();</span><br><span class="line">                deque.push(deque.pop() / temp);</span><br><span class="line">            &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">                deque.push(Integer.valueOf(s));</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> deque.pop();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>本题需要注意的易错点，我们很容易去定义一个ans去记录最后的结果值，但是我们要注意：数组是String类型的数组，所以我们必然要在每次计算之前，将字符串数组中的每个字符串转换成数字，也就是说我们可以<strong>每次压栈的时候就将压入栈的字符串转换成数字</strong>，这时最关键的一步。</p>
+<p>字符串转换成数字之后，我们会发现：每次遍历到运算符的时候，我们要将该运算符前面的栈顶元素和次栈顶元素进行相应的运算操作，但是这个结果存在哪呢？存给专门的变量ans？不然，我们<strong>后面还需要对这个运算结果进一步运算</strong>啊！所以一定要将运算结果继续压栈操作，这时另一个容易犯错的位置。</p>
+<p>上面两个问题都避免了，那么正确的答案很容易写出来了，<strong>最后栈中一定只剩一个元素了</strong>，就是最终答案，我们把它弹出栈即可。</p>
+<h1 id="leetcode-347-前K个高频元素"><a href="#leetcode-347-前K个高频元素" class="headerlink" title="leetcode 347.前K个高频元素"></a>leetcode 347.前K个高频元素</h1><p>给你一个整数数组 <code>nums</code> 和一个整数 <code>k</code> ，请你返回其中出现频率前 <code>k</code> 高的元素。你可以按 <strong>任意顺序</strong> 返回答案。</p>
+<p>输入: nums &#x3D; [1,1,1,2,2,3], k &#x3D; 2<br>输出: [1,2]</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span>[] topKFrequent(<span class="type">int</span>[] nums, <span class="type">int</span> k) &#123;</span><br><span class="line">        Map&lt;Integer, Integer&gt; map = <span class="keyword">new</span> <span class="title class_">HashMap</span>&lt;&gt;();</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> num : nums)&#123;</span><br><span class="line">            map.put(num, map.getOrDefault(num, <span class="number">0</span>) + <span class="number">1</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        Set&lt;Map.Entry&lt;Integer, Integer&gt;&gt; entries= map.entrySet();</span><br><span class="line">        PriorityQueue&lt;Map.Entry&lt;Integer, Integer&gt;&gt; queue = <span class="keyword">new</span> <span class="title class_">PriorityQueue</span>&lt;&gt;((o1, o2) -&gt; o1.getValue() - o2.getValue());</span><br><span class="line">        <span class="keyword">for</span>(Map.Entry&lt;Integer, Integer&gt; entry : entries)&#123;</span><br><span class="line">            queue.offer(entry);</span><br><span class="line">            <span class="keyword">if</span>(queue.size() &gt; k)&#123;</span><br><span class="line">                queue.poll();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="type">int</span>[] res = <span class="keyword">new</span> <span class="title class_">int</span>[k];</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>;i &lt; k;i++)&#123;</span><br><span class="line">            res[i] = queue.poll().getKey();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> res;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>本题<strong>采用优先队列</strong>的数据结构，这里的优先级我们定义的是每个数字的出现频率，<strong>出现频率越小，优先级越高</strong>，出现频率最小的先出队列。至于原因，往下看就明白了。</p>
+<p>既然谈到出现频率，又是老生常谈的HashMap了，key存入每个数字，value是他们对应的出现频率；</p>
+<p>为了方便遍历map中的每个key和其value值，我们选用Map的一个内部接口，Map.Entry&lt;Integer, Integer&gt;，<strong>其代表每个key-value键值对组成的一个个实体</strong>，因为有多个键值对，所以用Set来存储，这里泛型要写准确，Set的泛型是Map.Entry&lt;Integer, Integer&gt;，<strong>这个步骤容易出错！！！</strong></p>
+<p>接下来定义优先级队列，因为我们要根据每个key-value键值对中的value进行从小到大的排列，所以用Lamada表达式为o1.getValue() - o2.getValue()，<strong>o1和o2分别对应着entry实体（key-value键值对）</strong>。</p>
+<p>接下来开始一个个入栈排队，进入队列的是每个entry实体的key还是value？<strong>是两者组成的entry入栈！！！</strong>因为，我们排队的时候虽然只用到value，但是<strong>后面真正返回的值是value较大的前几个key</strong>，所以我们的优先级队列要存入整个实体才可以。</p>
+<p>如果队列中实体的个数大于k个，那么我们就<strong>让队头出队</strong>即可，这个对头是当前队列value最小的key。</p>
+<p>最后我们定义一个长度为k的数组，存储队列中的<strong>k个entry实体的key值</strong>即可。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2022/05/14/%E6%A0%88%E4%B8%8E%E9%98%9F%E5%88%97%E9%A2%98%E8%A7%A3/" data-id="cl35vggaa0000swv66rwn2pde" data-title="栈与队列题解" class="article-share-link">Share</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-我的项目" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
     <a href="/2022/05/13/%E6%88%91%E7%9A%84%E9%A1%B9%E7%9B%AE/" class="article-date">
@@ -162,6 +248,12 @@
 <li>在网络包的传输过程中，<strong>源IP和目标IP始终不变</strong>，而为了两两设备在以太网中传输，必须<strong>实时变化MAC地址</strong>。</li>
 <li>在发送数据包的时候，<strong>如果目标主机不是本地局域网内的主机，那MAC地址填入的是路由器地址</strong>，通过路由器的层层转发，<strong>一直转发到目标主机的路由器</strong>，发现IP地址是自己局域网内的主机，就会通过ARP请求<strong>获取目标主机的MAC地址</strong>，进而转发到这个服务器主机。</li>
 </ol>
+<h2 id="GET和POST区别？"><a href="#GET和POST区别？" class="headerlink" title="GET和POST区别？"></a>GET和POST区别？</h2><p>GET请求的参数一般<strong>写在URL中</strong>，URL规定<strong>只能支持ASCII</strong>，虽然HTTP协议并没有限制URL长度，但是<strong>浏览器自身会对URL长度有限制</strong>。</p>
+<p>POST请求的参数一般<strong>放在请求报文（body）中</strong>，body参数<strong>没有格式限制</strong>，只要浏览器和服务器都可接受即可，而且body参数的<strong>长度没有限制</strong>。</p>
+<h2 id="HTTPS和HTTP"><a href="#HTTPS和HTTP" class="headerlink" title="HTTPS和HTTP"></a>HTTPS和HTTP</h2><p>前者就是在HTTP的基础上，在TCP和HTTP之间添加了一层SSL&#x2F;TLS安全协议，使得报文能够加密传输。</p>
+<p>所以HTTPS不仅要进行TCP的三次握手，还要接着进行SSL&#x2F;TLS握手判断，才可以加密传输报文。</p>
+<img src="https://cdn.xiaolincoding.com/gh/xiaolincoder/ImageHost/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/HTTP/19-HTTPS%E4%B8%8EHTTP.png" alt="HTTP 与 HTTPS 网络层"  />
+
 
       
     </div>
@@ -343,9 +435,9 @@
 <p>2）元数据验证：对字节码进行<strong>语义分析</strong>，比如某个类有无父类，是否继承了不允许继承的类等一些违规的语义</p>
 <p>3）字节码验证：确定程序语义的<strong>合法性、逻辑性</strong>，较复杂，具体见《深入理解JVM》P270</p>
 <p>4）符号引用验证：这个验证要在后面的解析阶段发生，通俗来讲，就是<strong>检验该类是否缺少或者被禁止访问它依赖的某些资源</strong>。</p>
-<h3 id="3-准备"><a href="#3-准备" class="headerlink" title="3.准备"></a>3.准备</h3><p>本阶段开始正式为类中定义的<strong>静态变量分配内存</strong>并<strong>设置初始零值</strong>。注意：JDK 7之前，这部分变量分配在方法区中，而JDK 8之后，则分配到堆中。以下两点需要注意：</p>
+<h3 id="3-准备"><a href="#3-准备" class="headerlink" title="3.准备"></a>3.准备</h3><p>本阶段开始正式为类中定义的<strong>静态变量分配内存</strong>并<strong>设置初始零值</strong>。注意：JDK 7之前，这部分变量分配在方法区中，而<strong>JDK 8之后，则分配到堆中</strong>。以下两点需要注意：</p>
 <p>1）这里分配内存和设置零值都<strong>仅限于类变量</strong>（静态变量），实例变量将在<strong>对象实例化时随着对象一起分配到Java堆中</strong>。</p>
-<p>2）注意是设置零值，<strong>通常情况不是初始化</strong>。</p>
+<p>2）注意是设置零值，<strong>一般情况不是初始化</strong>。</p>
 <p>3）特殊情况就是<strong>static final定义的变量</strong>，Javac<strong>编译时</strong>就已经为该变量生成ConstantValue属性（可以理解为<strong>设置初始零值</strong>），类加载的准备阶段，就<strong>直接为其赋值</strong>了。</p>
 <h3 id="4-解析"><a href="#4-解析" class="headerlink" title="4.解析"></a>4.解析</h3><p>将字节码中常量池内的符号引用替换为直接引用。</p>
 <p>1）符号引用：是任何形式的字面量，只要使用时能无歧义的“精准定位”即可。</p>
@@ -1202,6 +1294,10 @@
       <ul>
         
           <li>
+            <a href="/2022/05/14/%E6%A0%88%E4%B8%8E%E9%98%9F%E5%88%97%E9%A2%98%E8%A7%A3/">栈与队列题解</a>
+          </li>
+        
+          <li>
             <a href="/2022/05/13/%E6%88%91%E7%9A%84%E9%A1%B9%E7%9B%AE/">我的项目</a>
           </li>
         
@@ -1215,10 +1311,6 @@
         
           <li>
             <a href="/2022/05/13/%E5%93%88%E5%B8%8C%E7%AE%97%E6%B3%95%E9%A2%98%E7%9B%AE/">哈希算法题目</a>
-          </li>
-        
-          <li>
-            <a href="/2022/05/11/%E4%B8%AA%E4%BA%BA%E5%AF%B9JVM%E7%9A%84%E7%90%86%E8%A7%A3/">个人对JVM的理解</a>
           </li>
         
       </ul>
