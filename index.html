@@ -71,6 +71,61 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-Java基础知识点" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2022/05/15/Java%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E7%82%B9/" class="article-date">
+  <time class="dt-published" datetime="2022-05-15T09:03:41.000Z" itemprop="datePublished">2022-05-15</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2022/05/15/Java%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E7%82%B9/">Java基础知识点</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h2 id="为什么要使用集合？"><a href="#为什么要使用集合？" class="headerlink" title="为什么要使用集合？"></a>为什么要使用集合？</h2><p>数组一旦声明了，长度就不可变；</p>
+<p>数组存储数据类型单一，而且有序且可重复的，特点也单一；</p>
+<p>集合提高了数据存储的灵活性，不仅可以不同类型、不同数量，还可以控制元素重复，并且保存具有映射关系的数据。</p>
+<h2 id="ArrayList和LinkedList区别与联系？"><a href="#ArrayList和LinkedList区别与联系？" class="headerlink" title="ArrayList和LinkedList区别与联系？"></a>ArrayList和LinkedList区别与联系？</h2><p>A和L都实现了List接口，他们都是线程不安全的；</p>
+<p>A底层使用的是Object[]数组，L底层使用的是双向链表；</p>
+<p>A在数组中的某个位置删除，插入元素都需要让整个数组跟着移动，L虽然不会移动，但是需要先移动到那个位置才能进行插入或删除操作，所以两者复杂度都较高，L只有头和尾插入或删除时，时间复杂度时o(1)。</p>
+<p>A支持快速随机访问，因为数组下标。而L不行。</p>
+<p>A占内存主要是因为尾部需要预留空间，L空间花费更多体现在每个结点要记录的内容。</p>
+<p>A好，用A，能用L的地方都能用A。</p>
+<h2 id="comparable和comparator区别？"><a href="#comparable和comparator区别？" class="headerlink" title="comparable和comparator区别？"></a>comparable和comparator区别？</h2><p>comparable接口是java.lang包下的，接口有comareTo(Object obj)方法</p>
+<p>comparator接口时java.util工具包下的，接口中有compare(Object obj1, Object obj2)方法</p>
+<h2 id="HashMap的底层实现"><a href="#HashMap的底层实现" class="headerlink" title="HashMap的底层实现"></a>HashMap的底层实现</h2><p>JDK 1.7之前，底层是数组+链表的形式存储数据的。每次存储都对数据执行扰动函数，得到hash值，如果哈希碰撞，就equals比较，若相等则覆盖，如不等则拉链法，即用链表存储。</p>
+<p>JDK 1.8之后，底层是数组+链表+红黑树。还是用扰动函数，但是扰动函数有所更新，减少了哈希碰撞几率，但是如果碰撞还是equals比较，若相等则覆盖，若不等则拉链法，当链表长度大于阈值（默认8），则检查当前数组长度是否大于64，小于64则扩容数组（这里需要rehash），大于64则将超过阈值的链表转化为红黑树。</p>
+<h2 id="HashMap长度为什么是2的幂次方？"><a href="#HashMap长度为什么是2的幂次方？" class="headerlink" title="HashMap长度为什么是2的幂次方？"></a>HashMap长度为什么是2的幂次方？</h2><p><strong>这个还没搞懂</strong></p>
+<h2 id="ConcurrentHashMap和Hashtable的区别？"><a href="#ConcurrentHashMap和Hashtable的区别？" class="headerlink" title="ConcurrentHashMap和Hashtable的区别？"></a>ConcurrentHashMap和Hashtable的区别？</h2><p>先说Hashtable，全表锁，效率很低</p>
+<p>对于JDK 1.7的cchashmap，用segment即分段锁，只要多个线程没有哈希碰撞到同一个段就没事。</p>
+<p>JDK 1.8以后的cchashmap，只锁当前的链表或者红黑树的首节点，只要hash冲突不到数组的同一个节点上，就没事。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2022/05/15/Java%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E7%82%B9/" data-id="cl39jz0gd00001cv61jgv7ohf" data-title="Java基础知识点" class="article-share-link">Share</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-栈与队列题解" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
     <a href="/2022/05/14/%E6%A0%88%E4%B8%8E%E9%98%9F%E5%88%97%E9%A2%98%E8%A7%A3/" class="article-date">
@@ -182,6 +237,37 @@
 
 <p>其实这道题虽说是循环数组，但其实就是让每个元素都与数组中所有元素进行比较。与自己比也没事，因为我们只记录有没有比自己大的元素。</p>
 <p>题解给的是遍历两个长度的nums数组，那自然就会遍历到包括自己的每个元素，而且ans会出现赋值之后再被重复赋值的情况。</p>
+<h2 id="leetcode-42-接雨水"><a href="#leetcode-42-接雨水" class="headerlink" title="leetcode 42.接雨水"></a>leetcode 42.接雨水</h2><p><u><strong>题目</strong>：给定 <code>n</code> 个非负整数表示每个宽度为 <code>1</code> 的柱子的高度图，计算按此排列的柱子，下雨之后能接多少雨水。</u></p>
+<p><img src="https://assets.leetcode-cn.com/aliyun-lc-upload/uploads/2018/10/22/rainwatertrap.png" alt="img"></p>
+<p><u>输入：height &#x3D; [0,1,0,2,1,0,1,3,2,1,2,1]</u><br><u>输出：6</u><br><u>解释：上面是由数组 [0,1,0,2,1,0,1,3,2,1,2,1] 表示的高度图，在这种情况下，可以接 6 个单位的雨水（蓝色部分表示雨水）</u></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//方法一：双指针法（官方题解，时间复杂度为o(n)）</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">trap</span><span class="params">(<span class="type">int</span>[] height)</span> &#123;</span><br><span class="line">        <span class="type">int</span> <span class="variable">ans</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line">        <span class="type">int</span> <span class="variable">left</span> <span class="operator">=</span> <span class="number">0</span>, right = height.length - <span class="number">1</span>;<span class="comment">//定义左右指针</span></span><br><span class="line">        <span class="type">int</span> <span class="variable">leftMax</span> <span class="operator">=</span> <span class="number">0</span>, rightMax = <span class="number">0</span>;<span class="comment">//定义左右最大值</span></span><br><span class="line">        <span class="keyword">while</span>(left &lt; right)&#123;</span><br><span class="line">            leftMax = Math.max(leftMax, height[left]);<span class="comment">//每次都记录当前的最大左边界</span></span><br><span class="line">            rightMax = Math.max(rightMax, height[right]);<span class="comment">//每次都记录当前的最大右边界</span></span><br><span class="line">            <span class="keyword">if</span>(leftMax &lt; rightMax)&#123;<span class="comment">//哪边的边界小，就算哪边，这里是重点！！！</span></span><br><span class="line">                ans += leftMax - height[left];</span><br><span class="line">                left++;</span><br><span class="line">            &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">                ans += rightMax - height[right];</span><br><span class="line">                right--;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>从双指针法，我们可以看出，首先我们要先定义一个从头和尾分别向中间走的两个指针，即left和right，然后我们在指针移动的过程中，随时记录左边最大值leftMAX和右边最大值rightMAX。</p>
+<p>我们要特别重视这个leftMAX和rightMax的变化过程：</p>
+<p>首先<strong>只有指针移动，这俩值才会发生变化</strong>；</p>
+<p>其次这俩值一定是<strong>他们各自指针经过的最大高度</strong>。</p>
+<p>接着进入判断语句：我们看到这个if语句肯定有疑惑，为什么左边最大值比右边最大值   小的时候，我们就要算左边的呢，算右边不行吗？还真不行！因为当前指针移动的位置下，左边最大值如果比当前右边最大值小，那么肯定<strong>现在左指针所处的位置右边有比自己高的</strong>，这是因为<strong>右边最大值随着右指针向左移动会逐渐变大</strong>。我们接雨水一定要取最短的那条边，就是木桶效应，要找自己的短板。</p>
+<p>同理当前指针移动的位置下，右边的最大值如果比左边最大值 小的话，那么当前右指针所处的位置，其左边肯定有比自己高的，最起码<strong>还有现在leftMax充数呢</strong>是不是？所以我们要取短边，计算短边的接雨水量。</p>
+<p>接下来的难点就是实际的雨水量的计算。左右指针的算法一样，我们以左指针为例，leftMax - height[left]是什么？我们知道leftMax是height[left]的最大值，所以就有两种情况，一种是leftMax就是当前左指针下的height[left]，那么<strong>自然这个差值就是0了</strong>，不影响我们计算，无非就是<strong>ans +&#x3D; 0</strong>嘛。还有一种情况，就是leftMax 与height[left]差着至少一个位置，这个时候算出来的差值，就是<strong>当前left指针位置（一个单位的）左右最小边界下积累的雨水量了</strong>。比如图示中间那部分雨水，按照双指针法就要分成三个纵向的计算，也就是<strong>左指针移动三次</strong>，<strong>右指针不动</strong>（因为右边最大值始终比左边最大值大），直到左指针与右指针碰撞，所以雨水积累完毕，跳出循环。</p>
+<p><img src="https://img-blog.csdnimg.cn/20210402091208445.png" alt="42.接雨水1"></p>
+<p>图中就是双指针解法每次计算的雨水量，全部都是按列计算的。</p>
+<p>接下来看看单调栈解法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//方法二：单调栈（Carl题解，时间复杂度为o(n)）</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">trap</span><span class="params">(<span class="type">int</span>[] height)</span> &#123;</span><br><span class="line">        <span class="type">int</span> <span class="variable">ans</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line">        Stack&lt;Integer&gt; stack = <span class="keyword">new</span> <span class="title class_">Stack</span>&lt;&gt;();</span><br><span class="line">        stack.push(<span class="number">0</span>);</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">1</span>;i &lt; height.length;i++)&#123;</span><br><span class="line">            <span class="keyword">if</span>(height[i] == height[stack.peek()])&#123;</span><br><span class="line">                stack.pop();</span><br><span class="line">                stack.push(i);</span><br><span class="line">            &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">                <span class="keyword">while</span>(!stack.isEmpty() &amp;&amp; height[i] &gt; height[stack.peek()])&#123;</span><br><span class="line">                    <span class="type">int</span> <span class="variable">mid</span> <span class="operator">=</span> stack.pop();</span><br><span class="line">                    <span class="keyword">if</span>(!stack.isEmpty())&#123;</span><br><span class="line">                        <span class="type">int</span> <span class="variable">left</span> <span class="operator">=</span> stack.peek();</span><br><span class="line">                        <span class="type">int</span> <span class="variable">h</span> <span class="operator">=</span> Math.min(height[i], height[left]) - height[mid];</span><br><span class="line">                        <span class="type">int</span> <span class="variable">len</span> <span class="operator">=</span> i - left - <span class="number">1</span>;</span><br><span class="line">                        ans += len * h;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">                stack.push(i);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这种解法else里边的while循环里的if语句是很重要的一个判断，为什么这么说呢，先看看第一个左边界凹槽的情况：</p>
+<p>左边界凹槽的高度是0，默认入栈的。下一个高度是1，比凹槽高，说明进入了while循环，也就是开始接雨水。那么我们就要思考，接雨水需要什么条件，凹槽左边和右边都要有比凹槽高的点，我们才可以接水。但是左边界凹槽的左边是没有点的，那么我们怎么避免这种情况的计算呢？</p>
+<p>代码给出的就是进入while循环后，<strong>先保存我们要计算的凹槽对应的位置，然后将该位置弹出</strong>。这是<u>非常重要且关键的一步</u>，这个凹槽是我们当前唯一要接水的位置，记录该位置是必然的操作，而将该位置弹出栈是为了后面对左边界的有无进行判断的前提。</p>
+<p>像左边界这种情况，由于前面的弹出栈操作，现在栈为空了，<strong>对于空栈，我们只能把height[i]入栈了</strong>。这就有效弹出了左边界凹槽，并且没有将其进行接雨水的操作。</p>
+<p>接下来就依次向后遍历，第二个注意的点就是相同高度的判断，对于相同高度，我们只需要保留最右边的位置即可，所以有一个先弹出前面的高度，再添加后面高度的操作。其实不弹出，直接添加也行。但是<strong>接雨水的时候过程是不一样的，最后计算结果一样</strong>。我们来具体看一下：</p>
+<p>我们把示例中的图，中间的那个凹槽填平，这样就有三个相同高度的平台，接下来按照左边那个高台向右走我们看看代码是怎么实现的：</p>
+<p>1）不弹出，直接一个个添加相同高度的平台：</p>
+<p>第一个平台比左边高台要低，添加第一个平台位置，第二个平台和第一个平台等高，继续添加，第三个和第二个等高，继续添加，直到右边很高的台子了，这个时候进入while循环，弹出第一个平台，结果发现我们在给h赋值的时候，h为0，<strong>这样就白白让ans计空了一次</strong>。还好，我们已经把这个平台弹出了，但是还有第二个平台，能怎么办，接着弹出，ans又白白计空了一次。第三次，弹出最左边的平台，这个时候h就是左高平台减去当前最左边的等高平台了，这样ans才有记录的意义。</p>
+<p>所以我们可以在进入while循环就避免这些无意义的ans计算</p>
+<p>2）一等高就弹出，只保留最右边的：</p>
+<p>也就是如上的代码，只保留最右边的平台的下标值，这样只有一个平台，一旦弹出，left就是左边高台的下标了。我们ans每次计算就都是有效的。这种方式在数据量特别大，且等高平台特别多的时候，是非常省时的。</p>
+<p>所以这俩操作计算过程不一样，但结果是一样的。原因在于：前者在做了<strong>很多无效的ans计算</strong>之后，最后用了<strong>最左边的等高平台</strong>进行了有效的ans计算；而后者直接利用了<strong>最右边的等高平台</strong>进行了有且<strong>仅有一次的有效ans计算</strong>。</p>
+<p><img src="https://img-blog.csdnimg.cn/20210223092629946.png" alt="42.接雨水2"></p>
+<p>可以看出单调栈解法是按行进行计算的，代码中的len &#x3D; Math.max(height[i], height[left]) - height[stack.peek()]就可以看出。</p>
 
       
     </div>
@@ -864,467 +950,12 @@
 
 
   
-    <article id="post-MySQL个人总结" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2022/05/11/MySQL%E4%B8%AA%E4%BA%BA%E6%80%BB%E7%BB%93/" class="article-date">
-  <time class="dt-published" datetime="2022-05-11T03:37:29.914Z" itemprop="datePublished">2022-05-11</time>
-</a>
+
+
+  <nav id="page-nav">
     
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2022/05/11/MySQL%E4%B8%AA%E4%BA%BA%E6%80%BB%E7%BB%93/">MySQL个人总结</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <h2 id="01讲-基础架构：一条SQL查询语句是如何执行的？"><a href="#01讲-基础架构：一条SQL查询语句是如何执行的？" class="headerlink" title="01讲 | 基础架构：一条SQL查询语句是如何执行的？"></a>01讲 | 基础架构：一条SQL查询语句是如何执行的？</h2><p>下图是MySQL的逻辑架构图</p>
-<img src="https://static001.geekbang.org/resource/image/0d/d9/0d2070e8f84c4801adbfa03bda1f98d9.png" alt="img" style="zoom:30%;" />
-
-<p>大体来说，MySQL可以分为Server层和存储引擎层两部分</p>
-<p>Server层包括：连接器、查询缓存、分析器、优化器和执行器等。而<strong>不同的存储引擎共用</strong>一个Server层。</p>
-<h3 id="1-连接器"><a href="#1-连接器" class="headerlink" title="1.连接器"></a>1.连接器</h3><p>连接器负责跟客户端建立连接、获取权限、维持和管理连接。</p>
-<h3 id="2-查询缓存"><a href="#2-查询缓存" class="headerlink" title="2.查询缓存"></a>2.查询缓存</h3><p>MySQL拿到一个查询请求之后，会先到查询缓存中看看，之前查没查过，如果查过，之前执行过的语句和结果，会以key-value的形式，直接缓存在内存中。不过，只要有<strong>对一个表的更新操作，这个表上的所有查询缓存都会被清空</strong>，所以命中率较低，在MySQL 8.0以后已经<strong>被淘汰</strong>了。</p>
-<h3 id="3-分析器（要做什么）"><a href="#3-分析器（要做什么）" class="headerlink" title="3.分析器（要做什么）"></a>3.分析器（要做什么）</h3><p>查询缓存未命中，则先走分析器，做<strong>“词法分析”</strong>，识别里面的字符串都是什么，代表什么。同时也会<strong>判断所查询的字段是否存在</strong>。然后做“<strong>语法分析</strong>”，判断这个SQL语句是否符合MySQL语法。</p>
-<h3 id="4-优化器（该怎么做）"><a href="#4-优化器（该怎么做）" class="headerlink" title="4.优化器（该怎么做）"></a>4.优化器（该怎么做）</h3><p>优化器是在表里面有多个索引的时候，决定使用哪个索引，或者多表关联(join)的时候，决定各表连接顺序。</p>
-<h3 id="5-执行器"><a href="#5-执行器" class="headerlink" title="5.执行器"></a>5.执行器</h3><p>要先判断当前用户<strong>是否对表有查询权限</strong>。为什么到这里才查权限，其实一共有三层查询权限的过程，引用极客的评论：“连接器是账号权限校验   分析器是库权限验证   执行器是语句在表中权限验证。”</p>
-<p>假如当前查询的字段<strong>没有索引</strong>，那么就是走全表扫描，具体操作<strong>不是存储引擎单独完成的，而是执行器每次调用InnoDB引擎的接口来走全表扫描的</strong>。</p>
-<p>如果<strong>有索引</strong>，那么执行器就<strong>直接调用InnoDB“满足条件的这一行”这个接口</strong>。</p>
-<p>我们在使用慢查询日志的时候看到的<strong>rows_examined</strong>的字段，表示<strong>语句执行过程中扫描了多少行</strong>，这个值其实就是<strong>执行器每次调用引擎</strong>获取数据行的时候<strong>累加</strong>的。<!--这里不确定执行器的这个累加值到底是怎么算的--></p>
-<p>不过需要注意的是，<strong>执行器调用一次，引擎可能扫描多行</strong>，所以引擎扫描行数和rows_examined<strong>并不完全相同</strong>。</p>
-<h2 id="16讲-“order-by”是怎么工作的？"><a href="#16讲-“order-by”是怎么工作的？" class="headerlink" title="16讲 | “order by”是怎么工作的？"></a>16讲 | “order by”是怎么工作的？</h2><h2 id="17讲-如何正确地显示随机消息"><a href="#17讲-如何正确地显示随机消息" class="headerlink" title="17讲 | 如何正确地显示随机消息"></a>17讲 | 如何正确地显示随机消息</h2><p>本文是沿着上一篇order by语句来进行展开的。本篇文章讲述一种排序的需求，即从大量数据（words）中随机查找若干个数据（word）。</p>
-<h3 id="1-order-by-rand"><a href="#1-order-by-rand" class="headerlink" title="1. order by rand()"></a>1. order by rand()</h3><p>如果用MySQL自带的随机语句order by rand()来进行查找，流程如下：</p>
-<p>1.先在<strong>内存中</strong>建立一个临时表，用来储存随机小数(R字段)以及word，此处需要扫描10000行</p>
-<p>2.然后将临时表的内容一个一个存储到sort_buffer中，这里储存的是随机小数R字段和位置信息。这又需要扫描10000行</p>
-<p>3.这时再将sort_buffer中的内容根据随机小数进行排序，这里不需要表操作，所以不需要扫描行数、</p>
-<p>4.最后从排列好的sort_buffer中根据位置信息选出前三个，然后去内存临时表中取出三个对应的word</p>
-<h3 id="2-随机排序方法"><a href="#2-随机排序方法" class="headerlink" title="2. 随机排序方法"></a>2. 随机排序方法</h3><p>然后为了优化上述方法，作者提出<strong>随机排序方法</strong>：</p>
-<p>1.取得words表的主键id的最大值和最小值</p>
-<p>2.用随机函数根据上面这俩值生成一个随机数X</p>
-<p>3.取不小于X的第一个id的行</p>
-<p>这种方法不严谨，因为X可能周围有可能含有好多空洞，也可能X本身的位置有空洞，所以每个数据被取到的概率是不一样的。</p>
-<p>然后上述方法<strong>进行优化</strong>：</p>
-<p>1.首先取得整个word表的行数，C</p>
-<p>2.对这个行数C进行rand()函数运算，然后取整，Y</p>
-<p>3.用limit Y,1取得一行（这里的意思是丢掉前Y个值，取第一个，如果是空洞则跳过）。</p>
-<p>这种算法总共需要扫描C+Y+1行，代价其实比优化前要高，但是保证了空洞不会被取到，且每个数据能被公平取到。如果随机取三个数，那么扫描的行数就是C+(Y1+1)+(Y2+1)+(Y3+1)</p>
-<p>本篇文章的核心思想就是：<strong>尽量将业务逻辑写在业务代码中，让数据库仅仅去做“读写数据”的事情</strong>。</p>
-<h2 id="18讲-为什么这些SQL语句逻辑相同，性能却差异巨大？"><a href="#18讲-为什么这些SQL语句逻辑相同，性能却差异巨大？" class="headerlink" title="18讲 | 为什么这些SQL语句逻辑相同，性能却差异巨大？"></a>18讲 | 为什么这些SQL语句逻辑相同，性能却差异巨大？</h2><p>本篇文章讲述的是条件查询时，一些SQL语句执行过慢的现象以及原因。</p>
-<h3 id="1-条件字段函数操作"><a href="#1-条件字段函数操作" class="headerlink" title="1.条件字段函数操作"></a>1.条件字段函数操作</h3><p>一个关于日期（datetime）的索引如下，这个索引的名字是t_modified，如果我们想查询索引中七月的数据，可以用函数month()，即where month(t_modified)&#x3D;7，但是这个时候，SQL语句执行的特别慢，原因就在于：我们对索引字段做了函数计算，人家字段明明是有年有月有日的字段，你只取其中的月来进行查询，必然需要month函数，但是MySQL规定<strong>对字段使用了函数计算，就不能使用索引了</strong>，这个时候就会<strong>执行全表扫描</strong>，执行速度非常慢。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select count(*) from tradelog where month(t_modified)=7;</span><br></pre></td></tr></table></figure>
-
-<p>为什么走全索引搜索？因为对索引字段进行函数操作，<strong>可能会对索引值的有序性造成破坏</strong>，所以优化器<strong>默认会放弃走树搜索功能</strong>。</p>
-<p>这里<strong>要注意</strong>：<strong>不是放弃了使用这个索引</strong>，而是放弃在这个索引上面走树搜索，转而执行全索引扫描。</p>
-<img src="https://static001.geekbang.org/resource/image/3e/86/3e30d9a5e67f711f5af2e2599e800286.png" alt="img" style="zoom: 50%;" />
-
-<p>优化方法：执行如下代码，即优化器可以判断在t_modified索引上走树搜索。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select count(*) from tradelog where</span><br><span class="line">    -&gt; (t_modified &gt;= &#x27;2016-7-1&#x27; and t_modified&lt;&#x27;2016-8-1&#x27;) or</span><br><span class="line">    -&gt; (t_modified &gt;= &#x27;2017-7-1&#x27; and t_modified&lt;&#x27;2017-8-1&#x27;) or </span><br><span class="line">    -&gt; (t_modified &gt;= &#x27;2018-7-1&#x27; and t_modified&lt;&#x27;2018-8-1&#x27;);</span><br></pre></td></tr></table></figure>
-
-<p>所以这里提到了优化器“偷懒”的行为：即使你认为你的SQL语句对索引字段的有序性不造成破坏，它还是默认会破坏的。比如如下代码：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select * from tradelog where id + 1 = 10000</span><br></pre></td></tr></table></figure>
-
-<p>我们在执行前必须手动改成</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select * from tradelog where id = 10000 - 1</span><br></pre></td></tr></table></figure>
-
-<h3 id="2-隐式类型转换"><a href="#2-隐式类型转换" class="headerlink" title="2.隐式类型转换"></a>2.隐式类型转换</h3><p>这里<strong>需要记住：MySQL会自动将字符串转成数字</strong>，比如如下代码（假如tradeid是int类型变量）：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select * from tradelog where tradeid=&quot;110717&quot;;</span><br></pre></td></tr></table></figure>
-
-<p>但是如果tradeid是varchar(32)类型，即字符串，那么如下的代码就需要隐式地将数字转换为字符串</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select * from tradelog where tradeid=110717;</span><br></pre></td></tr></table></figure>
-
-<p>所以上面这个代码对于优化器来说，实际的执行语句是（即对索引字段执行了函数，优化器放弃走树搜索）：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select * from tradelog where CAST(tradid AS signed int) = 110717;</span><br></pre></td></tr></table></figure>
-
-<h3 id="3-隐式字符编码转换"><a href="#3-隐式字符编码转换" class="headerlink" title="3.隐式字符编码转换"></a>3.隐式字符编码转换</h3><p>在如下代码中，执行了连表查询，即先在l表中找到id&#x3D;2的行，然后去d表中查找满足d.tradeid&#x3D;l.tradeid的数据。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select d.* from tradelog l, trade_detail d where d.tradeid=l.tradeid and l.id=2;</span><br></pre></td></tr></table></figure>
-
-<p>在这里，l是驱动表，d是被驱动表，tradeid是关联字段。</p>
-<p>这个时候，如果驱动表和被驱动表的字符集不同，比如驱动表是utf8mb4，被驱动表是utf8，那么被驱动表的索引字段<strong>在查询的时候会被执行函数，这个函数隐式地将utf8向上转型为更大的字符集utf8mb4</strong>；如果反过来，即被驱动表的字符集比较大，则不会出现隐式地执行函数这一问题。</p>
-<p>与前面两种情况相同，<strong>被驱动表的索引字段被执行了函数，优化器默认不走索引的树搜索</strong>。</p>
-<p>优化的方式有二：</p>
-<p>其一是将被驱动表的字符集直接转换为utf8mb4</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">alter table trade_detail modify tradeid varchar(32) CHARACTER SET utf8mb4 default null;</span><br></pre></td></tr></table></figure>
-
-<p>但是数据量比较大或者业务不允许的话，可以主动地将驱动表的字符集下调至utf8，从而避免被驱动表在被隐式执行函数的操作，具体操作如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select d.* from tradelog l , trade_detail d where d.tradeid=CONVERT(l.tradeid USING utf8) and l.id=2; </span><br></pre></td></tr></table></figure>
-
-<h3 id="4-思考题补充情况"><a href="#4-思考题补充情况" class="headerlink" title="4.思考题补充情况"></a>4.思考题补充情况</h3><p>一个可变的字符串在定义的时候，长度只有10，即b varchar(10)：</p>
-<p>如果执行如下查询：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select * from table_a where b=&#x27;1234567890abcd&#x27;;</span><br></pre></td></tr></table></figure>
-
-<p>按理说，表中肯定没有这个字段，返回null就行了，但是<strong>MySQL实际上对上述结果进行了截断</strong>，截断成长度为10的字符串，所以交给引擎层的数据实际是’1234567890’，假如满足这个查询条件的数据有数万行，那么<strong>一共需要做数万次回表操作</strong>，每次回表查出的整行数据<strong>再给server层判断</strong>，判断其是否与’1234567890abcd’相等，最后查询不到该数据就返回空值。</p>
-<h2 id="19讲-为什么我只查一行的语句，也执行这么慢？"><a href="#19讲-为什么我只查一行的语句，也执行这么慢？" class="headerlink" title="19讲 | 为什么我只查一行的语句，也执行这么慢？"></a>19讲 | 为什么我只查一行的语句，也执行这么慢？</h2><h3 id="1-第一类：查询长时间不返回"><a href="#1-第一类：查询长时间不返回" class="headerlink" title="1.第一类：查询长时间不返回"></a>1.第一类：查询长时间不返回</h3><p>有如下代码，查询结果长时间不返回：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select * from t where id=1;</span><br></pre></td></tr></table></figure>
-
-<p>可能的原因有如下几种：</p>
-<h4 id="1-等MDL（metadata-lock）锁"><a href="#1-等MDL（metadata-lock）锁" class="headerlink" title="1.等MDL（metadata lock）锁"></a>1.等MDL（metadata lock）锁</h4><p>这种原因可以通过执行show processlist命令来查看Waiting for table metadata lock</p>
-<img src="https://static001.geekbang.org/resource/image/50/28/5008d7e9e22be88a9c80916df4f4b328.png" alt="img" style="zoom: 50%;" />
-
-<p>出现这种状态就表示：现在有一个线程<strong>正在表t上请求或者持有MDL写锁</strong>，把select语句堵住了。</p>
-<p>复现如下：</p>
-<img src="https://static001.geekbang.org/resource/image/74/ca/742249a31b83f4858c51bfe106a5daca.png" alt="img" style="zoom:50%;" />
-
-<p>处理方式是：<strong>找到谁持有MDL写锁，把它kill掉</strong>。</p>
-<p>但是上面图片中，这个线程对应的Command是Sleep，导致查找不便。我们可以在MySQL启动时设置performance_schema&#x3D;on，然后通过下面的命令找到该线程（然后kill它）：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select blocking_pid from sys.schema_table_lock_waits;</span><br></pre></td></tr></table></figure>
-
-<h4 id="2-等flush（刷盘）"><a href="#2-等flush（刷盘）" class="headerlink" title="2.等flush（刷盘）"></a>2.等flush（刷盘）</h4><p>这种堵塞，我们在执行show processlist命令时，可以看到Waiting for table flush</p>
-<img src="https://static001.geekbang.org/resource/image/2d/24/2d8250398bc7f8f7dce8b6b1923c3724.png" alt="img" style="zoom:50%;" />
-
-<p>出现这种状态就表示：<strong>现在有一个线程正在对表t做flush操作</strong>。</p>
-<p>但是实际上，这个操作非常快，所以真正的原因应该是flush操作被其他线程堵住了，进而flush堵住了我们的select操作。</p>
-<p>复现如下：</p>
-<img src="https://static001.geekbang.org/resource/image/2b/9c/2bbc77cfdb118b0d9ef3fdd679d0a69c.png" alt="img" style="zoom:50%;" />
-
-<h4 id="3-等行锁"><a href="#3-等行锁" class="headerlink" title="3.等行锁"></a>3.等行锁</h4><p>前面两个情况都是表级锁导致的阻塞，<strong>select语句并没有进入引擎中</strong>。</p>
-<p>而等行锁的情况，用下面这种复现就一目了然了：</p>
-<img src="https://static001.geekbang.org/resource/image/3e/75/3e68326b967701c59770612183277475.png" alt="img" style="zoom:50%;" />
-
-<p>事务A并没有提交，所以事务A在id&#x3D;1上拥有持有写锁，而当前事务B执行的是当前读（lock in share mode是共享锁，for update是排他锁），所以事务B访问id&#x3D;1要加读锁，那么事务A占有的写锁自然会堵住事务B。</p>
-<p>与MDL写锁的查询方式一样，可以通过 sys.innodb_lock_waits 表查到元凶。</p>
-<img src="https://static001.geekbang.org/resource/image/d8/18/d8603aeb4eaad3326699c13c46379118.png" alt="img" style="zoom: 50%;" />
-
-<p>但需要注意的是，这个表同时提到了KILL QUERY 4和KILL 4，实际上<strong>前者是停止4号线程当前正在执行的语句</strong>，这其实<strong>没用</strong>，因为update早已执行完，停止语句并不能让id&#x3D;1上的行锁去掉；只有执行KILL 4，即<strong>断开这个事务的连接，这时该线程会自动回滚</strong>，进而<strong>释放了id&#x3D;1上的行锁</strong>。</p>
-<h3 id="2-第二类：查询慢"><a href="#2-第二类：查询慢" class="headerlink" title="2.第二类：查询慢"></a>2.第二类：查询慢</h3><p>来看看这个例子：</p>
-<p>执行下面语句，但执行时间要800ms：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select * from t where id=1;</span><br></pre></td></tr></table></figure>
-
-<p>但给这个查询加共享锁（当前读），则只需要0.2ms：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select * from t where id=1 lock in share mode;</span><br></pre></td></tr></table></figure>
-
-<p>按理说，加锁比不加锁还多一个步骤，应该更慢才对，实际上看下面的复现就懂了：</p>
-<img src="https://static001.geekbang.org/resource/image/84/ff/84667a3449dc846e393142600ee7a2ff.png" alt="img" style="zoom:50%;" />
-
-<p>当前隔离级别是innoDB默认的repeatable read，所以不加行锁的查询语句执行的<strong>是一致读</strong>，需要<strong>将执行100万次的更新回滚至更新之前</strong>；而加共享锁的查询语句执行的<strong>是当前读</strong>，<strong>不需要回滚操作</strong>，直接返回当前快照的结果，步骤如下：</p>
-<img src="https://static001.geekbang.org/resource/image/46/8c/46bb9f5e27854678bfcaeaf0c3b8a98c.png" alt="img" style="zoom: 33%;" />
-
-<h2 id="第20讲-幻读是什么，幻读有什么问题？"><a href="#第20讲-幻读是什么，幻读有什么问题？" class="headerlink" title="第20讲 | 幻读是什么，幻读有什么问题？"></a>第20讲 | 幻读是什么，幻读有什么问题？</h2><p>这篇文章难度较大，作者通过假设与反证法证明了间隙锁存在的意义。</p>
-<p>首先我们给出一个例子，在例子的基础上理解这节课的内容：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">CREATE TABLE `t` (</span><br><span class="line">  `id` int(11) NOT NULL,</span><br><span class="line">  `c` int(11) DEFAULT NULL,</span><br><span class="line">  `d` int(11) DEFAULT NULL,</span><br><span class="line">  PRIMARY KEY (`id`),</span><br><span class="line">  KEY `c` (`c`)</span><br><span class="line">) ENGINE=InnoDB;</span><br><span class="line"></span><br><span class="line">insert into t values(0,0,0),(5,5,5),</span><br><span class="line">(10,10,10),(15,15,15),(20,20,20),(25,25,25);</span><br></pre></td></tr></table></figure>
-
-<p>可以看出，这个表有两个索引，一个是主键索引，另一个是普通索引c。</p>
-<h3 id="1-所查询字段没有索引（走主键索引）"><a href="#1-所查询字段没有索引（走主键索引）" class="headerlink" title="1.所查询字段没有索引（走主键索引）"></a>1.所查询字段没有索引（走主键索引）</h3><p>下面我们执行如下语句，<strong>是怎么加锁的，这些锁是什么时候释放的呢</strong>：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">begin;</span><br><span class="line">select * from t where d=5 for update;</span><br><span class="line">commit;</span><br></pre></td></tr></table></figure>
-
-<p>结果是：因为数据d没有建立索引，所以在查询过程中<strong>需要走全表索引</strong>，也就是主键id的索引，这个时候<strong>不会锁单独的某行，而是对全表上锁</strong>，即上表锁。如果在该事务提交前，有其他事物进行CRUD操作，都会被表锁阻塞，即发生上一讲的“等MDL锁”现象。</p>
-<h3 id="2-所查询字段有普通索引（走普通索引）"><a href="#2-所查询字段有普通索引（走普通索引）" class="headerlink" title="2.所查询字段有普通索引（走普通索引）"></a>2.所查询字段有普通索引（走普通索引）</h3><p>如果执行如下语句，<strong>又是怎么加锁的，这些锁是什么时候释放的呢</strong>：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">begin;</span><br><span class="line">select * from t where c=5 for update;</span><br><span class="line">commit;</span><br></pre></td></tr></table></figure>
-
-<p>注意这里c有索引，所以该查询语句走普通索引，这个时候会对c&#x3D;5上行锁，同时在(0,5)以及(5,10)上间隙锁。</p>
-<p>表t的普通索引c和主键索引的行锁和间隙锁如下图所示（注意这里的数值之所以一样，是因为插入的时候id和c的值是一样的，比如(0,0,0),(5,5,5)等）：</p>
-<img src="https://static001.geekbang.org/resource/image/e7/61/e7f7ca0d3dab2f48c588d714ee3ac861.png" alt="img" style="zoom: 50%;" />
-
-<p>按照B+树搜索规则，找到满足c&#x3D;5的位置，然后对c&#x3D;5上行锁，同时在(0,5)与(5,10)这两个区间上间隙锁，这还没完，我们<strong>还要找到第一个不满足c&#x3D;5的位置才可以结束</strong>，显然该行为c&#x3D;10，所以c&#x3D;10这一行也被上了行锁，所以整个c的索引上，在区间(0,5] &amp;&amp; (5,10]也就是(0,10]上了锁，然后因为c&#x3D;10不满足条件，c&#x3D;10的行锁会去掉（下一章会讲到），所以<strong>最后为两个间隙锁(0,5), (5,10)和一个c&#x3D;5的行锁</strong>。此时如果在该事物提交之前有其他事物在这个区间执行CRUD操作会被阻塞，<strong>这种阻塞是行锁性质的阻塞</strong>。</p>
-<h3 id="3-间隙锁的引入对并发度的影响"><a href="#3-间隙锁的引入对并发度的影响" class="headerlink" title="3.间隙锁的引入对并发度的影响"></a>3.间隙锁的引入对并发度的影响</h3><p>有如下操作：</p>
-<img src="https://static001.geekbang.org/resource/image/df/be/df37bf0bb9f85ea59f0540e24eb6bcbe.png" alt="img" style="zoom:50%;" />
-
-<p>首先A事物执行查询语句，此时因为表t中没有id&#x3D;9的行，所以会在(5,10)区间上间隙锁，下一时刻B同样执行查询语句，我们知道，<strong>如果查的不是不存在的id&#x3D;9而是id&#x3D;5</strong>，那么<strong>A事物拥有id&#x3D;5的写锁，会阻塞B事物访问id&#x3D;5</strong>。但是现在A事物查询的是不存在的id&#x3D;9，上的是区间的间隙锁，那么此时B事物的查询语句不会被该间隙锁阻塞，同样也会对(5,10)区间上间隙锁。这也就说明：<strong>间隙锁之间不会像读写锁一样发生冲突</strong>。所以B在执行下一条插入语句时，会被A事物的间隙锁阻塞，同样A执行插入语句也会被B事物的间隙锁阻塞，进而产生了死锁现象。</p>
-<h2 id="第21讲-为什么我只改一行的语句，锁这么多？"><a href="#第21讲-为什么我只改一行的语句，锁这么多？" class="headerlink" title="第21讲 | 为什么我只改一行的语句，锁这么多？"></a>第21讲 | 为什么我只改一行的语句，锁这么多？</h2><h3 id="加锁规则"><a href="#加锁规则" class="headerlink" title="加锁规则"></a>加锁规则</h3><p>本集作者根据MySQL源码总结出了两个原则，两个优化和一个bug</p>
-<p>1.原则1：加锁的基本单位是next-key lock，这其实是<strong>先加间隙锁再加行锁的产物</strong>，所以区间为前开后闭。</p>
-<p>2.原则2：查找过程中访问到的对象才会加锁，<strong>没有访问到不会加锁</strong>。</p>
-<p>3.优化1：索引上的<strong>等值查询</strong>，给<strong>唯一索引</strong>加锁的时候，next-key lock<strong>退化为行锁</strong>。</p>
-<p>4.优化2：索引上的<strong>等值查询</strong>，直到最后向右遍历到不满足等值条件时，next-key lock退化为间隙锁。</p>
-<p>5.一个bug：<strong>唯一索引</strong>的<strong>范围查询</strong>，也会访问到最后一个不满足条件的值。</p>
-<p>首先拿出上节课的表数据：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">CREATE TABLE `t` (</span><br><span class="line">  `id` int(11) NOT NULL,</span><br><span class="line">  `c` int(11) DEFAULT NULL,</span><br><span class="line">  `d` int(11) DEFAULT NULL,</span><br><span class="line">  PRIMARY KEY (`id`),</span><br><span class="line">  KEY `c` (`c`)</span><br><span class="line">) ENGINE=InnoDB;</span><br><span class="line"></span><br><span class="line">insert into t values(0,0,0),(5,5,5),</span><br><span class="line">(10,10,10),(15,15,15),(20,20,20),(25,25,25);</span><br></pre></td></tr></table></figure>
-
-<p>可以看出，这个表有两个索引，一个是主键索引，另一个是普通索引c。</p>
-<h3 id="案例一：等值查询间隙锁"><a href="#案例一：等值查询间隙锁" class="headerlink" title="案例一：等值查询间隙锁"></a>案例一：等值查询间隙锁</h3><img src="https://static001.geekbang.org/resource/image/58/6c/585dfa8d0dd71171a6fa16bed4ba816c.png" alt="img" style="zoom:50%;" />
-
-<p>这个案例其实和上一讲的select * from t where c &#x3D; 5差不多。</p>
-<p>因为是等值查询，根据原则1，先上锁(5,10]。然后根据优化2，等值查询，c&#x3D;10不满足条件，(5,10]退化为间隙锁(5,10)。</p>
-<h3 id="☆案例二：非唯一索引等值锁（覆盖索引）"><a href="#☆案例二：非唯一索引等值锁（覆盖索引）" class="headerlink" title="☆案例二：非唯一索引等值锁（覆盖索引）"></a>☆案例二：非唯一索引等值锁（覆盖索引）</h3><img src="https://static001.geekbang.org/resource/image/46/65/465990fe8f6b418ca3f9992bd1bb5465.png" alt="img" style="zoom: 33%;" />
-
-<p>首先根据原则1，先上锁(0,5]，<strong>如果c是唯一索引，那么我们就可以停止了，而且会退化为行锁c&#x3D;5</strong>，但是这里c是非唯一索引，所以还会向右遍历到第一个不满足条件的c&#x3D;10。<strong>根据原则2，c&#x3D;10被访问到了</strong>，所以继续给(5,10]上锁。然后根据优化2，c&#x3D;10不满足条件，所以退化为间隙锁(5,10)。</p>
-<p>所以最终的锁为(0,5)和(5,10)的间隙锁还有c&#x3D;5的行锁。从中我们可以看出C事物必然被锁，那为什么B事物没有被锁呢，因为这个例子用的是<strong>共享锁，只锁覆盖索引</strong>，如果用<strong>排他锁</strong>(for update)，系统会默认你要更新数据，就会顺便<strong>把主键索引满足条件的行上行锁</strong>。</p>
-<p>如果我们<strong>要查询的字段在覆盖索引中找不到，那么系统就会走主键索引</strong>，那么自然就会把主键索引中满足条件的行上行锁了。比如将A事物改为select d from t where c&#x3D;5 lock in share mode;</p>
-<h3 id="案例三：主键索引的范围锁（唯一索引）"><a href="#案例三：主键索引的范围锁（唯一索引）" class="headerlink" title="案例三：主键索引的范围锁（唯一索引）"></a>案例三：主键索引的范围锁（唯一索引）</h3><img src="https://static001.geekbang.org/resource/image/30/80/30b839bf941f109b04f1a36c302aea80.png" alt="img" style="zoom: 33%;" />
-
-<p>首先根据原则1，找到id&#x3D;10，next-key lock为(5,10]，根据优化1（<strong>这里id&#x3D;10按等值索引规则走</strong>），唯一索引的锁退化为行锁，即c&#x3D;10。因为是范围查询，我们还需要继续向后找到不满足的第一个条件，即c&#x3D;15，这个时候根据原则1，next-key lock为(10,15]，<strong>但是这里一定要注意，范围查询没有优化，只有所谓的bug，所以范围查询不会退化间隙锁</strong>。</p>
-<p>所以最后有两个行锁c&#x3D;10和c&#x3D;15，还有间隙锁(5,10)。（根据评论，已经有版本修复了这个”bug”，即没有c&#x3D;15这个没必要的行锁了）</p>
-<h3 id="案例四：非唯一索引范围锁"><a href="#案例四：非唯一索引范围锁" class="headerlink" title="案例四：非唯一索引范围锁"></a>案例四：非唯一索引范围锁</h3><img src="https://static001.geekbang.org/resource/image/73/7a/7381475e9e951628c9fc907f5a57697a.png" alt="img" style="zoom:33%;" />
-
-<p>与案例三不同的是，这个索引是普通索引c。</p>
-<p>首先根据原则1，找到c&#x3D;10的行，对(5,10]上锁。然后范围查询，找到第一个不满足条件的c&#x3D;15，对(10,15]上锁，<strong>同样因为范围查询没有优化，所以(10,15]不会退化为间隙锁</strong>。</p>
-<p>所以最后为两个next-key lock，分别是(5,10]和(10,15]。（也可以说是两个间隙锁加两个行锁）</p>
-<h3 id="案例五：唯一索引范围锁bug"><a href="#案例五：唯一索引范围锁bug" class="headerlink" title="案例五：唯一索引范围锁bug"></a>案例五：唯一索引范围锁bug</h3><img src="https://static001.geekbang.org/resource/image/b1/6d/b105f8c4633e8d3a84e6422b1b1a316d.png" alt="img" style="zoom:33%;" />
-
-<p>这里要看清楚，是id&gt;10不是id&#x3D;10，所以没有案例三中的id&#x3D;10这个等值查询了（案例三id &gt;&#x3D; 10是等值查询），所以<strong>直接走范围查询找到id&#x3D;15</strong>，根据原则1，对(10,15]上next-key lock锁，这里因为是<strong>范围查询，没有优化</strong>，不会发生退化。按理说找到id &#x3D; 15就可以停止了，<strong>但是MySQL必须找到第一个不满足条件的数据才能停止</strong>，所以会继续找到id&#x3D;20，然后根据原则1，对(15,20]上next-key lock锁，这也就证明为什么事物B和事物C被锁上了。（后面的版本已经修复，貌似是8.0.18）</p>
-<p>所以最终有两个next-key lock锁，分别是(10,15]和(15,20]。</p>
-<h3 id="案例六：非唯一索引存在“等值”的例子"><a href="#案例六：非唯一索引存在“等值”的例子" class="headerlink" title="案例六：非唯一索引存在“等值”的例子"></a>案例六：非唯一索引存在“等值”的例子</h3><p>对本来就含有c&#x3D;10的索引中，再插入一个c&#x3D;10，会发生什么呢，执行语句如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; insert into t values(30,10,30);</span><br></pre></td></tr></table></figure>
-
-<p>其实我们会发现索引c中c&#x3D;10会有两个数据，分别是(c&#x3D;10,id&#x3D;10)和(c&#x3D;10,id&#x3D;30)，如下图所示：</p>
-<img src="https://static001.geekbang.org/resource/image/c1/59/c1fda36c1502606eb5be3908011ba159.png" alt="img" style="zoom: 33%;" />
-
-<p>自然我们就可以发现，c&#x3D;10自身一会产生间隙的。</p>
-<img src="https://static001.geekbang.org/resource/image/b5/78/b55fb0a1cac3500b60e1cf9779d2da78.png" alt="img" style="zoom:33%;" />
-
-<p>首先声明：delete语句和select…for update语句加锁的逻辑类似，所以上面的枷锁规则依旧适用。</p>
-<p>根据原则1，首先找到(c&#x3D;10,id&#x3D;10)而不是(c&#x3D;10,id&#x3D;30)，所以这里的next-key lock为(c&#x3D;5,id&#x3D;5)到(c&#x3D;5,id&#x3D;10)的左开右闭区间，然后直到找到不满足条件的行(c&#x3D;15,id&#x3D;15)，继续根据原则1，next-key lock为(c&#x3D;10,id&#x3D;10)到(c&#x3D;15,id&#x3D;15)的左开右闭区间，根据优化2，退化为间隙锁，即(c&#x3D;10,id&#x3D;10)到(c&#x3D;15,id&#x3D;15)的左开右开区间。</p>
-<p>所以最终的区间是图中的开区间：</p>
-<img src="https://static001.geekbang.org/resource/image/bb/24/bb0ad92483d71f0dcaeeef278f89cb24.png" alt="img" style="zoom:33%;" />
-
-<h3 id="案例七：limit语句加锁"><a href="#案例七：limit语句加锁" class="headerlink" title="案例七：limit语句加锁"></a>案例七：limit语句加锁</h3><img src="https://static001.geekbang.org/resource/image/af/2e/afc3a08ae7a254b3251e41b2a6dae02e.png" alt="img" style="zoom: 50%;" />
-
-<p>这次加了个limit，发现B事物通过了。其实这是因为索引遍历到(c&#x3D;10,id&#x3D;30)的时候，limit 2条件已经满足了，所以不会向后走了。</p>
-<p>所以加锁范围如下所示(左开右闭)：</p>
-<img src="https://static001.geekbang.org/resource/image/e5/d5/e5408ed94b3d44985073255db63bd0d5.png" alt="img" style="zoom: 33%;" />
-
-<h3 id="案例八：一个死锁的例子"><a href="#案例八：一个死锁的例子" class="headerlink" title="案例八：一个死锁的例子"></a>案例八：一个死锁的例子</h3><img src="https://static001.geekbang.org/resource/image/7b/06/7b911a4c995706e8aa2dd96ff0f36506.png" alt="img" style="zoom: 33%;" />
-
-<p>首先c&#x3D;10，我们可以根据案例1确定了上锁区间为(5,15)。然后事物B按道理被事物A锁住了，但是我们发现事物A在插入c&#x3D;8的操作时竟然被阻塞了，其实原因就是<strong>事物B上了间隙锁(5,10)，而行锁c&#x3D;10进入锁等待</strong>，所以在A执行插入操作的时候发生了死锁现象，InnoDB让事物B回滚，插入最终才成功。</p>
-<p>这个案例证明了next-key lock其实是分步执行的，先上间隙锁，再上行锁。间隙锁之间无互斥现象，而行锁之间会互斥。</p>
-<h2 id="第22讲-MySQL有哪些“饮鸩止渴”提高性能的方法？"><a href="#第22讲-MySQL有哪些“饮鸩止渴”提高性能的方法？" class="headerlink" title="第22讲 | MySQL有哪些“饮鸩止渴”提高性能的方法？"></a>第22讲 | MySQL有哪些“饮鸩止渴”提高性能的方法？</h2><h3 id="1-短连接风暴"><a href="#1-短连接风暴" class="headerlink" title="1.短连接风暴"></a>1.短连接风暴</h3><p>业务高峰，MySQL会存在很多连接，连接数量过多会导致数据库压力较大，处理方法有以下几种：</p>
-<p>1.调高max_connections，增加可容纳的连接数（风险很大）</p>
-<p>2.先处理掉<strong>占着连接但长时间不工作（事务外空闲太久）</strong>的线程，如果还不够，再考虑断开<strong>事务内空闲太久</strong>的线程</p>
-<p>3.减少连接过程的消耗（跳过权限验证），有极大的安全隐患。</p>
-<h3 id="2-慢查询性能问题"><a href="#2-慢查询性能问题" class="headerlink" title="2.慢查询性能问题"></a>2.慢查询性能问题</h3><p>在 MySQL 中，会引发性能问题的慢查询，大体有以下三种可能：</p>
-<p>1.索引没有设计好；</p>
-<p>2.SQL 语句没写好；</p>
-<p>3.MySQL 选错了索引。</p>
-<h4 id="1-索引设计问题"><a href="#1-索引设计问题" class="headerlink" title="1.索引设计问题"></a>1.索引设计问题</h4><p>对于索引没有设计好，我们可以直接执行alter table语句来创建新的索引。具体方式是：</p>
-<p>1.备库B执行set sql_log_bin&#x3D;off，即关掉binlog，然后执行alter table加上索引；</p>
-<p>2.主备库切换；</p>
-<p>3.目前备库是A，对A执行上面的1操作。</p>
-<h4 id="2-SQL语句问题"><a href="#2-SQL语句问题" class="headerlink" title="2.SQL语句问题"></a>2.SQL语句问题</h4><p>使用query_rewrite语句对原SQL语句执行“查询重写”。</p>
-<h4 id="3-MySQL选错索引问题"><a href="#3-MySQL选错索引问题" class="headerlink" title="3.MySQL选错索引问题"></a>3.MySQL选错索引问题</h4><p>同样使用查询重写，给原来的语句加上force index。</p>
-<p>上述问题可以在一开始业务上线前避免，具体操作就是测试环境，进行预演。这里细节看原文，<strong>面试不考，工作要用</strong>。</p>
-<h3 id="3-QPS突增问题"><a href="#3-QPS突增问题" class="headerlink" title="3.QPS突增问题"></a>3.QPS突增问题</h3><p>QPS是每秒查询率的意思，通常出现QPS高峰是新功能bug，解决QPS突增<strong>具体要看业务是否可以下掉这个新功能</strong>，具体也去看原文，原文写的很简洁明了。</p>
-<h2 id="第23讲-MySQL是怎么保证数据不丢的？"><a href="#第23讲-MySQL是怎么保证数据不丢的？" class="headerlink" title="第23讲 | MySQL是怎么保证数据不丢的？"></a>第23讲 | MySQL是怎么保证数据不丢的？</h2><h3 id="1-binlog的写入机制"><a href="#1-binlog的写入机制" class="headerlink" title="1.binlog的写入机制"></a>1.binlog的写入机制</h3><img src="https://static001.geekbang.org/resource/image/9e/3e/9ed86644d5f39efb0efec595abb92e3e.png" alt="img" style="zoom: 50%;" />
-
-<p>直接上图，我们可以清楚的看到，一个事务执行的时候：</p>
-<p>1.先把日志写入binlog cache里（<strong>每个线程或事务独占一个binlog cache</strong>）；</p>
-<p>2.事务提交时，执行器把binlog cache里的日志写入binlog中，并清空binlog cache（<strong>所有线程共用一个binlog</strong>）</p>
-<p>​			(1).执行write，把日志写入文件系统的page cache中（这里<strong>操作系统分配的内存</strong>）</p>
-<p>​			(2).执行fsync，将日志持久化到磁盘中</p>
-<p>可以看到，写入binlog，分为write和fsync两个操作，<strong>只有fsync才发生IO</strong></p>
-<p>两个操作的时机由sync_binlog参数控制：</p>
-<p>1.参数为0，每次提交事务只write不fsync</p>
-<p>2.参数为1，每次提交事务都fsync</p>
-<p>3.参数为N（N&gt;1），每次提交事务都write，但累计N个事务才fsync</p>
-<p>N设置比较可以<strong>缓解IO瓶颈</strong>问题，但是<strong>主机异常重启，或断电</strong>啥的，就会<strong>丢失最近N个事务的binlog日志</strong>。</p>
-<h3 id="2-redo-log写入机制"><a href="#2-redo-log写入机制" class="headerlink" title="2.redo log写入机制"></a>2.redo log写入机制</h3><img src="https://static001.geekbang.org/resource/image/9d/d4/9d057f61d3962407f413deebc80526d4.png" alt="img" style="zoom: 67%;" />
-
-<p>也是直接上图，我们会发现redo log与binlog最大的不同就是“图小了”，小哪了？所有线程（事务）共用一个redo log buffer。这就说明：<strong>一个事务提交并写道page cache或持久化到磁盘中</strong>（写入到黄色或者绿色区域），<strong>会把当前buffer里所有其他未提交事务全“带走”</strong>。</p>
-<p>同样redo log的写入也由一个参数控制，就是InnoDB提供的innodb_flush_log_at-trx_commit：</p>
-<p>1.参数为0，每次事务提交只把redo log留在redo log buffer中（<strong>留在缓冲区</strong>）</p>
-<p>2.参数为1，每次事务提交都将redo log直接持久化(<strong>fsync</strong>)到磁盘（<strong>执行IO</strong>）</p>
-<p>3.参数为2，每次事务提交都只把redo log写(<strong>write</strong>)到page cache（<strong>操作系统分配的内存</strong>）</p>
-<h4 id="1-未提交事务的redo-log写盘的三种可能情况："><a href="#1-未提交事务的redo-log写盘的三种可能情况：" class="headerlink" title="1).未提交事务的redo log写盘的三种可能情况："></a>1).未提交事务的redo log写盘的三种可能情况：</h4><p>写入page cache或磁盘，统称为写盘</p>
-<p>1.InnoDB有一个<strong>后台线程</strong>，<strong>每隔一秒</strong>，就会<strong>把buffer中日志write到page cache里</strong>，然后<strong>fsync到磁盘里</strong>。</p>
-<p>2.redo log buffer<strong>占用空间即将达到innodb_log_buffer_size的一半时</strong>，后台线程主动写盘，因为事务还没提交，所以<strong>只write不fsync</strong>。</p>
-<p>3.最后就是最开始提到的，<strong>一个并行事务的提交</strong>，会顺带把buffer里的内容全“带走”。</p>
-<h4 id="2-MySQL的双“1”配置保证数据一致性（crash-safe）："><a href="#2-MySQL的双“1”配置保证数据一致性（crash-safe）：" class="headerlink" title="2).MySQL的双“1”配置保证数据一致性（crash-safe）："></a>2).MySQL的双“1”配置保证数据一致性（crash-safe）：</h4><p>双“1”就是把sync_binlog和innodb_flush_log_at-trx_commit都设置为1，那么<strong>redo log在prepare的时候就已经持久化到磁盘了</strong>，所以会分为以下四种情况：</p>
-<p>​		情况1：redo log prepare阶段fsync失败</p>
-<p>​		情况2：binlog的fsync失败</p>
-<p>​		情况3：redo log commit失败</p>
-<p>​		情况4：俩都成功</p>
-<p>​				情况1，redo log和binlog均检查出未写入磁盘，事务回滚，内存数据丢失，不影响数据一致性；</p>
-<p>​				情况2，redo log在prepare阶段持久化磁盘成功，但binlog持久化失败，那么MySQL如果异常重启，发现只有redo log没有binlog，而且redo log还未commit，事务回滚；（<!--这里有个疑问-->，redo log已经持久化到磁盘了，还能回滚吗？）</p>
-<p>​				情况3，俩都持久化了，直接提交，数据一致；</p>
-<p>​				情况4，俩都持久化了，并且事务commit了，数据一致。</p>
-<p>最后作者讲到了<strong>组提交</strong>，一句话，MySQL尽可能拖时间，为的就是<strong>组员尽可能地多，进而减少磁盘IO</strong>。</p>
-<h2 id="第24讲-MySQL是怎么保证主备一致的？"><a href="#第24讲-MySQL是怎么保证主备一致的？" class="headerlink" title="第24讲 | MySQL是怎么保证主备一致的？"></a>第24讲 | MySQL是怎么保证主备一致的？</h2><p>本讲主要讲了一下之前答疑的时候binlog的三种格式：statement, row, mixed</p>
-<h3 id="1-MySQL主备的基本原理（M-S结构）："><a href="#1-MySQL主备的基本原理（M-S结构）：" class="headerlink" title="1.MySQL主备的基本原理（M-S结构）："></a>1.MySQL主备的基本原理（M-S结构）：</h3><img src="https://static001.geekbang.org/resource/image/fd/10/fd75a2b37ae6ca709b7f16fe060c2c10.png" alt="img" style="zoom: 33%;" />
-
-<p>状态1：<strong>客户端读写都访问节点A</strong>，此时B是A的备库，<strong>B只是将A的更新同步过来</strong>；</p>
-<p>当需要<strong>主备切换</strong>的时候，就切换成状态2，仍然与上面状态1的流程一样。</p>
-<p>这时我们最好将备库设置为<strong>只读(readonly)模式</strong>，主要考虑了以下三点：</p>
-<p>​		1.<strong>运营类的查询语句会被放到备库查询</strong>，备库只读可以防止误操作；</p>
-<p>​		2.防止切换的一瞬间出现<strong>双写问题</strong>；</p>
-<p>​		3.用只读状态<strong>判断主备库（节点）的身份</strong>。</p>
-<p>以下是节点A同步到节点B的内部流程图：</p>
-<img src="https://static001.geekbang.org/resource/image/a6/a3/a66c154c1bc51e071dd2cc8c1d6ca6a3.png" alt="img" style="zoom: 50%;" />
-
-<p>主库A的第一行就是<strong>接收到客户端的请求后</strong>，执行内部事务的逻辑，<strong>同时写binlog</strong>；</p>
-<p>备库B和主库A之间一直<strong>维持着一个长连接</strong>，主库A内有一个线程专门服务这个长连接，主备库的事务日志同步流程如下：</p>
-<p>​		1.<strong>备库B设置A的各种参数</strong>，包含了A的IP，端口，用户名密码，从哪个位置（文件名和日志偏移量）开始请求binlog。</p>
-<p>​		2.备库B启动两个线程：io_thread和sql_thread，<strong>前者负责与主库建立连接</strong>。</p>
-<p>​		3.主库A校验用户名密码后，开始按照B要求的位置，<strong>从本地（page cache或磁盘）取</strong>binlog发给B；</p>
-<p>​		4.B拿到binlog，写到本地文件，称为<strong>中转文件(relay log)</strong></p>
-<p>​		5.sql_thread线程读取这个中转日志，<strong>解析命令并执行</strong>。</p>
-<h3 id="2-binlog的三种格式对比："><a href="#2-binlog的三种格式对比：" class="headerlink" title="2.binlog的三种格式对比："></a>2.binlog的三种格式对比：</h3><p>binlog一共有三种格式，分别为statement, row, mixed，第三种就是前两种的混合格式。</p>
-<h4 id="1-binlog-format-x3D-statement"><a href="#1-binlog-format-x3D-statement" class="headerlink" title="1)binlog_format&#x3D;statement"></a>1)binlog_format&#x3D;statement</h4><p>如果binlog设置为statement，那么binlog记录的就是SQL语句的原文，比如下面这条SQL语句：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; delete from t /*comment*/  where a&gt;=4 and t_modified&lt;=&#x27;2018-11-10&#x27; limit 1;</span><br></pre></td></tr></table></figure>
-
-<p>那么binlog记录的内容如下：</p>
-<img src="https://static001.geekbang.org/resource/image/b9/31/b9818f73cd7d38a96ddcb75350b52931.png" alt="img"  />
-
-<p>但实际上这条语句在执行的时候是会报警的：</p>
-<img src="https://static001.geekbang.org/resource/image/96/2b/96c2be9c0fcbff66883118526b26652b.png" alt="img"  />
-
-<p>原因是该语句<strong>用了limit</strong>，主备库可能会<strong>走不同的索引</strong>。所以MySQL这样写有风险。</p>
-<h4 id="2-binlog-format-x3D-row"><a href="#2-binlog-format-x3D-row" class="headerlink" title="2)binlog_format&#x3D;row"></a>2)binlog_format&#x3D;row</h4><p>如果binlog设置为row格式，那么binlog内容如下：</p>
-<img src="https://static001.geekbang.org/resource/image/d6/26/d67a38db154afff610ae3bb64e266826.png" alt="img"  />
-
-<p>这一次SQL原文变成了Table_map和Delete_rows：</p>
-<p>​		Table_map用于说明<strong>接下来操作的表是谁</strong></p>
-<p>​		Delete_rows用于<strong>定义删除的行为</strong></p>
-<p>实际上设置为row格式，binlog里面记录了真实删除行的主键id，也就是具体删除的参数，这就避免了主从库走不同索引导致的主从不一致的隐患。</p>
-<h4 id="3-binlog-format-x3D-mixed"><a href="#3-binlog-format-x3D-mixed" class="headerlink" title="3)binlog_format&#x3D;mixed"></a>3)binlog_format&#x3D;mixed</h4><p>mixed格式就是statement和row格式的混合，MySQL会<strong>根据SQL语句是否可能引起主从不一致</strong>而选择row或者statement。这看起来很好，但其实row还有一大优势就是<strong>恢复数据</strong>！</p>
-<p>设置成row，delete语句回滚可以直接被转成insert，反之亦然。而update语句回滚只需要对调更新前后的两个数据即可。</p>
-<p>以上的操作，statement都不行，所以row格式主键称为主流。</p>
-<h3 id="3-双M结构"><a href="#3-双M结构" class="headerlink" title="3.双M结构"></a>3.双M结构</h3><img src="https://static001.geekbang.org/resource/image/20/56/20ad4e163115198dc6cf372d5116c956.png" alt="img" style="zoom: 33%;" />
-
-<p>以上为<strong>双M结构</strong>，也是<strong>实际生产中使用较多</strong>的结构。这种结构其实就是<strong>AB互为主备库</strong>的方式，这样在切换的时候就<strong>不用修改主备关系</strong>了。（注意：主备库<strong>同时只能有一个库接受更新</strong>）</p>
-<p>具体流程就是：</p>
-<p>A更新了一条语句，把生成的binlog给B，B执行完这条语句也生成一个binlog，再给A。（这里建议log_slave_updates设置为on，表示<strong>备库执行relay log后生成binlog</strong>）</p>
-<h4 id="循环复制问题"><a href="#循环复制问题" class="headerlink" title="循环复制问题"></a>循环复制问题</h4><p>这样会有循环复制binlog的问题，所以MySQL会给<strong>两个库设置不同的server id</strong>，所以A生成的binlog里记录的都是A的server id，而B生成的binlog的server id也是A的server id，这样再传回给A的时候，A发现这个binlog的server id是自己的，就不再处理这个日志了。</p>
-<h2 id="第25讲-MySQL是怎么保证高可用的？"><a href="#第25讲-MySQL是怎么保证高可用的？" class="headerlink" title="第25讲 | MySQL是怎么保证高可用的？"></a>第25讲 | MySQL是怎么保证高可用的？</h2><p>这节就着上一节讲的主备切换，我们继续以双M为例，因为这个在生产中用的最多。</p>
-<h3 id="1-主备延迟"><a href="#1-主备延迟" class="headerlink" title="1.主备延迟"></a>1.主备延迟</h3><p>主备切换<strong>一般发生在</strong>软件升级、主库所在机器按计划下线或者机器掉电了。</p>
-<p>主备切换时<strong>数据同步的三个关键时间点</strong>：</p>
-<p>​		1.主库A完成一个事务，<strong>写入binlog</strong>，这个时刻记为T1；</p>
-<p>​		2.备库B<strong>接收完A库传来的binlog</strong>，记为T2；</p>
-<p>​		3.备库B也<strong>执行完此事务</strong>，记为T3.</p>
-<p><strong>主备延迟</strong>：备库执行完事务与主库执行完事务的时间差(***<!--这里有疑问-->***，为什么不是A写完binlog的时刻)，即T3-T1（网络正常下，T2-T1非常小）</p>
-<p>这个时间差不会因为主备库机器的系统时间不一样而出现数据不准的现象，因为备库连接主库的时候<strong>会获得当前主库的系统时间</strong>，在后续做主备延迟的时间计算时，<strong>自动扣掉两系统时间的差值</strong>。</p>
-<h4 id="主备延迟的来源"><a href="#主备延迟的来源" class="headerlink" title="主备延迟的来源"></a>主备延迟的来源</h4><h5 id="1-备库机器性能比主库的差"><a href="#1-备库机器性能比主库的差" class="headerlink" title="1.备库机器性能比主库的差"></a>1.备库机器性能比主库的差</h5><p>所以一般<strong>要求做对称部署</strong>，即主备库选用相同规格的机器。</p>
-<h5 id="2-备库压力大"><a href="#2-备库压力大" class="headerlink" title="2.备库压力大"></a>2.备库压力大</h5><p>例如备库查询耗费大量CPU，严重影响数据同步速度，造成主备延迟。一般情况下，会采取以下两种方式：</p>
-<p>​		1).<strong>一主多从</strong>。一个主库对应一个备库和多个从库。</p>
-<p>​		2).<strong>binlog输出到外部系统</strong>，如Hadoop，让外部系统<strong>提供统计类查询</strong>的能力。</p>
-<h5 id="3-大事务"><a href="#3-大事务" class="headerlink" title="3.大事务"></a>3.大事务</h5><p>因为<strong>主库必须等待事务执行完成才会写入binlog，再传给备库B</strong>。如果主库有个大事务需要长时间执行，那么主备切换的延迟自然就很大了。比如<strong>一次性delete太多数据</strong>或<strong>大表的DDL</strong>。</p>
-<h5 id="4-备库并行复制（下一讲）"><a href="#4-备库并行复制（下一讲）" class="headerlink" title="4.备库并行复制（下一讲）"></a>4.备库并行复制（下一讲）</h5><h3 id="2-可靠性优先策略"><a href="#2-可靠性优先策略" class="headerlink" title="2.可靠性优先策略"></a>2.可靠性优先策略</h3><p><img src="D:\Picgo\img\image-20220424142142508.png" alt="image-20220424142142508"></p>
-<p>图是双M结构，SBM指的是seconds_behind_master，也就是前面提到的T3-T1，以上的主备切换流程如下：</p>
-<p>1.首先需要等到SBM小于某个值（这里是5s）才能进入下一步，否则持续等待</p>
-<p>2.把主库A改为只读(readonly&#x3D;true)</p>
-<p>3.判断备库B的SBM值是否为0，等到了0才能进入下一步</p>
-<p>4.把备库B改为可读写状态(readonly&#x3D;false)</p>
-<p>5.把业务请求切到备库B</p>
-<p>可以看到在状态<strong>处于步骤2和3的时候，AB库都是只读的</strong>，说明这个时候两个库都不可写，所以SBM太长会严重影响业务，但是<strong>数据一致性</strong>得到了保障。</p>
-<h3 id="3-可用性优先策略"><a href="#3-可用性优先策略" class="headerlink" title="3.可用性优先策略"></a>3.可用性优先策略</h3><p>该策略就是强行让上面的<strong>步骤4和5放到步骤1的前面</strong>。这个时候就会出现数据不一致的现象。</p>
-<p>举例：</p>
-<img src="https://static001.geekbang.org/resource/image/37/3a/3786bd6ad37faa34aca25bf1a1d8af3a.png" alt="img" style="zoom: 60%;" />
-
-<p>表中只有id和c两个数据，插入c&#x3D;4的时候主库还是A，插入c&#x3D;5的时候主库突然变成B了，由于<strong>插入操作比relay log的解析要快</strong>，又因为插入一个c，主键<strong>id只需要自增</strong>即可，所以会插入一个错误的(4,5)，如果<strong>binlog_format&#x3D;mixed</strong>，那么此时A库会根据B传来的binlog增加一个(5,5)的数据，B库也会根据A库的binlog增加一个(5,4)的数据，此时出现了<strong>两行数据不一致</strong>的现象。</p>
-<p>如果<strong>binlog_format&#x3D;row</strong>呢?</p>
-<img src="https://static001.geekbang.org/resource/image/b8/43/b8d2229b2b40dd087fd3b111d1bdda43.png" alt="img" style="zoom:60%;" />
-
-<p>由于row格式的binlog<strong>会记录新插入的行的所有字段值</strong>，所以只会在B突然切换成主库的时候，插入了一条(4,5)，而不会出现上面的binlog导致的不一致的情况，所以<strong>最终只会出现一行不一致的数据</strong>。</p>
-<p>所以<strong>可用性优先策略会出现数据不一致的现象</strong>。</p>
-<h3 id="4-结论"><a href="#4-结论" class="headerlink" title="4.结论"></a>4.结论</h3><p>最后结论：“在满足数据可靠性的前提下，MySQL 高可用系统的可用性，是依赖于主备延迟的。延迟的时间越小，在主库故障的时候，服务恢复需要的时间就越短，可用性就越高。”</p>
-<h2 id="第26讲-备库为什么会延迟好几个小时？"><a href="#第26讲-备库为什么会延迟好几个小时？" class="headerlink" title="第26讲 | 备库为什么会延迟好几个小时？"></a>第26讲 | 备库为什么会延迟好几个小时？</h2><img src="https://static001.geekbang.org/resource/image/1a/ef/1a85a3bac30a32438bfd8862e5a34eef.png" alt="img" style="zoom: 40%;" />
-
-<p>再贴上主备流程图，这次多了两个箭头，分别是<strong>客户端写入主库的粗箭头</strong>，和<strong>备库上sql_thread执行中转日志(relay log)的细箭头</strong>。箭头越粗，代表并发度越高。</p>
-<p>主库上，影响客户端写入主库的并发度自然就是各种锁，除了<strong>某个单行的高并发极端状况</strong>，<strong>InnoDB行锁</strong>对业务的支持还是很友好的。</p>
-<p>但是备库上的这个这个细箭头，虽然不粗，但是在<strong>官方MySQL5.6版本之前，是不支持多线程复制的</strong>。</p>
-<p>因此<strong>主库并发度高的时候</strong>，传来的binlog单线程复制会带来<strong>严重的主备延迟现象</strong>。</p>
-<h3 id="1-多线程模型"><a href="#1-多线程模型" class="headerlink" title="1.多线程模型"></a>1.多线程模型</h3><img src="https://static001.geekbang.org/resource/image/bc/45/bcf75aa3b0f496699fd7885426bc6245.png" alt="img" style="zoom:40%;" />
-
-<p><strong>coordinator</strong>就是原来的sql_thread，现在它不再直接更新数据，而<strong>只负责读取中转日志和分发事务</strong>。</p>
-<p>真正<strong>更新日志</strong>的工作，交给worker。</p>
-<p>coordinator的基本要求：</p>
-<p>​		1.不能造成更新覆盖：更新同一行的两个事务，必须被分发到同一个worker中</p>
-<p>​		2.同一个事物不能被拆开，必须放到同一个worker中</p>
-<h3 id="2-按表分发策略"><a href="#2-按表分发策略" class="headerlink" title="2.按表分发策略"></a>2.按表分发策略</h3><p>基本思路是：两个事务<strong>更新不同的表</strong>，就可以并行。这样可以<strong>保证两个worker不会更新同一行</strong>。</p>
-<img src="https://static001.geekbang.org/resource/image/8b/76/8b6976fedd6e644022d4026581fb8d76.png" alt="img" style="zoom: 40%;" />
-
-<p>每个worker对应一个hash表，用于保存所涉及的表，<strong>key是“库名.表名”，value是“队列中有多少个事务修改这个表”</strong>。</p>
-<p>每个事务在分发的时候，<strong>跟所有worker的冲突关系</strong>包括以下三种情况：</p>
-<p>​		1.如果和所有worker<strong>都不冲突</strong>，coordinator会把这个事务<strong>分配给最闲的</strong>worker</p>
-<p>​		2.如果<strong>只和一个</strong>worker冲突，那就把事务<strong>分配给这个worker</strong></p>
-<p>​		3.如果<strong>和多个</strong>worker冲突，coordinator<strong>进入等待状态</strong>，直到冲突的worker只剩下一个</p>
-<p>多个表负载均衡的时候，按表分发的效果比较好，但是对于热点表，就变成单线程复制了。</p>
-<h3 id="3-按行分发策略"><a href="#3-按行分发策略" class="headerlink" title="3.按行分发策略"></a>3.按行分发策略</h3><p>基本思路是，两个事务<strong>更新不同的行</strong>，就可以并行。这个模式必须要求binlog的格式是row，因为statement格式不能记录具体更新的某行。</p>
-<p>这个时候key对应的就是“库名+表名+索引名字+值”（<strong>不能有外键</strong>）。这就表明<strong>按行分发会消耗更多的计算资源</strong>。</p>
-<h3 id="4-MySQL-5-6版本的并行复制策略"><a href="#4-MySQL-5-6版本的并行复制策略" class="headerlink" title="4.MySQL 5.6版本的并行复制策略"></a>4.MySQL 5.6版本的并行复制策略</h3><p>该版本第一次支持并行复制，只不过支持的粒度是<strong>按库并行</strong>。碰到事务都在一个库里进行，就gg了，该策略用的不多。</p>
-<h3 id="5-MariaDB的并行策略"><a href="#5-MariaDB的并行策略" class="headerlink" title="5.MariaDB的并行策略"></a>5.MariaDB的并行策略</h3><p>MariaDB的实现方式（采用了redo log组提交的特性）：</p>
-<p>​		1.在一组里面一起提交的事务，有相同的commit_id，下一组就是commit_id+1;</p>
-<p>​		2.commit_id直接写在binlog中</p>
-<p>​		3.传到备库的时候，相同的commit_id的事务分发到多个worker执行</p>
-<p>​		4.这一组全执行完，coordinator再去取下一批</p>
-<p>其实就是<strong>模拟了主库的并行模式</strong>，但是并没有真正实现模拟主库，因为主库（追求效率）中，一组事务commit的同时，下一组已经在执行中了。而MariaDB则必须一组一组来，这样如果某一组有大事务，那么某一时间可能只有一个worker在工作，是严重浪费资源的。</p>
-<h3 id="6-MySQL-5-7的并行复制策略（不太理解）"><a href="#6-MySQL-5-7的并行复制策略（不太理解）" class="headerlink" title="6.MySQL 5.7的并行复制策略（不太理解）"></a>6.MySQL 5.7的并行复制策略（不太理解）</h3><p>其实就是在MariaDB的基础上进行优化，利用前面章节学到的两阶段提交的特点，不用等到commit阶段，只要能够到达redo log prepare阶段，就表示事务已经通过锁冲突检验了。所以：</p>
-<p>​		1.同时处于prepare的事务，在备库可以并行执行</p>
-<p>​		2.处于prepare与commit之间的事务，在备库也可以并行执行。</p>
-<p>所以延长prepare到commit之间的时间，制造更多“同时处于prepare的事务”，可以增加备库复制的并行度。</p>
-<h3 id="7-MySQL-5-7-22的并行复制策略（不太理解）"><a href="#7-MySQL-5-7-22的并行复制策略（不太理解）" class="headerlink" title="7.MySQL 5.7.22的并行复制策略（不太理解）"></a>7.MySQL 5.7.22的并行复制策略（不太理解）</h3><h2 id="第27讲-主库出问题了，从库怎么办？"><a href="#第27讲-主库出问题了，从库怎么办？" class="headerlink" title="第27讲 | 主库出问题了，从库怎么办？"></a>第27讲 | 主库出问题了，从库怎么办？</h2><img src="https://static001.geekbang.org/resource/image/00/53/0014f97423bd75235a9187f492fb2453.png" alt="img" style="zoom:40%;" />
-
-<p>如图，是一主多从结构发生主备切换的示意图。可以看出，在切换之前，所有从库都指向A，现在转向A’，必然需要A‘的“身份信息”。</p>
-<h3 id="1-基于位点的主备切换"><a href="#1-基于位点的主备切换" class="headerlink" title="1.基于位点的主备切换"></a>1.基于位点的主备切换</h3><p>以B为例，当把B切换为A’从库的时候，需要执行change master命令：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">CHANGE MASTER TO </span><br><span class="line">MASTER_HOST=$host_name </span><br><span class="line">MASTER_PORT=$port </span><br><span class="line">MASTER_USER=$user_name </span><br><span class="line">MASTER_PASSWORD=$password </span><br><span class="line">MASTER_LOG_FILE=$master_log_name </span><br><span class="line">MASTER_LOG_POS=$master_log_pos  </span><br></pre></td></tr></table></figure>
-
-<p>前四个参数自然是A’库的IP、端口、用户名和密码。后俩则是<strong>同步位点</strong>，也就是<strong>主库对应的文件名和日志偏移量</strong>。</p>
-<p>这个同步位点容易出现偏差，是不精确的。比如主库A执行完一条语句，并把binlog传给A’和其他从库（包括B），A’和B也都同步了这个binlog，但是<strong>主库A还没接收到回执ack就挂了</strong>，那么此时同步位点肯定是这个位置，这就会<strong>导致A’和B即使同步了此数据，但是同步位点“不知情”</strong>。</p>
-<p>一般有两种方式处理这种错误，一种是<strong>碰到这种错误就跳过</strong>，另一种是<strong>设置跳过指定的错误类型</strong>。</p>
-<h3 id="2-GTID（全局事务ID）"><a href="#2-GTID（全局事务ID）" class="headerlink" title="2.GTID（全局事务ID）"></a>2.GTID（全局事务ID）</h3><p>全称是Global Transaction Identifier</p>
-<p>GTID是<strong>事务提交的时候才生成</strong>的，要与事务id区分开来，事务id是<strong>执行过程中就分配</strong>了，如果事务回滚，后面的事务仍旧id递增。所以<strong>最终表现为GTID是连续的，而事务id经常不是连续的</strong>。</p>
-<p>基于GTID的主备切换语法如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">CHANGE MASTER TO </span><br><span class="line">MASTER_HOST=$host_name </span><br><span class="line">MASTER_PORT=$port </span><br><span class="line">MASTER_USER=$user_name </span><br><span class="line">MASTER_PASSWORD=$password </span><br><span class="line">master_auto_position=1 </span><br></pre></td></tr></table></figure>
-
-<p>这时就不需要主库对应的文件名和偏移量了，直接<strong>设置主备关系使用GTID协议</strong>即可。</p>
-<p>取binlog的逻辑如下：</p>
-<p>然后A’和B（**<!--文中说的实例，不太懂--><strong>）分别有自己的GTID集合，B把自己的发给A’，A‘核对两个集合，并判断此时A’有但B没有的这一部分GTID，然后看A’有没有这些的GTID对应的binlog(</strong><!--这里可能说明有误，但是整体意思是对的-->**)，没有的话，直接返回错误，如果有的话，就找出第一个不再B集合里的事务开始发给B。</p>
-<p>上述思想有个<strong>前提</strong>，就是原先的主备库的<strong>日志是完整且一致的</strong>。</p>
-<p>严谨的说：主备切换不是不需要找位点了，而是<strong>找位点的这个工作在A’内部就自动完成了</strong>，对开发人员非常友好。</p>
-<h2 id="第28讲-读写分离有哪些坑？（处理主备延迟带来的问题）"><a href="#第28讲-读写分离有哪些坑？（处理主备延迟带来的问题）" class="headerlink" title="第28讲 | 读写分离有哪些坑？（处理主备延迟带来的问题）"></a>第28讲 | 读写分离有哪些坑？（处理主备延迟带来的问题）</h2><p>由于主从可能存在延迟现象，<strong>客户端更新后立刻发起查询</strong>，如果查询的是从库，很可能<strong>读到更新之前的状态</strong>，这就是“过期读”（非术语，只是方便理解）。</p>
-<h3 id="1-强制走主库方案"><a href="#1-强制走主库方案" class="headerlink" title="1.强制走主库方案"></a>1.强制走主库方案</h3><p>对于必须要拿到最新结果的请求，我们必须强制让查询请求直接走主库查询，但主库的压力不言而喻</p>
-<h3 id="2-Sleep方案"><a href="#2-Sleep方案" class="headerlink" title="2.Sleep方案"></a>2.Sleep方案</h3><p>主库更新后，<strong>读从库之前先sleep一会</strong>，但是很可能出现睡多了，或者睡得太短的现象。</p>
-<h3 id="3-判断主备无延迟方案"><a href="#3-判断主备无延迟方案" class="headerlink" title="3.判断主备无延迟方案"></a>3.判断主备无延迟方案</h3><p>有三种做法：</p>
-<p>​		1.查询前判断<strong>seconds_behind_master</strong>（第25讲提到的）是否为0，但是<strong>精度不太够</strong></p>
-<p>​		2.查询前判断<strong>主库的最新位点与备库的最新位点</strong>是不是完全相同</p>
-<p>​		3.查询前判断备库<strong>收到的所有日志</strong>的GTID集合与备库所有<strong>已经执行完成</strong>的GTID集合是否相同</p>
-<p>但是还是有问题：因为主库<strong>写入binlog之后就反馈客户端</strong>了，所以有一部分binlog处于<strong>客户端已经收到提交确认，而备库还没有收到binlog的状态</strong>。</p>
-<h3 id="4-配合semi-sync"><a href="#4-配合semi-sync" class="headerlink" title="4.配合semi-sync"></a>4.配合semi-sync</h3><p>这个时候就需要引入半同步复制，即semi-sync replication</p>
-<p>设计如下：</p>
-<p>​		1.事务提交，主库把binlog发给从库；</p>
-<p>​		2.从库收到binlog，发回给主库一个ack，表示收到</p>
-<p>​		3.主库收到ack，才给客户端返回”事务完成”的确认。</p>
-<p>也就是说，<strong>等从库确认收到了传来的binlog，主库才返回客户端“确认”。</strong></p>
-<p>但是又带来了新的问题：</p>
-<p>​		1.semi-sync对于一主一备没问题，一主多从就很可能出现<strong>当前读取的从表并没有返回ack，而返回ack的从表却没有被读到</strong>。这仍旧会导致过期读的现象存在。</p>
-<p>​		2.<strong>业务更新高峰期，主库位点或GTID更新极快</strong>，位点和GTID的<strong>等值判断</strong>可能长时间不成立，就会出现持续等待的现象。</p>
-<h3 id="5-等主库位点方案"><a href="#5-等主库位点方案" class="headerlink" title="5.等主库位点方案"></a>5.等主库位点方案</h3><p>执行如下命令：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select master_pos_wait(file, pos[, timeout]);</span><br></pre></td></tr></table></figure>
-
-<p>逻辑如下：</p>
-<p>​		1.主库一个事务更新之后，立刻<strong>去主库找位点</strong>，得到主库执行到的file和pos；</p>
-<p>​		2.<strong>选一个从库</strong>执行当前的查询语句；</p>
-<p>​		3.在从库执行上述语句，如果<strong>在timeout规定时间内查到了，就返回一个&gt;&#x3D;0的正整数</strong>，并决定在这个从库执行查询语句</p>
-<p>​		4.<strong>否则，去主库</strong>执行查询语句</p>
-<p>以上的思路就是<strong>给从库查询一个限时，找不到位点，就直接去主库</strong>，不过这就回到了第一个方法强制走主库可能会碰到所有查询都超过timeout了，这就需要业务开发人员来权衡了。</p>
-<h3 id="6-GTID方案"><a href="#6-GTID方案" class="headerlink" title="6.GTID方案"></a>6.GTID方案</h3><p>与主库位点很相似，执行如下命令：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select wait_for_executed_gtid_set(gtid_set, 1);</span><br></pre></td></tr></table></figure>
-
-<p>不同的是第一步，不找位点了，改成<strong>获取事物的GTID</strong>，如果<strong>超时了就返回1，找到了就返回0</strong>。</p>
-<h2 id="第29讲-如何判断一个数据库是不是出问题了？"><a href="#第29讲-如何判断一个数据库是不是出问题了？" class="headerlink" title="第29讲 | 如何判断一个数据库是不是出问题了？"></a>第29讲 | 如何判断一个数据库是不是出问题了？</h2><h3 id="1-select-1判断"><a href="#1-select-1判断" class="headerlink" title="1.select 1判断"></a>1.select 1判断</h3><p>select 1成功返回，只能说明<strong>这个库的进程还在</strong>，不能说明<strong>这个库可能发生堵塞了</strong>，因为select 1<strong>没有深入innoDB</strong>层。</p>
-<p>这里作者提到了一个innodb_thread_concurrency的参数，目的是<strong>控制innoDB的并发线程上限</strong>。这里要记住，这里的<strong>并发量指的不是并发连接数，而是并发查询</strong>。大量的并发查询才会占CPU，大量的连接只是占内存</p>
-<p>当线程<strong>进入锁等待</strong>的时候，并发线程的<strong>计数会-1</strong>。</p>
-<h3 id="2-查表判断"><a href="#2-查表判断" class="headerlink" title="2.查表判断"></a>2.查表判断</h3><p>在数据库里面特意定义一个心跳表health_check，里面只放一行数据进行查询操作。</p>
-<p>想判断数据库有没有问题就查这个库里的数据，这种方法<strong>可以检测由于并发线程过多导致数据库不可用</strong>的情况。</p>
-<p>但是一旦binlog所在磁盘利用率达到100%，<strong>事务的更新和提交都堵住了，但是查询依旧可行</strong>。所以还需要进一步完善。</p>
-<h3 id="3-更新判断"><a href="#3-更新判断" class="headerlink" title="3.更新判断"></a>3.更新判断</h3><p>在上述心跳表里放一个随时可以更新的字段，比如更新时间&#x3D;now()</p>
-<p>但是节点可用性检测既要检测主库，也要检测备库，这个时候<strong>我们要给备库以写的能力</strong>。</p>
-<p>那么就会<strong>发生主备库都写同一条更新命令的情况</strong>。</p>
-<p>所以要在心跳表中存入多行数据，并用<strong>A、B表一定不同的server_id来作为主键</strong>。这就不会发生“更新冲突”了。</p>
-<p>但是，假如当前日志盘的IO利用率是100%，那么<strong>执行更新操作会非常的慢</strong>，这个时候也说明主库出问题了，需要主备切换，但是<strong>当前update操作需要的资源很小</strong>，所以可能表现为：更新速度很快。这就<strong>误让我们认为</strong>主库还是可用的。</p>
-<h3 id="4-内部统计"><a href="#4-内部统计" class="headerlink" title="4.内部统计"></a>4.内部统计</h3><p>MySQL 5.6版本以后提供了performance_schema库，可以查询<strong>统计每次IO请求的时间</strong>，也就是对MySQL库实时监控。</p>
-<p>综上，作者建议<strong>优先update系统表</strong>，然后<strong>配合增加检测performance_schema</strong>的信息。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://example.com/2022/05/11/MySQL%E4%B8%AA%E4%BA%BA%E6%80%BB%E7%BB%93/" data-id="cl3117rey0000tcv60nf2d3td" data-title="MySQL个人总结" class="article-share-link">Share</a>
-      
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
+  </nav>
 
 </section>
         
@@ -1355,6 +986,10 @@
       <ul>
         
           <li>
+            <a href="/2022/05/15/Java%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E7%82%B9/">Java基础知识点</a>
+          </li>
+        
+          <li>
             <a href="/2022/05/14/%E6%A0%88%E4%B8%8E%E9%98%9F%E5%88%97%E9%A2%98%E8%A7%A3/">栈与队列题解</a>
           </li>
         
@@ -1368,10 +1003,6 @@
         
           <li>
             <a href="/2022/05/13/%E6%93%8D%E4%BD%9C%E5%AD%97%E7%AC%A6%E4%B8%B2%E9%A2%98%E8%A7%A3/">操作字符串题解</a>
-          </li>
-        
-          <li>
-            <a href="/2022/05/13/%E5%93%88%E5%B8%8C%E7%AE%97%E6%B3%95%E9%A2%98%E7%9B%AE/">哈希算法题目</a>
           </li>
         
       </ul>

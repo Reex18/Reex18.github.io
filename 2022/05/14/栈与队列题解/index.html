@@ -13,10 +13,14 @@
 <meta property="og:site_name" content="Reex">
 <meta property="og:description" content="栈leetcode 20.有效的括号题目：给定一个只包括 ‘(‘，’)’，’{‘，’}’，’[‘，’]’ 的字符串 s ，判断字符串是否有效。 有效字符串需满足： 左括号必须用相同类型的右括号闭合。左括号必须以正确的顺序闭合。 12345输入：s &#x3D; &quot;()[]&amp;#123;&amp;#125;&quot;输出：true输入：s &#x3D; &quot;([)]&quot;输出：false  代码如下：">
 <meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://assets.leetcode-cn.com/aliyun-lc-upload/uploads/2018/10/22/rainwatertrap.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210402091208445.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210223092629946.png">
 <meta property="article:published_time" content="2022-05-14T08:58:47.000Z">
-<meta property="article:modified_time" content="2022-05-15T07:08:50.225Z">
+<meta property="article:modified_time" content="2022-05-17T02:45:09.069Z">
 <meta property="article:author" content="John Doe">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://assets.leetcode-cn.com/aliyun-lc-upload/uploads/2018/10/22/rainwatertrap.png">
   
     <link rel="alternate" href="/atom.xml" title="Reex" type="application/atom+xml">
   
@@ -184,6 +188,37 @@
 
 <p>其实这道题虽说是循环数组，但其实就是让每个元素都与数组中所有元素进行比较。与自己比也没事，因为我们只记录有没有比自己大的元素。</p>
 <p>题解给的是遍历两个长度的nums数组，那自然就会遍历到包括自己的每个元素，而且ans会出现赋值之后再被重复赋值的情况。</p>
+<h2 id="leetcode-42-接雨水"><a href="#leetcode-42-接雨水" class="headerlink" title="leetcode 42.接雨水"></a>leetcode 42.接雨水</h2><p><u><strong>题目</strong>：给定 <code>n</code> 个非负整数表示每个宽度为 <code>1</code> 的柱子的高度图，计算按此排列的柱子，下雨之后能接多少雨水。</u></p>
+<p><img src="https://assets.leetcode-cn.com/aliyun-lc-upload/uploads/2018/10/22/rainwatertrap.png" alt="img"></p>
+<p><u>输入：height &#x3D; [0,1,0,2,1,0,1,3,2,1,2,1]</u><br><u>输出：6</u><br><u>解释：上面是由数组 [0,1,0,2,1,0,1,3,2,1,2,1] 表示的高度图，在这种情况下，可以接 6 个单位的雨水（蓝色部分表示雨水）</u></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//方法一：双指针法（官方题解，时间复杂度为o(n)）</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">trap</span><span class="params">(<span class="type">int</span>[] height)</span> &#123;</span><br><span class="line">        <span class="type">int</span> <span class="variable">ans</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line">        <span class="type">int</span> <span class="variable">left</span> <span class="operator">=</span> <span class="number">0</span>, right = height.length - <span class="number">1</span>;<span class="comment">//定义左右指针</span></span><br><span class="line">        <span class="type">int</span> <span class="variable">leftMax</span> <span class="operator">=</span> <span class="number">0</span>, rightMax = <span class="number">0</span>;<span class="comment">//定义左右最大值</span></span><br><span class="line">        <span class="keyword">while</span>(left &lt; right)&#123;</span><br><span class="line">            leftMax = Math.max(leftMax, height[left]);<span class="comment">//每次都记录当前的最大左边界</span></span><br><span class="line">            rightMax = Math.max(rightMax, height[right]);<span class="comment">//每次都记录当前的最大右边界</span></span><br><span class="line">            <span class="keyword">if</span>(leftMax &lt; rightMax)&#123;<span class="comment">//哪边的边界小，就算哪边，这里是重点！！！</span></span><br><span class="line">                ans += leftMax - height[left];</span><br><span class="line">                left++;</span><br><span class="line">            &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">                ans += rightMax - height[right];</span><br><span class="line">                right--;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>从双指针法，我们可以看出，首先我们要先定义一个从头和尾分别向中间走的两个指针，即left和right，然后我们在指针移动的过程中，随时记录左边最大值leftMAX和右边最大值rightMAX。</p>
+<p>我们要特别重视这个leftMAX和rightMax的变化过程：</p>
+<p>首先<strong>只有指针移动，这俩值才会发生变化</strong>；</p>
+<p>其次这俩值一定是<strong>他们各自指针经过的最大高度</strong>。</p>
+<p>接着进入判断语句：我们看到这个if语句肯定有疑惑，为什么左边最大值比右边最大值   小的时候，我们就要算左边的呢，算右边不行吗？还真不行！因为当前指针移动的位置下，左边最大值如果比当前右边最大值小，那么肯定<strong>现在左指针所处的位置右边有比自己高的</strong>，这是因为<strong>右边最大值随着右指针向左移动会逐渐变大</strong>。我们接雨水一定要取最短的那条边，就是木桶效应，要找自己的短板。</p>
+<p>同理当前指针移动的位置下，右边的最大值如果比左边最大值 小的话，那么当前右指针所处的位置，其左边肯定有比自己高的，最起码<strong>还有现在leftMax充数呢</strong>是不是？所以我们要取短边，计算短边的接雨水量。</p>
+<p>接下来的难点就是实际的雨水量的计算。左右指针的算法一样，我们以左指针为例，leftMax - height[left]是什么？我们知道leftMax是height[left]的最大值，所以就有两种情况，一种是leftMax就是当前左指针下的height[left]，那么<strong>自然这个差值就是0了</strong>，不影响我们计算，无非就是<strong>ans +&#x3D; 0</strong>嘛。还有一种情况，就是leftMax 与height[left]差着至少一个位置，这个时候算出来的差值，就是<strong>当前left指针位置（一个单位的）左右最小边界下积累的雨水量了</strong>。比如图示中间那部分雨水，按照双指针法就要分成三个纵向的计算，也就是<strong>左指针移动三次</strong>，<strong>右指针不动</strong>（因为右边最大值始终比左边最大值大），直到左指针与右指针碰撞，所以雨水积累完毕，跳出循环。</p>
+<p><img src="https://img-blog.csdnimg.cn/20210402091208445.png" alt="42.接雨水1"></p>
+<p>图中就是双指针解法每次计算的雨水量，全部都是按列计算的。</p>
+<p>接下来看看单调栈解法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//方法二：单调栈（Carl题解，时间复杂度为o(n)）</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">trap</span><span class="params">(<span class="type">int</span>[] height)</span> &#123;</span><br><span class="line">        <span class="type">int</span> <span class="variable">ans</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line">        Stack&lt;Integer&gt; stack = <span class="keyword">new</span> <span class="title class_">Stack</span>&lt;&gt;();</span><br><span class="line">        stack.push(<span class="number">0</span>);</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">1</span>;i &lt; height.length;i++)&#123;</span><br><span class="line">            <span class="keyword">if</span>(height[i] == height[stack.peek()])&#123;</span><br><span class="line">                stack.pop();</span><br><span class="line">                stack.push(i);</span><br><span class="line">            &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">                <span class="keyword">while</span>(!stack.isEmpty() &amp;&amp; height[i] &gt; height[stack.peek()])&#123;</span><br><span class="line">                    <span class="type">int</span> <span class="variable">mid</span> <span class="operator">=</span> stack.pop();</span><br><span class="line">                    <span class="keyword">if</span>(!stack.isEmpty())&#123;</span><br><span class="line">                        <span class="type">int</span> <span class="variable">left</span> <span class="operator">=</span> stack.peek();</span><br><span class="line">                        <span class="type">int</span> <span class="variable">h</span> <span class="operator">=</span> Math.min(height[i], height[left]) - height[mid];</span><br><span class="line">                        <span class="type">int</span> <span class="variable">len</span> <span class="operator">=</span> i - left - <span class="number">1</span>;</span><br><span class="line">                        ans += len * h;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">                stack.push(i);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这种解法else里边的while循环里的if语句是很重要的一个判断，为什么这么说呢，先看看第一个左边界凹槽的情况：</p>
+<p>左边界凹槽的高度是0，默认入栈的。下一个高度是1，比凹槽高，说明进入了while循环，也就是开始接雨水。那么我们就要思考，接雨水需要什么条件，凹槽左边和右边都要有比凹槽高的点，我们才可以接水。但是左边界凹槽的左边是没有点的，那么我们怎么避免这种情况的计算呢？</p>
+<p>代码给出的就是进入while循环后，<strong>先保存我们要计算的凹槽对应的位置，然后将该位置弹出</strong>。这是<u>非常重要且关键的一步</u>，这个凹槽是我们当前唯一要接水的位置，记录该位置是必然的操作，而将该位置弹出栈是为了后面对左边界的有无进行判断的前提。</p>
+<p>像左边界这种情况，由于前面的弹出栈操作，现在栈为空了，<strong>对于空栈，我们只能把height[i]入栈了</strong>。这就有效弹出了左边界凹槽，并且没有将其进行接雨水的操作。</p>
+<p>接下来就依次向后遍历，第二个注意的点就是相同高度的判断，对于相同高度，我们只需要保留最右边的位置即可，所以有一个先弹出前面的高度，再添加后面高度的操作。其实不弹出，直接添加也行。但是<strong>接雨水的时候过程是不一样的，最后计算结果一样</strong>。我们来具体看一下：</p>
+<p>我们把示例中的图，中间的那个凹槽填平，这样就有三个相同高度的平台，接下来按照左边那个高台向右走我们看看代码是怎么实现的：</p>
+<p>1）不弹出，直接一个个添加相同高度的平台：</p>
+<p>第一个平台比左边高台要低，添加第一个平台位置，第二个平台和第一个平台等高，继续添加，第三个和第二个等高，继续添加，直到右边很高的台子了，这个时候进入while循环，弹出第一个平台，结果发现我们在给h赋值的时候，h为0，<strong>这样就白白让ans计空了一次</strong>。还好，我们已经把这个平台弹出了，但是还有第二个平台，能怎么办，接着弹出，ans又白白计空了一次。第三次，弹出最左边的平台，这个时候h就是左高平台减去当前最左边的等高平台了，这样ans才有记录的意义。</p>
+<p>所以我们可以在进入while循环就避免这些无意义的ans计算</p>
+<p>2）一等高就弹出，只保留最右边的：</p>
+<p>也就是如上的代码，只保留最右边的平台的下标值，这样只有一个平台，一旦弹出，left就是左边高台的下标了。我们ans每次计算就都是有效的。这种方式在数据量特别大，且等高平台特别多的时候，是非常省时的。</p>
+<p>所以这俩操作计算过程不一样，但结果是一样的。原因在于：前者在做了<strong>很多无效的ans计算</strong>之后，最后用了<strong>最左边的等高平台</strong>进行了有效的ans计算；而后者直接利用了<strong>最右边的等高平台</strong>进行了有且<strong>仅有一次的有效ans计算</strong>。</p>
+<p><img src="https://img-blog.csdnimg.cn/20210223092629946.png" alt="42.接雨水2"></p>
+<p>可以看出单调栈解法是按行进行计算的，代码中的len &#x3D; Math.max(height[i], height[left]) - height[stack.peek()]就可以看出。</p>
 
       
     </div>
@@ -197,6 +232,15 @@
   
     
 <nav id="article-nav">
+  
+    <a href="/2022/05/15/Java%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E7%82%B9/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Java基础知识点
+        
+      </div>
+    </a>
   
   
     <a href="/2022/05/13/%E6%88%91%E7%9A%84%E9%A1%B9%E7%9B%AE/" id="article-nav-older" class="article-nav-link-wrap">
@@ -239,6 +283,10 @@
       <ul>
         
           <li>
+            <a href="/2022/05/15/Java%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E7%82%B9/">Java基础知识点</a>
+          </li>
+        
+          <li>
             <a href="/2022/05/14/%E6%A0%88%E4%B8%8E%E9%98%9F%E5%88%97%E9%A2%98%E8%A7%A3/">栈与队列题解</a>
           </li>
         
@@ -252,10 +300,6 @@
         
           <li>
             <a href="/2022/05/13/%E6%93%8D%E4%BD%9C%E5%AD%97%E7%AC%A6%E4%B8%B2%E9%A2%98%E8%A7%A3/">操作字符串题解</a>
-          </li>
-        
-          <li>
-            <a href="/2022/05/13/%E5%93%88%E5%B8%8C%E7%AE%97%E6%B3%95%E9%A2%98%E7%9B%AE/">哈希算法题目</a>
           </li>
         
       </ul>
