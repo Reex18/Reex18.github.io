@@ -15,7 +15,7 @@
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://cdn.xiaolincoding.com/gh/xiaolincoder/ImageHost/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/HTTP/19-HTTPS%E4%B8%8EHTTP.png">
 <meta property="article:published_time" content="2022-05-13T06:38:33.000Z">
-<meta property="article:modified_time" content="2022-05-14T07:28:19.435Z">
+<meta property="article:modified_time" content="2022-05-17T07:01:27.046Z">
 <meta property="article:author" content="John Doe">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://cdn.xiaolincoding.com/gh/xiaolincoder/ImageHost/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/HTTP/19-HTTPS%E4%B8%8EHTTP.png">
@@ -108,6 +108,26 @@
 <p>所以HTTPS不仅要进行TCP的三次握手，还要接着进行SSL&#x2F;TLS握手判断，才可以加密传输报文。</p>
 <img src="https://cdn.xiaolincoding.com/gh/xiaolincoder/ImageHost/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/HTTP/19-HTTPS%E4%B8%8EHTTP.png" alt="HTTP 与 HTTPS 网络层"  />
 
+<h2 id="HTTP对应OSI模型哪几层？"><a href="#HTTP对应OSI模型哪几层？" class="headerlink" title="HTTP对应OSI模型哪几层？"></a>HTTP对应OSI模型哪几层？</h2><p>用来管理通信连接的会话层，转换数据格式的表示层，与对端主机交互的应用层。</p>
+<h2 id="应用层各大常见协议"><a href="#应用层各大常见协议" class="headerlink" title="应用层各大常见协议"></a>应用层各大常见协议</h2><h3 id="1-TELNET：远程登陆协议"><a href="#1-TELNET：远程登陆协议" class="headerlink" title="1. TELNET：远程登陆协议"></a>1. TELNET：远程登陆协议</h3><p>建立在TCP协议之上，通过一个终端登录到其他远端的服务器。<strong>最大缺点：明文传输</strong>，所以有了SSH</p>
+<h3 id="2-SSH（Secure-Shell）：安全的网络传输协议"><a href="#2-SSH（Secure-Shell）：安全的网络传输协议" class="headerlink" title="2. SSH（Secure Shell）：安全的网络传输协议"></a>2. SSH（Secure Shell）：安全的网络传输协议</h3><p>有效防止远程管理过程中的信息泄露，加密传输，也是建立在TCP协议之上的。</p>
+<h3 id="3-FTP：文件传输协议"><a href="#3-FTP：文件传输协议" class="headerlink" title="3. FTP：文件传输协议"></a>3. FTP：文件传输协议</h3><p>FTP是在两个“相连”的计算机之间进行文件传输的协议</p>
+<p>最大特点：两条TCP连接，一条用于传送控制信息，比如：登录验证，发送文件的名称，发送方式部署等；另一条用于专门传输数据。</p>
+<h3 id="4-SMTP（Simple-Mail-Transfer-Protocol）：简单邮件传输-发送-协议"><a href="#4-SMTP（Simple-Mail-Transfer-Protocol）：简单邮件传输-发送-协议" class="headerlink" title="4. SMTP（Simple Mail Transfer Protocol）：简单邮件传输(发送)协议"></a>4. SMTP（Simple Mail Transfer Protocol）：简单邮件传输(发送)协议</h3><p><strong>用来发送</strong>邮件的协议，<strong>只支持发送端主机行为</strong>，所以不会根据接收端的请求发送，而是根据发送端请求进行发送。</p>
+<p>虽然建立在TCP协议上保证了传输的可靠性，但内容不能保证可靠，因为没有身份验证功能。所以现在规定“POP before SMTP”或者“SMTP认证”。</p>
+<p>以前的邮件发送需要两端都要保持插电，很不友好，现在是<strong>一端发给服务器A，A发给服务器B，另一端从B接收</strong>。</p>
+<h3 id="5-POP（Post-Office-Protocol）：邮局协议"><a href="#5-POP（Post-Office-Protocol）：邮局协议" class="headerlink" title="5. POP（Post Office Protocol）：邮局协议"></a>5. POP（Post Office Protocol）：邮局协议</h3><p><strong>用来接收</strong>邮件的协议，前面发送端的邮件通过SMTP<strong>发送给一直插电的POP服务器</strong>，接收端再根据POP从POP服务器把邮件“拿过来”。</p>
+<p>注意：POP就有<strong>用户验证</strong>喽！</p>
+<h3 id="6-IMAP（Internet-Message-Access-Protocol）：交互邮件访问协议"><a href="#6-IMAP（Internet-Message-Access-Protocol）：交互邮件访问协议" class="headerlink" title="6. IMAP（Internet Message Access Protocol）：交互邮件访问协议"></a>6. IMAP（Internet Message Access Protocol）：交互邮件访问协议</h3><p>与POP区别就是，POP是客户端管理邮件，而IMAP是<strong>服务器管理邮件</strong>。</p>
+<p>这带来了极大的方便：比如我电脑已读某个邮件，那么手机也显示我读了，因为我是<strong>在一致的服务器处理</strong>了MIME信息。所以可以<strong>实现多终端同步的效果</strong>。</p>
+<h2 id="电子邮箱发送过程？"><a href="#电子邮箱发送过程？" class="headerlink" title="电子邮箱发送过程？"></a>电子邮箱发送过程？</h2><p>比如一个163邮箱向一个QQ邮箱发邮件：</p>
+<p>1）通过SMTP，163邮箱将邮件发给163邮箱服务器</p>
+<p>2）163服务器发给QQ服务器</p>
+<p>3）QQ服务器通知该QQ邮箱来取邮件，要通过POP&#x2F;IMAP取</p>
+<h2 id="如何判断邮箱真正存在？"><a href="#如何判断邮箱真正存在？" class="headerlink" title="如何判断邮箱真正存在？"></a>如何判断邮箱真正存在？</h2><p>1）通过邮箱域名查找到对应的SMTP服务器地址（你家在哪？）</p>
+<p>2）尝试与该服务器建立连接（找到你家）</p>
+<p>3）服务器尝试向该邮箱发送邮件（你家给你打电话）</p>
+<p>4）根据该邮箱返回结果判断真假（听听是自己儿子声音不）</p>
 
       
     </div>
@@ -172,6 +192,10 @@
       <ul>
         
           <li>
+            <a href="/2022/05/17/%E4%BA%8C%E5%8F%89%E6%A0%91%E9%A2%98%E8%A7%A3/">二叉树题解</a>
+          </li>
+        
+          <li>
             <a href="/2022/05/15/Java%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E7%82%B9/">Java基础知识点</a>
           </li>
         
@@ -185,10 +209,6 @@
         
           <li>
             <a href="/2022/05/13/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E7%AC%94%E8%AE%B0/">计算机网络笔记</a>
-          </li>
-        
-          <li>
-            <a href="/2022/05/13/%E6%93%8D%E4%BD%9C%E5%AD%97%E7%AC%A6%E4%B8%B2%E9%A2%98%E8%A7%A3/">操作字符串题解</a>
           </li>
         
       </ul>
