@@ -14,8 +14,10 @@
 <meta property="og:description" content="路由器相关知识 MAC头部的作用就是将包传送到路由器，其中的接收方MAC地址，就是路由器端口的MAC地址。所以，当包到达了路由器，MAC头部任务就完成了，MAC头部即被丢弃。 在网络包的传输过程中，源IP和目标IP始终不变，而为了两两设备在以太网中传输，必须实时变化MAC地址。 在发送数据包的时候，如果目标主机不是本地局域网内的主机，那MAC地址填入的是路由器地址，通过路由器的层层转发，一直转发到">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://cdn.xiaolincoding.com/gh/xiaolincoder/ImageHost/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/HTTP/19-HTTPS%E4%B8%8EHTTP.png">
+<meta property="og:image" content="https://cdn.xiaolincoding.com/gh/xiaolincoder/ImageHost/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/IP/18.jpg">
+<meta property="og:image" content="https://cdn.xiaolincoding.com/gh/xiaolincoder/ImageHost/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/IP/30.jpg">
 <meta property="article:published_time" content="2022-05-13T06:38:33.000Z">
-<meta property="article:modified_time" content="2022-05-17T07:01:27.046Z">
+<meta property="article:modified_time" content="2022-05-19T07:17:11.514Z">
 <meta property="article:author" content="John Doe">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://cdn.xiaolincoding.com/gh/xiaolincoder/ImageHost/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/HTTP/19-HTTPS%E4%B8%8EHTTP.png">
@@ -112,7 +114,7 @@
 <h2 id="应用层各大常见协议"><a href="#应用层各大常见协议" class="headerlink" title="应用层各大常见协议"></a>应用层各大常见协议</h2><h3 id="1-TELNET：远程登陆协议"><a href="#1-TELNET：远程登陆协议" class="headerlink" title="1. TELNET：远程登陆协议"></a>1. TELNET：远程登陆协议</h3><p>建立在TCP协议之上，通过一个终端登录到其他远端的服务器。<strong>最大缺点：明文传输</strong>，所以有了SSH</p>
 <h3 id="2-SSH（Secure-Shell）：安全的网络传输协议"><a href="#2-SSH（Secure-Shell）：安全的网络传输协议" class="headerlink" title="2. SSH（Secure Shell）：安全的网络传输协议"></a>2. SSH（Secure Shell）：安全的网络传输协议</h3><p>有效防止远程管理过程中的信息泄露，加密传输，也是建立在TCP协议之上的。</p>
 <h3 id="3-FTP：文件传输协议"><a href="#3-FTP：文件传输协议" class="headerlink" title="3. FTP：文件传输协议"></a>3. FTP：文件传输协议</h3><p>FTP是在两个“相连”的计算机之间进行文件传输的协议</p>
-<p>最大特点：两条TCP连接，一条用于传送控制信息，比如：登录验证，发送文件的名称，发送方式部署等；另一条用于专门传输数据。</p>
+<p>最大特点：<strong>两条TCP连接</strong>，一条用于<strong>传送控制信息</strong>，比如：登录验证，发送文件的名称，发送方式部署等；另一条用于<strong>专门传输数据</strong>。</p>
 <h3 id="4-SMTP（Simple-Mail-Transfer-Protocol）：简单邮件传输-发送-协议"><a href="#4-SMTP（Simple-Mail-Transfer-Protocol）：简单邮件传输-发送-协议" class="headerlink" title="4. SMTP（Simple Mail Transfer Protocol）：简单邮件传输(发送)协议"></a>4. SMTP（Simple Mail Transfer Protocol）：简单邮件传输(发送)协议</h3><p><strong>用来发送</strong>邮件的协议，<strong>只支持发送端主机行为</strong>，所以不会根据接收端的请求发送，而是根据发送端请求进行发送。</p>
 <p>虽然建立在TCP协议上保证了传输的可靠性，但内容不能保证可靠，因为没有身份验证功能。所以现在规定“POP before SMTP”或者“SMTP认证”。</p>
 <p>以前的邮件发送需要两端都要保持插电，很不友好，现在是<strong>一端发给服务器A，A发给服务器B，另一端从B接收</strong>。</p>
@@ -128,6 +130,25 @@
 <p>2）尝试与该服务器建立连接（找到你家）</p>
 <p>3）服务器尝试向该邮箱发送邮件（你家给你打电话）</p>
 <p>4）根据该邮箱返回结果判断真假（听听是自己儿子声音不）</p>
+<h2 id="IP地址"><a href="#IP地址" class="headerlink" title="IP地址"></a>IP地址</h2><p>首先，<strong>IP是面向无连接的</strong>，它尽管去传输，面向连接要交给它的上层TCP。</p>
+<p>一开始分为ABCDE五类，都具有两个部分：网络号和主机号。其中D类用于多播（广播无法穿透路由，所有有了多播），E还没用</p>
+<p>缺点：ABC所包含的主机数相差太大，不符合实际应用。</p>
+<h3 id="无分类地址CIDR"><a href="#无分类地址CIDR" class="headerlink" title="无分类地址CIDR"></a>无分类地址CIDR</h3><p>所以有了无分类地址的CIDR：灵活分配网络号和主机号（32拆成两大部分）。这里有子网掩码的概念，<strong>掩码的意思是掩盖掉主机号。将子网掩码和IP地址按位计算AND，就可以得到网络号</strong>。</p>
+<p>分离网络号和主机号的目的就是：同一个网络就直接本地传输了，不同网络我们再去通过路由向外传输。</p>
+<p>下面是子网划分的示意图（<u>还没搞懂它的意义</u>）：</p>
+<p><img src="https://cdn.xiaolincoding.com/gh/xiaolincoder/ImageHost/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/IP/18.jpg" alt="img"></p>
+<h3 id="IP地址与路由控制"><a href="#IP地址与路由控制" class="headerlink" title="IP地址与路由控制"></a>IP地址与路由控制</h3><p>其实就是主机向另一个主机传输，如果需要跨网，就要通过路由器来路由。</p>
+<p>注意：<strong>环回地址</strong>是特殊的IP地址，为127.0.0.1。localhost和它意义一样，使用这俩时，<strong>数据包不会流向网络</strong>。</p>
+<h3 id="IP分片与重组"><a href="#IP分片与重组" class="headerlink" title="IP分片与重组"></a>IP分片与重组</h3><p>因为IP传输过程中，数据包要通过数据链路传输，所以要根据数据链路的最大传输单元MTU来对IP分片。</p>
+<p>需要注意的时：<strong>IP在路由器上不会重组，只会在目标主机才重组</strong>。</p>
+<h3 id="IPv6与IPv4"><a href="#IPv6与IPv4" class="headerlink" title="IPv6与IPv4"></a>IPv6与IPv4</h3><img src="https://cdn.xiaolincoding.com/gh/xiaolincoder/ImageHost/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/IP/30.jpg" alt=" IPv6 中的单播通信" style="zoom:50%;" />
+
+<p>6比4多加了个<strong>链路本地单播地址</strong>，用于不走路由器的本数据链路传播。其他的像v6的唯一本地地址相当于v4的私有IP，v6的全局单播地址相当于v4的共有IP。</p>
+<h4 id="IPv6相比IPv4的首部改进："><a href="#IPv6相比IPv4的首部改进：" class="headerlink" title="IPv6相比IPv4的首部改进："></a>IPv6相比IPv4的首部改进：</h4><p>1）<strong>取消首部校验和字段</strong>：因为数据链路层和传输层都要校验，所以v6直接取消了IP校验</p>
+<p>2）<strong>取消分片&#x2F;重新组装相关字段</strong>：中间路由器不准分片和重组了</p>
+<p>3）<strong>取消选项字段</strong></p>
+<h2 id="IP协议相关技术"><a href="#IP协议相关技术" class="headerlink" title="IP协议相关技术"></a>IP协议相关技术</h2><h3 id="DNS"><a href="#DNS" class="headerlink" title="DNS"></a>DNS</h3><p>解析域名的</p>
+<h3 id="ARP"><a href="#ARP" class="headerlink" title="ARP"></a>ARP</h3><p>根据IP地址查询MAC地址的</p>
 
       
     </div>
