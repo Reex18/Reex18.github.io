@@ -16,8 +16,10 @@
 <meta property="og:image" content="https://cdn.xiaolincoding.com/gh/xiaolincoder/ImageHost/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/HTTP/19-HTTPS%E4%B8%8EHTTP.png">
 <meta property="og:image" content="https://cdn.xiaolincoding.com/gh/xiaolincoder/ImageHost/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/IP/18.jpg">
 <meta property="og:image" content="https://cdn.xiaolincoding.com/gh/xiaolincoder/ImageHost/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/IP/30.jpg">
+<meta property="og:image" content="https://cdn.xiaolincoding.com/gh/xiaolincoder/ImageHost/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/IP/37.jpg">
+<meta property="og:image" content="https://cdn.xiaolincoding.com/gh/xiaolincoder/ImageHost/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/IP/41.jpg">
 <meta property="article:published_time" content="2022-05-13T06:38:33.000Z">
-<meta property="article:modified_time" content="2022-05-19T07:17:11.514Z">
+<meta property="article:modified_time" content="2022-05-20T07:33:33.453Z">
 <meta property="article:author" content="John Doe">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://cdn.xiaolincoding.com/gh/xiaolincoder/ImageHost/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/HTTP/19-HTTPS%E4%B8%8EHTTP.png">
@@ -143,12 +145,35 @@
 <p>需要注意的时：<strong>IP在路由器上不会重组，只会在目标主机才重组</strong>。</p>
 <h3 id="IPv6与IPv4"><a href="#IPv6与IPv4" class="headerlink" title="IPv6与IPv4"></a>IPv6与IPv4</h3><img src="https://cdn.xiaolincoding.com/gh/xiaolincoder/ImageHost/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/IP/30.jpg" alt=" IPv6 中的单播通信" style="zoom:50%;" />
 
-<p>6比4多加了个<strong>链路本地单播地址</strong>，用于不走路由器的本数据链路传播。其他的像v6的唯一本地地址相当于v4的私有IP，v6的全局单播地址相当于v4的共有IP。</p>
+<p>6比4多加了个<strong>链路本地单播地址</strong>，用于不走路由器的本数据链路传播。其他的像v6的<strong>唯一本地地址</strong>相当于v4的私有IP，v6的<strong>全局单播地址</strong>相当于v4的共有IP。</p>
 <h4 id="IPv6相比IPv4的首部改进："><a href="#IPv6相比IPv4的首部改进：" class="headerlink" title="IPv6相比IPv4的首部改进："></a>IPv6相比IPv4的首部改进：</h4><p>1）<strong>取消首部校验和字段</strong>：因为数据链路层和传输层都要校验，所以v6直接取消了IP校验</p>
 <p>2）<strong>取消分片&#x2F;重新组装相关字段</strong>：中间路由器不准分片和重组了</p>
 <p>3）<strong>取消选项字段</strong></p>
 <h2 id="IP协议相关技术"><a href="#IP协议相关技术" class="headerlink" title="IP协议相关技术"></a>IP协议相关技术</h2><h3 id="DNS"><a href="#DNS" class="headerlink" title="DNS"></a>DNS</h3><p>解析域名的</p>
-<h3 id="ARP"><a href="#ARP" class="headerlink" title="ARP"></a>ARP</h3><p>根据IP地址查询MAC地址的</p>
+<h3 id="ARP（有缓存）"><a href="#ARP（有缓存）" class="headerlink" title="ARP（有缓存）"></a>ARP（有缓存）</h3><p>根据IP地址查询MAC地址的，主机A想找主机B的IP对应的MAC地址，就要先<strong>在同一数据链路下进行广播</strong>发送一个ARP请求包，包内<strong>包含了主机B的IP地址</strong>。</p>
+<p>RARP就是通过MAC获取IP，一般在无法通过DHCP获取IP的情况下应用到。</p>
+<h3 id="DHCP"><a href="#DHCP" class="headerlink" title="DHCP"></a>DHCP</h3><p>1）DHCP客户端也就是没有IP地址的客户端<strong>发送DHCP发现报文</strong>（DHCP DISCOVER），在数据链路中以<strong>广播</strong>形式发送；</p>
+<p>2）DHCP服务器收到后向客户端响应（还是广播），发送的是<strong>DHCP提供报文</strong>（DHCP OFFER），报文包括：可租约的IP地址，子网掩码，默认网关，DNS服务器以及<strong>IP地址租用期</strong>。</p>
+<p>3）客户端可能收到多个DHCP发来的报文，选一个并向该服务器发送<strong>DHCP请求报文</strong>（DHCP REQUEST）</p>
+<p>4）服务器发送DHCP响应报文（<strong>DHCP ACK</strong>），应答所要求的参数。</p>
+<p>5）如果<strong>IP快到期</strong>了，客户端继续向服务器发送DHCP请求报文来申请。</p>
+<p>DHCP交互中，<strong>全程都是UDP广播通信</strong>，为了解决不在同一个局域网的通信，出现了<strong>DHCP中继代理</strong>，相当于以前政府直接交涉，现在交给小区居委会代理，居委会负责找政府要IP。（链路广播，中继单播）</p>
+<img src="https://cdn.xiaolincoding.com/gh/xiaolincoder/ImageHost/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/IP/37.jpg" alt=" DHCP 中继代理" style="zoom:50%;" />
+
+<h3 id="NAT"><a href="#NAT" class="headerlink" title="NAT"></a>NAT</h3><p>把私有IP转换为公有IP，如果不加点什么这个好像没啥用，所以有了NAPT</p>
+<p>NAPT就是<strong>将私有IP转换为IP地址＋端口号</strong>，这正是利用了网络传输需要使用传输层协议的特点。</p>
+<p>每次转换都是在NAPT路由器上生成一张转换表，TCP首次握手发出SYN包的时候就<strong>生成了这个表</strong>，关闭连接时候FIN包发送的时候<strong>表就删掉了</strong>。</p>
+<p>NAT&#x2F;NAPT依赖自己的转换表，带来的以下不足：</p>
+<p>1）外部无法与NAT内部服务器建立连接（不懂）</p>
+<p>2）转换表的生成和转换操作有性能开销</p>
+<p>3）NAT路由器一旦重启，所有TCP连接都要重置</p>
+<p>如何解决：</p>
+<p>1）改用IPv6。</p>
+<p>2）NAT穿透技术：就是客户端<strong>主动从NAT设备获取共有IP地址</strong>，然后<strong>自己建立端口映射条目</strong>，不用NAT来建立了。</p>
+<h2 id="ICMP（Internet-Control-Message-Protocol）"><a href="#ICMP（Internet-Control-Message-Protocol）" class="headerlink" title="ICMP（Internet Control Message Protocol）"></a>ICMP（Internet Control Message Protocol）</h2><p>用来确认IP包是否成功发送到目标地址，报告IP被遗弃的原因，报告改善网络设置等。包括两类（橘色和黄色），如下：</p>
+<img src="https://cdn.xiaolincoding.com/gh/xiaolincoder/ImageHost/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/IP/41.jpg" alt="常见的 ICMP 类型" style="zoom:33%;" />
+
+<h3 id="IGMP（不懂）"><a href="#IGMP（不懂）" class="headerlink" title="IGMP（不懂）"></a>IGMP（不懂）</h3><p>组播地址不是IP地址，一般用于UDP协议</p>
 
       
     </div>
