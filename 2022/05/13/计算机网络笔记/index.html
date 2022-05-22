@@ -19,8 +19,10 @@
 <meta property="og:image" content="https://cdn.xiaolincoding.com/gh/xiaolincoder/ImageHost/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/IP/37.jpg">
 <meta property="og:image" content="https://cdn.xiaolincoding.com/gh/xiaolincoder/ImageHost/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/IP/41.jpg">
 <meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9jZG4uanNkZWxpdnIubmV0L2doL3hpYW9saW5jb2Rlci9JbWFnZUhvc3QyLyVFOCVBRSVBMSVFNyVBRSU5NyVFNiU5QyVCQSVFNyVCRCU5MSVFNyVCQiU5Qy9UQ1AtJUU0JUI4JTg5JUU2JUFDJUExJUU2JThGJUExJUU2JTg5JThCJUU1JTkyJThDJUU1JTlCJTlCJUU2JUFDJUExJUU2JThDJUE1JUU2JTg5JThCLzIzLmpwZw?x-oss-process=image/format,png">
+<meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9jZG4uanNkZWxpdnIubmV0L2doL3hpYW9saW5jb2Rlci9JbWFnZUhvc3QyLyVFOCVBRSVBMSVFNyVBRSU5NyVFNiU5QyVCQSVFNyVCRCU5MSVFNyVCQiU5Qy9UQ1AtJUU0JUI4JTg5JUU2JUFDJUExJUU2JThGJUExJUU2JTg5JThCJUU1JTkyJThDJUU1JTlCJTlCJUU2JUFDJUExJUU2JThDJUE1JUU2JTg5JThCLzI2LmpwZw?x-oss-process=image/format,png">
+<meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9jZG4uanNkZWxpdnIubmV0L2doL3hpYW9saW5jb2Rlci9JbWFnZUhvc3QyLyVFOCVBRSVBMSVFNyVBRSU5NyVFNiU5QyVCQSVFNyVCRCU5MSVFNyVCQiU5Qy9UQ1AtJUU0JUI4JTg5JUU2JUFDJUExJUU2JThGJUExJUU2JTg5JThCJUU1JTkyJThDJUU1JTlCJTlCJUU2JUFDJUExJUU2JThDJUE1JUU2JTg5JThCLzMwLmpwZw?x-oss-process=image/format,png">
 <meta property="article:published_time" content="2022-05-13T06:38:33.000Z">
-<meta property="article:modified_time" content="2022-05-21T14:01:03.004Z">
+<meta property="article:modified_time" content="2022-05-22T06:53:59.999Z">
 <meta property="article:author" content="John Doe">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://cdn.xiaolincoding.com/gh/xiaolincoder/ImageHost/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/HTTP/19-HTTPS%E4%B8%8EHTTP.png">
@@ -175,13 +177,26 @@
 <img src="https://cdn.xiaolincoding.com/gh/xiaolincoder/ImageHost/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/IP/41.jpg" alt="常见的 ICMP 类型" style="zoom:33%;" />
 
 <h3 id="IGMP（不懂）"><a href="#IGMP（不懂）" class="headerlink" title="IGMP（不懂）"></a>IGMP（不懂）</h3><p>组播地址不是IP地址，一般用于UDP协议</p>
-<h2 id="TCP三次握手与四次挥手"><a href="#TCP三次握手与四次挥手" class="headerlink" title="TCP三次握手与四次挥手"></a>TCP三次握手与四次挥手</h2><h3 id="三次握手"><a href="#三次握手" class="headerlink" title="三次握手"></a>三次握手</h3><p>第三次握手<strong>可以携带数据</strong>，前两次握手不可携带数据</p>
-<p>每次初始化序列号不一样的意义在于：很大程度避免<strong>历史报文被下一个相同四元组的连接接收</strong>。</p>
+<h2 id="TCP三次握手与四次挥手"><a href="#TCP三次握手与四次挥手" class="headerlink" title="TCP三次握手与四次挥手"></a>TCP三次握手与四次挥手</h2><h3 id="三次握手"><a href="#三次握手" class="headerlink" title="三次握手"></a>三次握手</h3><p>第三次握手<strong>可以携带数据</strong>，前两次握手不可携带数据。</p>
+<p><u>三次握手意义</u>：阻止重复历史连接的初始化（<strong>主要意义</strong>），同步双方初始序列号，避免资源浪费。</p>
+<p>每次<u>初始化序列号不一样的意义</u>：很大程度避免<strong>历史报文被下一个相同四元组的连接接收</strong>。</p>
 <p>MTU和MSS的区别如下：</p>
 <p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9jZG4uanNkZWxpdnIubmV0L2doL3hpYW9saW5jb2Rlci9JbWFnZUhvc3QyLyVFOCVBRSVBMSVFNyVBRSU5NyVFNiU5QyVCQSVFNyVCRCU5MSVFNyVCQiU5Qy9UQ1AtJUU0JUI4JTg5JUU2JUFDJUExJUU2JThGJUExJUU2JTg5JThCJUU1JTkyJThDJUU1JTlCJTlCJUU2JUFDJUExJUU2JThDJUE1JUU2JTg5JThCLzIzLmpwZw?x-oss-process=image/format,png" alt="MTU 与 MSS"></p>
 <p>为什么TCP的整个报文（头部+数据）不交给IP分片？</p>
-<p>因为IP分片丢失，整个IP报文的<strong>所有分片都需要重传</strong>（IP层无超时重传机制）。</p>
+<p>因为IP分片丢失，整个IP报文的<strong>所有分片都需要重传</strong>（IP层无响应，无超时重传机制）。</p>
 <p>而TCP以MSS为单位分片后，某个TCP分片丢失，也是<strong>以MSS为单位重发</strong>的，重传效率大大增加。</p>
+<p><u>第一次握手丢失</u>：<strong>超时重传</strong>（默认逐次等1s, 2s, 4s, 16s, 32s），32s后仍没回应，不传了，直接断开TCP连接</p>
+<p><u>第二次握手丢失</u>：客户端没收到ACK，触发超时重传，<strong>重传SYN报文</strong>；服务端没收到客户端的ACK（第三次握手），触发超时重传，<strong>重传SYN-ACK报文</strong>。</p>
+<p><u>第三次握手丢失</u>：服务端<strong>重传SYN-ACK报文</strong>。</p>
+<p>Linux半连接队列（SYN队列）和全连接队列（Accept队列）：</p>
+<img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9jZG4uanNkZWxpdnIubmV0L2doL3hpYW9saW5jb2Rlci9JbWFnZUhvc3QyLyVFOCVBRSVBMSVFNyVBRSU5NyVFNiU5QyVCQSVFNyVCRCU5MSVFNyVCQiU5Qy9UQ1AtJUU0JUI4JTg5JUU2JUFDJUExJUU2JThGJUExJUU2JTg5JThCJUU1JTkyJThDJUU1JTlCJTlCJUU2JUFDJUExJUU2JThDJUE1JUU2JTg5JThCLzI2LmpwZw?x-oss-process=image/format,png" alt="正常流程" style="zoom:50%;" />
+
+<h3 id="四次挥手："><a href="#四次挥手：" class="headerlink" title="四次挥手："></a>四次挥手：</h3><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9jZG4uanNkZWxpdnIubmV0L2doL3hpYW9saW5jb2Rlci9JbWFnZUhvc3QyLyVFOCVBRSVBMSVFNyVBRSU5NyVFNiU5QyVCQSVFNyVCRCU5MSVFNyVCQiU5Qy9UQ1AtJUU0JUI4JTg5JUU2JUFDJUExJUU2JThGJUExJUU2JTg5JThCJUU1JTkyJThDJUU1JTlCJTlCJUU2JUFDJUExJUU2JThDJUE1JUU2JTg5JThCLzMwLmpwZw?x-oss-process=image/format,png" alt="客户端主动关闭连接 —— TCP 四次挥手" style="zoom:50%;" />
+
+<p><u>第一次挥手丢失</u>：客户端重传FIN报文，超过一定次数，直接进入close状态；</p>
+<p><u>第二次挥手丢失</u>：因为<strong>ACK报文不会重传</strong>，所以还是客户端重传FIN报文，直到超过最大重传次数；</p>
+<p><u>第三次挥手丢失</u>：服务端重发FIN报文，与客户端机制一样；</p>
+<p><u>第四次挥手丢失</u>：服务端重发FIN报文。</p>
 
       
     </div>
