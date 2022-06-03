@@ -71,6 +71,121 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-个人对JVM的理解" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2022/05/11/%E4%B8%AA%E4%BA%BA%E5%AF%B9JVM%E7%9A%84%E7%90%86%E8%A7%A3/" class="article-date">
+  <time class="dt-published" datetime="2022-05-11T12:04:43.000Z" itemprop="datePublished">2022-05-11</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2022/05/11/%E4%B8%AA%E4%BA%BA%E5%AF%B9JVM%E7%9A%84%E7%90%86%E8%A7%A3/">个人对JVM的理解</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h2 id="☆JVM内存结构："><a href="#☆JVM内存结构：" class="headerlink" title="☆JVM内存结构："></a>☆JVM内存结构：</h2><p><img src="D:\Picgo\img\image-20220511200810603.png" alt="image-20220511200810603"></p>
+<p>首先给出JVM的结构图，包括了类装载器子系统、运行时数据区、执行引擎、本地方法接口、垃圾回收（<strong>这里不确定</strong>）</p>
+<p>而内存结构呢，就是运行时数据区部分，也就包括了：程序计数器、虚拟机栈、本地方法栈、堆、方法区。其中方法区在jdk8以后就变成元数据区了。</p>
+<p><u>程序计数器</u>：</p>
+<p>是内存中很小的一个存储空间，可以看作是<strong>当前线程所执行的字节码的行号指示器</strong>。在程序运行过程中，线程是非常多的，但是CPU的核心数却是有限的，所以我们必须要通过不断切换线程来来为处理器分配时间，进而完成程序的执行。程序计数器就是为了实现线程切换用的，<strong>每个线程都用独立的程序计数器</strong>，两两互不干扰，其生命周期也与线程保持一致。</p>
+<p>垃圾回收和内存溢出都与程序计数器无关。</p>
+<h2 id="☆类加载机制整个过程是怎么样的"><a href="#☆类加载机制整个过程是怎么样的" class="headerlink" title="☆类加载机制整个过程是怎么样的"></a>☆类加载机制整个过程是怎么样的</h2><p><img src="D:\Picgo\img\image-20220512150709656.png" alt="image-20220512150709656"></p>
+<p>类加载机制的过程：首先Java虚拟机将描述类的数据从Class文件中<strong>加载到内存</strong>，然后对数据进行<strong>连接以及初始化</strong>的过程，最终形成了可以被JVM可以直接使用的类型。</p>
+<h3 id="1-加载"><a href="#1-加载" class="headerlink" title="1.加载"></a>1.加载</h3><p>加载只是整个“类加载”过程的第一步。这个过程Java虚拟机完成了三件事：</p>
+<p>1）通过一个类的全限定名来<strong>获取定义此类的二进制字节流</strong>。</p>
+<p>2）将这个字节流代表的静态存储结构<strong>转化</strong>为方法区的运行时数据结构（注意：这里仅仅是转化）。</p>
+<p>3）在内存中生成一个代表这个类的java.lang.Class对象，<strong>作为方法区这个类的各种数据访问入口</strong>。</p>
+<h3 id="2-验证"><a href="#2-验证" class="headerlink" title="2.验证"></a>2.验证</h3><p>作为连接的第一步，验证的目的主要是确保加载的Class字节流<strong>不会危害</strong>到虚拟机自身安全（本步骤对应的代码如果已经在之前执行过程中反复验证过了，就可以关掉该步骤，以缩短虚拟机类加载时间）：</p>
+<p>1）文件格式验证：验证字节流<strong>是否符合Class文件格式规范</strong></p>
+<p>2）元数据验证：对字节码进行<strong>语义分析</strong>，比如某个类有无父类，是否继承了不允许继承的类等一些违规的语义</p>
+<p>3）字节码验证：确定程序语义的<strong>合法性、逻辑性</strong>，较复杂，具体见《深入理解JVM》P270</p>
+<p>4）符号引用验证：这个验证要在后面的解析阶段发生，通俗来讲，就是<strong>检验该类是否缺少或者被禁止访问它依赖的某些资源</strong>。</p>
+<h3 id="3-准备"><a href="#3-准备" class="headerlink" title="3.准备"></a>3.准备</h3><p>本阶段开始正式为类中定义的<strong>静态变量分配内存</strong>并<strong>设置初始零值</strong>。注意：JDK 7之前，这部分变量分配在方法区中，而<strong>JDK 8之后，则分配到堆中</strong>。以下两点需要注意：</p>
+<p>1）这里分配内存和设置零值都<strong>仅限于类变量</strong>（静态变量），实例变量将在<strong>对象实例化时随着对象一起分配到Java堆中</strong>。</p>
+<p>2）注意是设置零值，<strong>一般情况不是初始化</strong>。</p>
+<p>3）特殊情况就是<strong>static final定义的变量</strong>，Javac<strong>编译时</strong>就已经为该变量生成ConstantValue属性（可以理解为<strong>设置初始零值</strong>），类加载的准备阶段，就<strong>直接为其赋值</strong>了。</p>
+<h3 id="4-解析"><a href="#4-解析" class="headerlink" title="4.解析"></a>4.解析</h3><p>将字节码中常量池内的符号引用替换为直接引用。</p>
+<p>1）符号引用：是任何形式的字面量，只要使用时能无歧义的“精准定位”即可。</p>
+<p>2）直接引用：可以是<strong>直接指向</strong>目标的<strong>指针</strong>、<strong>相对偏移量</strong>或能<strong>间接定位</strong>到目标的<strong>句柄</strong>。一旦有直接引用，那么相对应的<strong>目标必定在虚拟机内存中存在</strong>。</p>
+<h3 id="5-初始化"><a href="#5-初始化" class="headerlink" title="5.初始化"></a>5.初始化</h3><p>该阶段，虚拟机才正式开始执行类中编写的Java程序代码，将主导权移交给应用程序。在前面的”准备“阶段中，我们已经为类变量进行分配内存和设置零值的操作，接下来就<strong>轮到初始化阶段真正为这些变量赋值</strong>了。</p>
+<p>1）直接来讲，<strong>初始化就是执行类构造器clinit&gt;()方法的过程</strong>，clinit&gt;()是Javac编译器的自动生成物。</p>
+<p>2）clinit&gt;()是编译器自动收集类中<strong>所有的静态变量的赋值动作和静态语句块中的语句</strong>合并而成的，收集顺序就是源代码书写顺序。</p>
+<p>3）在子类执行clinit&gt;()方法前，<strong>先要执行其父类clinit&gt;()<strong>，这也是为什么父类静态语句块要先执行的原因。与类的构造函数（虚拟机视角的实例构造器init&gt;()方法）不同，</strong>不需要显示调用父类构造器</strong>。</p>
+<h2 id="☆类加载器"><a href="#☆类加载器" class="headerlink" title="☆类加载器"></a>☆类加载器</h2><p><img src="D:\Picgo\img\image-20220512194439270.png" alt="image-20220512194439270"></p>
+<p>前面提到，类加载机制的第一步就是加载，我们用到的工具自然是类加载器。其实类加载器分类很简单，就是C&#x2F;C++写的启动类加载器和Java写的类加载器，具体分类如下：</p>
+<p><img src="D:\Picgo\img\image-20220512194934161.png" alt="image-20220512194934161"></p>
+<h3 id="1-启动类加载器（引导类加载器-Bootstrap-ClassLoader）"><a href="#1-启动类加载器（引导类加载器-Bootstrap-ClassLoader）" class="headerlink" title="1.启动类加载器（引导类加载器, Bootstrap ClassLoader）"></a>1.启动类加载器（引导类加载器, Bootstrap ClassLoader）</h3><p>1）<strong>虚拟机自带</strong>，C++编写</p>
+<p>2）用来<strong>加载Java核心库</strong></p>
+<p>3）<strong>没有父加载器，也没有父类</strong></p>
+<p>4）<strong>加载其下面的</strong>扩展类加载器和系统类加载器</p>
+<h3 id="2-扩展类加载器（Extension-ClassLoader）"><a href="#2-扩展类加载器（Extension-ClassLoader）" class="headerlink" title="2.扩展类加载器（Extension ClassLoader）"></a>2.扩展类加载器（Extension ClassLoader）</h3><p>1）Java编写，**<u>独立存在于虚拟机外部</u>**</p>
+<p>2）<strong>继承自抽象类</strong>java.lang.ClassLoader</p>
+<p>3）父类加载器就是上边的Bootstrap ClassLoader</p>
+<h3 id="3-系统类加载器（应用程序类加载器，System-ClassLoader）"><a href="#3-系统类加载器（应用程序类加载器，System-ClassLoader）" class="headerlink" title="3.系统类加载器（应用程序类加载器，System ClassLoader）"></a>3.系统类加载器（应用程序类加载器，System ClassLoader）</h3><p>1）Java编写，**<u>独立存在于虚拟机外部</u>**</p>
+<p>2）<strong>继承自抽象类</strong>java.lang.ClassLoader</p>
+<p>3）父类加载器就是上边的Extension ClassLoader</p>
+<p>4）负责加载环境变量和系统属性指定路径下的类库</p>
+<p>5）程序的默认类加载器，<strong>一般Java应用类都是它加载的</strong>。</p>
+<h3 id="4-用户自定义类加载器"><a href="#4-用户自定义类加载器" class="headerlink" title="4.用户自定义类加载器"></a>4.用户自定义类加载器</h3><h2 id="☆双亲委派模型"><a href="#☆双亲委派模型" class="headerlink" title="☆双亲委派模型"></a>☆双亲委派模型</h2><p>首先我们要知道，虚拟机对class文件是<strong>按需加载</strong>的，也就是只有在需要使用该类的时候，才将其class文件加载到内存中生成class对象。</p>
+<p>那么加载某个class文件的时候，具体的过程是怎么样的呢？这时候就要引入我们的一种特殊模式：双亲委派模式。工作原理如下：</p>
+<p>1）一个类加载器收到类加载请求，<strong>先把请求依次委托其父类加载器去执行</strong>，请求<strong>最终到达顶层</strong>的启动类加载器。</p>
+<p>2）如果父类加载器<strong>可以完成类加载的任务，就成功返回</strong>。若不能完成，<strong>才交给子加载器</strong>进行加载。</p>
+<h3 id="沙箱安全机制"><a href="#沙箱安全机制" class="headerlink" title="沙箱安全机制"></a>沙箱安全机制</h3><p>其实就是利用了双亲委派模型的特点，假如我们定义一个String类，那么加载这个自定义String类的时候，<strong>会先委派到顶部的引导类加载器加载</strong>，引导类发现自己可以加载，就<strong>接着加载JDK自带的文件java.lang.String</strong>，这样就可以避免我们自定义String类对核心源代码的破坏。</p>
+<h3 id="双亲委派机制的优势"><a href="#双亲委派机制的优势" class="headerlink" title="双亲委派机制的优势"></a>双亲委派机制的优势</h3><p>1）避免类的重复加载</p>
+<p>2）保护程序安全，避免核心API被随意篡改</p>
+<h2 id="☆判断两个class对象是否相同，我们需要看什么？"><a href="#☆判断两个class对象是否相同，我们需要看什么？" class="headerlink" title="☆判断两个class对象是否相同，我们需要看什么？"></a>☆判断两个class对象是否相同，我们需要看什么？</h2><p>1）类的名字首先得相同，包名也得一致</p>
+<p>2）加载这个class的类加载器（<strong>ClassLoader实例对象</strong>）必须相同。</p>
+<h2 id="☆Java什么时候对类进行主动引用？"><a href="#☆Java什么时候对类进行主动引用？" class="headerlink" title="☆Java什么时候对类进行主动引用？"></a>☆Java什么时候对类进行主动引用？</h2><p>1）使用new关键字实例化对象的时候</p>
+<p>2）访问某个<strong>类（或接口）的静态变量</strong>，或者对该静态变量<strong>赋值</strong></p>
+<p>3）调用某个类的<strong>静态方法</strong></p>
+<p>4）使用java.lang.reflect包的方法对某个类进行<strong>反射调用</strong></p>
+<p>5）初始化某个类，<strong>优先触发其父类初始化</strong></p>
+<p>6）虚拟机启动时，用户需要<strong>指定一个要执行的主类</strong>（包括main()方法的那个类），虚拟机先初始化该类</p>
+<p>7）JDK 7开始提供<strong>动态语言支持</strong>（不懂）</p>
+<p>8）JDK 8在**接口中定义了默认方法(**default标识)，如果这个接口的实现类发生了初始化，那么该接口要率先初始化。</p>
+<h1 id="☆虚拟机栈的作用是什么？"><a href="#☆虚拟机栈的作用是什么？" class="headerlink" title="☆虚拟机栈的作用是什么？"></a>☆虚拟机栈的作用是什么？</h1><p>栈是<strong>运行时</strong>的单位，而堆是<strong>存储的</strong>单位。栈解决的是程序如何执行，如何处理数据的问题；而堆是解决数据存储的问题。当然一些数据也会存在栈中，只能说栈的主要功能是处理数据，它<strong>是线程私有的</strong>。内部存储着一个个栈帧，<strong>每一个栈帧对应一个Java方法</strong>。</p>
+<p>上面是比较泛泛的总结，虚拟机栈具体是什么作用呢？它主管程序的运行，<strong>在每个栈帧的局部变量表中保存相应方法的局部变量</strong>（8种<strong>基本数据</strong>类型、引用类型变量的<strong>引用地址</strong>），一<strong>部分结果</strong>，并参与方法的<strong>调用和返回</strong>。</p>
+<p>栈操作只有两个：</p>
+<p>1）执行方法的时候，<strong>进栈</strong>（入栈、压栈）</p>
+<p>2）方法执行结束的时候，<strong>出栈</strong></p>
+<p>所以栈<strong>没有垃圾回收机制</strong>，只<strong>存在栈溢出</strong>的现象。</p>
+<h1 id="☆虚拟机栈的常见异常？如何设置栈的大小？"><a href="#☆虚拟机栈的常见异常？如何设置栈的大小？" class="headerlink" title="☆虚拟机栈的常见异常？如何设置栈的大小？"></a>☆虚拟机栈的常见异常？如何设置栈的大小？</h1><p>当<strong>某个线程请求分配的栈容量超过</strong>了Java虚拟机栈允许的最大容量，虚拟机会报<strong>StackOverflowError</strong>，即栈溢出。</p>
+<p>我们可以通过-Xxx设置虚拟机栈的大小。在Idea的Run中，找到Edit Configurations，在当前程序的VM options中写入-Xxx256k即可。</p>
+<p>如果Java虚拟机栈可以动态扩展，但<strong>扩展的时候无法申请到足够的内存</strong>，或者创建新线程的时候<strong>没有足够内存去创建对应的虚拟机栈</strong>，则虚拟机会报OutOfMemoryError异常，也就是我们所说的OOM。</p>
+<h1 id="☆栈帧的内部结构"><a href="#☆栈帧的内部结构" class="headerlink" title="☆栈帧的内部结构"></a>☆栈帧的内部结构</h1><p>栈帧内部包括：局部变量表、操作数栈、动态链接、方法返回地址、一些附加信息。其中，<strong>局部变量表和操作数栈占的内存最大</strong>，主要影响栈帧的大小，而栈帧的大小决定了每个线程的虚拟机栈能存放多少个栈帧。</p>
+<p>1）局部变量表：就是<strong>数字数组</strong>，主要用于<strong>存储方法参数和定义在方法体内的局部变量</strong>，包括基本数据类型、对象引用、returnAddress类型。<strong>slot(变量槽)<strong>是最基本的存储单元，对于byte、short、char在存储前，被</strong>转换为int</strong>,而boolean也被<strong>转换为int</strong>，false对应0，true对应非0。他们都<strong>占用一个slot</strong>。long和double类型的变量<strong>占两个slot</strong>。</p>
+<p>栈帧的<strong>局部变量表与性能调优关系最为密切</strong>，因为在垃圾回收过程中，表中的变量是重要的<strong>垃圾回收根节点</strong>，只要<strong>被表中直接或间接引用的对象</strong>都不会被回收。</p>
+<p>2）操作数栈：在方法执行过程中，根据字节码指令，往栈中写入数据或提取数据，例如执行<strong>复制、交换、求和</strong>等操作。主要用于<strong>保存计算过程中的中间结果</strong>，同时作为计算过程中的<strong>变量临时存储空间</strong>。</p>
+<p>注意：操作数栈<strong>并非通过访问索引来进行数据访问</strong>的，它只是入栈出栈的一个实现工具。</p>
+<p>3）动态链接：<strong>指向运行时常量池</strong>中的该栈帧所属<strong>方法的引用</strong>。在类加载之前，符号引用都在class文件的常量池中，类加载后，这些符号引用就被<strong>类加载阶段的“解析”过程</strong>转换为调用方法的直接引用。动态链接就是<strong>来实现这个“解析”过程的</strong>。</p>
+<h1 id="☆局部变量和静态变量的对比"><a href="#☆局部变量和静态变量的对比" class="headerlink" title="☆局部变量和静态变量的对比"></a>☆局部变量和静态变量的对比</h1><p>我们知道静态变量就是类变量，是在累加载阶段就有初始化操作的，其一是<strong>“准备”阶段的初始化零值</strong>，另一阶段是<strong>”初始化“阶段为类变量赋初始值</strong>。</p>
+<p>对于局部变量，<strong>因为要放在局部变量表中，表没有初始化过程</strong>，所以我们必须在写代码的时候，人为初始化。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2022/05/11/%E4%B8%AA%E4%BA%BA%E5%AF%B9JVM%E7%9A%84%E7%90%86%E8%A7%A3/" data-id="cl31jc9hq00000cv6gfxp6myd" data-title="个人对JVM的理解" class="article-share-link">Share</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-双指针题解" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
     <a href="/2022/05/11/%E5%8F%8C%E6%8C%87%E9%92%88%E9%A2%98%E8%A7%A3/" class="article-date">
@@ -846,7 +961,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/05/">May 2022</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/06/">June 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/05/">May 2022</a></li></ul>
     </div>
   </div>
 
@@ -857,6 +972,10 @@
     <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2022/06/02/Redis%E7%9F%A5%E8%AF%86%E7%82%B9/">Redis知识点</a>
+          </li>
         
           <li>
             <a href="/2022/05/30/%E5%9B%9E%E6%BA%AF%E7%B3%BB%E5%88%97%E9%A2%98%E8%A7%A3/">回溯系列题解</a>
@@ -872,10 +991,6 @@
         
           <li>
             <a href="/2022/05/15/Java%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E7%82%B9/">Java基础知识点</a>
-          </li>
-        
-          <li>
-            <a href="/2022/05/14/%E6%A0%88%E4%B8%8E%E9%98%9F%E5%88%97%E9%A2%98%E8%A7%A3/">栈与队列题解</a>
           </li>
         
       </ul>

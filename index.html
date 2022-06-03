@@ -71,6 +71,260 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-Redis知识点" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2022/06/02/Redis%E7%9F%A5%E8%AF%86%E7%82%B9/" class="article-date">
+  <time class="dt-published" datetime="2022-06-02T05:43:35.000Z" itemprop="datePublished">2022-06-02</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2022/06/02/Redis%E7%9F%A5%E8%AF%86%E7%82%B9/">Redis知识点</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="Redis数据结构"><a href="#Redis数据结构" class="headerlink" title="Redis数据结构"></a>Redis数据结构</h1><h2 id="缓存数据的处理流程及优势"><a href="#缓存数据的处理流程及优势" class="headerlink" title="缓存数据的处理流程及优势"></a>缓存数据的处理流程及优势</h2><p><u>高性能</u>：一个业务要请求数据库中的数据，<u>先从缓存中查询，如果没有再去库里边查询</u>。从库中查询数据是读取硬盘的操作，效率比较低。我们可以将<strong>访问频率比较高</strong>的数据放入缓存中，达到高性能的目的。</p>
+<p><u>高并发</u>：MySQL的QPS大概在<strong>1w</strong>左右（4核8g），但是Redis缓存后很容易达到10w+，单机少一些，Redis<strong>集群更高</strong>。（QPS：Query Per Second，服务器每秒可以执行的查询次数）</p>
+<h2 id="SDS（Simple-Dynamic-String）简单动态字符串"><a href="#SDS（Simple-Dynamic-String）简单动态字符串" class="headerlink" title="SDS（Simple Dynamic String）简单动态字符串"></a>SDS（Simple Dynamic String）简单动态字符串</h2><h3 id="C语言字符串的弊端："><a href="#C语言字符串的弊端：" class="headerlink" title="C语言字符串的弊端："></a>C语言字符串的弊端：</h3><img src="https://img-blog.csdnimg.cn/img_convert/376128646c75a893ad47914858fa2131.png" alt="img" style="zoom: 67%;" />
+
+<ul>
+<li>获取字符串长度，必须要从头到尾遍历到\0才可以，所以<strong>复杂度是o(n)</strong></li>
+<li>字符串里不能存\0，所以是<strong>二进制不安全</strong>的</li>
+<li>字符串操作时有<strong>缓存区溢出</strong>的风险</li>
+</ul>
+<h3 id="SDS结构设计"><a href="#SDS结构设计" class="headerlink" title="SDS结构设计"></a>SDS结构设计</h3><img src="https://img-blog.csdnimg.cn/img_convert/516738c4058cdf9109e40a7812ef4239.png" alt="img" style="zoom: 67%;" />
+
+<p>len：SDS直接记录了字符串的长度，所以<strong>复杂度降为o(1)</strong></p>
+<p>alloc：记录了<strong>分配</strong>给字符数组的空间长度，在修改字符串的时候，首先<strong>计算alloc - len</strong>够不够用，不够的话<strong>自动扩展</strong>空间长度，所以<strong>无缓存区溢出的风险</strong></p>
+<p>flags：记录了五种类型的sds</p>
+<p>buf[]：不仅可以保存字符串，也可以<strong>保存任意格式的二进制数据</strong></p>
+<h2 id="链表"><a href="#链表" class="headerlink" title="链表"></a>链表</h2><img src="https://img-blog.csdnimg.cn/img_convert/cadf797496816eb343a19c2451437f1e.png" alt="img" style="zoom:50%;" />
+
+<ul>
+<li>每个节点都有pre和next指针，而且这两个指针都可以指向NULL，所以链表是<strong>无环链表</strong></li>
+<li>list结构存储了表头指针head和表尾指针tail，所以<strong>获得头尾节点</strong>的复杂度是o(1)</li>
+<li>和SDS一样，list结构也存储了长度len，所以<strong>查询链表长度</strong>的复杂度也是o(1)</li>
+<li>链表节点可以<strong>保存各种不同类型</strong>的值</li>
+</ul>
+<p>缺点：</p>
+<ul>
+<li><strong>内存不连续</strong>，无法很好利用CPU缓存（与数组相比）</li>
+<li>保存每个节点都需要分配一个链表节点结构头，<strong>内存开销大</strong></li>
+</ul>
+<h2 id="压缩列表"><a href="#压缩列表" class="headerlink" title="压缩列表"></a>压缩列表</h2><p><strong>Redis3.0</strong>的产物，为了设计一个<strong>内存紧凑型</strong>的数据结构，节省内存开销，创造了压缩列表</p>
+<img src="https://img-blog.csdnimg.cn/img_convert/ab0b44f557f8b5bc7acb3a53d43ebfcb.png" alt="img" style="zoom: 67%;" />
+
+<p>表头前三个字段分别记录了[整个压缩列表<strong>占用的内存字节数</strong>]，[尾部节点举例起始地址的字节数（<strong>尾部偏移量</strong>）]，[包含的<strong>节点数量</strong>]。最后的[zlend]相当于\0，代表<strong>结束点</strong>。</p>
+<p>通过这三个字段可以容易的查到表头和表尾（复杂度为o(1)），但是查找其他元素就是o(n)</p>
+<p>**<u>缺点明显</u>**：</p>
+<ul>
+<li>不能保存过多元素，会导致查询效率降低</li>
+<li>新增或修改某个元素，内存空间需要重新分配，很可能导致<strong>连锁更新</strong>（多米诺效应）</li>
+</ul>
+<p>**<u>使用场景</u>**：</p>
+<p><strong>节点数量足够小</strong>，即使发生连锁更新，代价也很小。</p>
+<h2 id="哈希表"><a href="#哈希表" class="headerlink" title="哈希表"></a>哈希表</h2><p>与JDK1.8之前的哈希表很相似，都是数组+链表的数据结构，数组里每一个元素就是一个<strong>哈希桶</strong>。</p>
+<img src="https://img-blog.csdnimg.cn/img_convert/85f597f7851b90d6c78bb0d8e39690fc.png" alt="img" style="zoom: 67%;" />
+
+<p>当负载因子 &gt;&#x3D; 1的时候，Redis<u>没有执行RDB快照或者没有进行AOF重写</u>的时候，就会进行rehash操作；</p>
+<p>当负载因子 &gt;&#x3D; 5的时候，哈希冲突会非常严重，<strong>强制rehash</strong></p>
+<h3 id="rehash"><a href="#rehash" class="headerlink" title="rehash"></a>rehash</h3><p>分三步：</p>
+<ul>
+<li>给表2分配空间，一般<strong>比表1大2倍</strong></li>
+<li>将表1的<strong>数据迁移</strong>到表2</li>
+<li>把表1表2<strong>身份互换</strong>，在表2新创建一个空白的哈希表，用于下次rehash</li>
+</ul>
+<h3 id="渐进式rehash"><a href="#渐进式rehash" class="headerlink" title="渐进式rehash"></a>渐进式rehash</h3><p>上面问题就处在数据迁移过程中会引发大量数据拷贝，导致请求阻塞，所以采用渐进式rehash。</p>
+<p>将一次拷贝<strong>分成多次进行</strong>，而且进行的时机是：对哈希表元素<strong>进行CRUD的时候</strong>，顺便将表1中索引位置上的所有key-value<strong>顺序迁移到表2</strong>，随着请求增多，渐进式完成了迁移操作。</p>
+<h1 id="持久化"><a href="#持久化" class="headerlink" title="持久化"></a>持久化</h1><h2 id="AOF持久化"><a href="#AOF持久化" class="headerlink" title="AOF持久化"></a>AOF持久化</h2><p>AOF(Append Only File)就是<strong>保存写操作命令到日志</strong>中，<u>不保存读操作</u>。</p>
+<img src="https://img-blog.csdnimg.cn/img_convert/6f0ab40396b7fc2c15e6f4487d3a0ad7.png" alt="img" style="zoom: 67%;" />
+
+
+
+<h3 id="写在前，日志在后优势与风险"><a href="#写在前，日志在后优势与风险" class="headerlink" title="写在前，日志在后优势与风险"></a>写在前，日志在后优势与风险</h3><p>注意执行写命令和写AOF日志是一个进程中的两个任务，所以要分先后，<u>先执行写命令，后写日志的原因</u>是：</p>
+<ul>
+<li><strong>避免额外的检查开销</strong>，避免写操作的语法等有问题，所以先执行写操作，没问题了再写日志</li>
+<li><strong>不会阻塞当前写</strong>操作命令</li>
+</ul>
+<p><u>先执行写命令，后写日志潜在风险</u>：</p>
+<ul>
+<li>写操作执行完，还没来得及写日志或者日志没来得及写入硬盘，服务器就宕机了，会导致<strong>数据丢失</strong></li>
+<li>虽然不阻塞当前写操作，但是会<strong>阻塞下一个命令操作</strong></li>
+</ul>
+<img src="https://img-blog.csdnimg.cn/img_convert/28afd536c57a46447ddab0a2062abe84.png" alt="img" style="zoom:50%;" />
+
+<p>上面说的风险其实就是AOF传入硬盘的时机问题。这里注意，AOF还没有存入硬盘，真正将AOF写入硬盘有三个策略。</p>
+<h3 id="三种写回策略-与MySQL相似）"><a href="#三种写回策略-与MySQL相似）" class="headerlink" title="三种写回策略(与MySQL相似）"></a>三种写回策略(与MySQL相似）</h3><p>写操作-&gt;AOF-&gt;硬盘具体步骤</p>
+<ol>
+<li><p>实际上，执行完写操作后，先把写操作的命令追加到<strong>server.aof_buf缓冲区</strong>中</p>
+</li>
+<li><p>通过<strong>write()系统调用</strong>，将缓冲区的数据写入AOF文件，此时数据被拷贝到了<strong>内核缓冲区page cache</strong></p>
+</li>
+<li><p>接着就<strong>等待内核</strong>将page cache中的数据写入硬盘</p>
+<img src="https://img-blog.csdnimg.cn/img_convert/4eeef4dd1bedd2ffe0b84d4eaa0dbdea.png" alt="img" style="zoom:50%;" /></li>
+</ol>
+<p>redis.conf配置文件中的appendfsync配置项可以设置3种参数：</p>
+<p><strong><u>Always</u><strong>：每次写操作和AOF日志写回硬盘是</strong>同步</strong>进行的，<u>写一个存一个</u>。</p>
+<p><strong><u>Everysec</u><strong>：写操作执行完，先把命令</strong>写入内核缓冲区</strong>，每隔1秒写回一次硬盘，<u>每隔1秒存一个</u>。</p>
+<p><strong><u>No</u><strong>：写操作执行完，先把命令</strong>写入内核缓冲区</strong>，写回时机完全转交给<u>操作系统控制</u></p>
+<p>不同业务需要使用不同的参数，Always追求<u>高可靠</u>，Everysec追求<u>折中</u>，No追求<u>高性能</u></p>
+<img src="https://img-blog.csdnimg.cn/img_convert/98987d9417b2bab43087f45fc959d32a.png" alt="img" style="zoom: 67%;" />
+
+<h3 id="AOF重写机制"><a href="#AOF重写机制" class="headerlink" title="AOF重写机制"></a>AOF重写机制</h3><p>为了避免AOF越写越大，提供AOF重写机制，<strong>每个键值对只保留一条命令</strong>，用于<u>压缩</u>AOF的大小。</p>
+<p>这一点与MySQL不一样，每个键值的<strong>历史记录</strong>对Redis来说没有意义，所以只保留<strong>最近的一次写操作</strong>。所以具体的方式是：根据每个键值的最新状态，用一条命令记录这个键值对。</p>
+<p>重写的方式是：重写的过程要与原始AOF<strong>隔离</strong>，写完后<strong>覆盖</strong>原始AOF文件，这样<strong>不会</strong>对原始AOF文件<strong>造成污染</strong>。</p>
+<h3 id="AOF后台重写"><a href="#AOF后台重写" class="headerlink" title="AOF后台重写"></a>AOF后台重写</h3><p>为了不影响主进程写AOF机制，重写AOF过程由<strong>后台子进程<em>bgrewriteaof</em></strong>来完成，好处是：</p>
+<ul>
+<li>AOF重写期间，<strong>不影响主进程</strong>，避免阻塞</li>
+<li>子进程带有主进程的<strong>数据副本</strong>。<u>不使用线程</u>是因为：线程间操作共享内存必须<strong>加锁</strong>-&gt;性能降低；<u>使用子进程</u>是因为：父子进程共享内存是<strong>只读</strong>的，所以当有一方操作了共享内存，就发生[<strong>写时复制</strong>]，这样父子进程各自有了<strong>独立</strong>的数据副本，不需加锁。</li>
+</ul>
+<h4 id="数据副本的来由"><a href="#数据副本的来由" class="headerlink" title="数据副本的来由"></a>数据副本的来由</h4><p>主进程通过<strong>fork系统调用</strong>生成子进程时，OS会把主进程的<strong>页表</strong>复制给子进程，这样父子进程的虚拟内存指向了<strong>同一块物理内存</strong>（只读）</p>
+<img src="https://img-blog.csdnimg.cn/img_convert/5a1f2a90b5f3821c19bea3b7a5f27fa1.png" alt="img" style="zoom:50%;" />
+
+<h4 id="写时复制-Copy-On-Write"><a href="#写时复制-Copy-On-Write" class="headerlink" title="写时复制(Copy On Write)"></a>写时复制(Copy On Write)</h4><p>当父或子进程对这块内存发起写操作时，CPU会发起<strong>缺页中断</strong>（违反权限导致），OS会在[<strong>缺页异常处理函数</strong>]进行物理内存的复制（注意<strong>只是被执行写操作的这部分内存</strong>），然后重新设置内存映射关系，将父子进程的内存读写权限设置为<strong>可读写</strong>，最后才对内存进行写操作，这个过程称为<u>写时复制</u>。</p>
+<img src="https://img-blog.csdnimg.cn/img_convert/d4cfac545377b54dd035c775603b4936.png" alt="img" style="zoom:50%;" />
+
+<p>其实写时复制就是为了防止fork创建子进程的时候，<strong>物理内存复制时间过长</strong>，页表要比物理内存小的多，所以<strong>尽可能减少</strong>了<u>子进程创建时对父进程的阻塞</u>。</p>
+<p>三个阶段会<u>阻塞父进程</u>：</p>
+<ul>
+<li>创建子进程复制的<strong>页表</strong>如果特别大，肯定阻塞时间长</li>
+<li>写时复制的时候，<strong>被主进程修改的内存</strong>越大，阻塞越长</li>
+<li>后面要写的执行<strong>信号处理函数</strong></li>
+</ul>
+<p>写时复制带来的问题其实就是父子进程的<strong>时间差</strong>问题：子进程重写了一个key-value，主进程又修改了这对键值对，这次父子进程的<strong>内存数据不一致</strong>了怎么办？</p>
+<h4 id="时间差导致数据不一致问题"><a href="#时间差导致数据不一致问题" class="headerlink" title="时间差导致数据不一致问题"></a>时间差导致数据不一致问题</h4><p>在<strong>创建子进程之后</strong>，Redis开始使用其专门设置的**[<u>AOF重写缓冲区</u>]<strong>，当主进程进行</strong>写操作后**，不仅将命令写入AOF缓冲区中，还写入了AOF缓冲区。</p>
+<img src="https://img-blog.csdnimg.cn/202105270918298.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM0ODI3Njc0,size_16,color_FFFFFF,t_70#pic_center" alt="在这里插入图片描述" style="zoom:45%;" />
+
+<p>为了解决时间差问题，最后在AOF重写完成时必须还要阻塞一下，以便<strong>让子进程追上父进程</strong>：</p>
+<p>当子进程<strong>完成AOF重写工作后</strong>（扫描数据库所有数据。逐一把内存数据的键值对转换成一条命令，写入重写日志），向主进程发送信号（异步）。</p>
+<p>主进程<strong>调用信号处理函数</strong>，将AOF重写缓冲区的所有内容追加到新的AOF中，然后让新的AOF文件改名，覆盖旧的AOF文件。调用函数的时候一定要<strong>阻塞主进程</strong>，否则时间差还会存在。</p>
+<h2 id="RDB快照"><a href="#RDB快照" class="headerlink" title="RDB快照"></a>RDB快照</h2><p>如果说AOF相当于MySQL中的binlog，那么redolog就是Redis中的RDB快照了，两种技术存了不同的日志信息：</p>
+<p>AOF：日志内容是<strong>操作命令</strong></p>
+<p>RDB：日志内容是<strong>二进制数据</strong></p>
+<p>这就带来了二者<u>恢复数据上的差异性</u>：Redis恢复数据的时候，直接<strong>将RDB读入内存即可</strong>；而AOF读入内存后，需要<strong>逐条执行操作命令</strong>才可以恢复。</p>
+<h3 id="生成RDB快照的命令"><a href="#生成RDB快照的命令" class="headerlink" title="生成RDB快照的命令"></a>生成RDB快照的命令</h3><p>save和bgsave，save是<strong>直接在主线程中生成RDB文件</strong>，如果写入时间太长，会<strong>阻塞</strong>主线程；bgsave则是创建子进程，<strong>避免了阻塞</strong>问题。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">save 900 1</span><br><span class="line">save 300 10</span><br><span class="line">save 60 10000</span><br></pre></td></tr></table></figure>
+
+<p>虽然是save，但实际执行的是bgsave，表明在多少秒内，对数据库<strong>至少</strong>进行了多少次<strong>修改</strong>。<strong>满足任意一个</strong>就会执行bgsave。</p>
+<p>注意：RDB快照是**<u>全量快照</u><strong>，也就是每次快照都把</strong>内存中所有数据**存入硬盘中。</p>
+<h3 id="写时复制-Copy-On-Write-1"><a href="#写时复制-Copy-On-Write-1" class="headerlink" title="写时复制(Copy On Write)"></a>写时复制(Copy On Write)</h3><p>与AOF一样，RDB快照也采用[<strong>写时复制技术</strong>]，即当父进程对共享内存执行写操作的时候，CPU先发生缺页中断，然后被执行写操作的内存则被OS复制一份，然后父进程就可以对这部分内存进行写操作了。</p>
+<img src="https://img-blog.csdnimg.cn/img_convert/ebd620db8a1af66fbeb8f4d4ef6adc68.png" alt="图片" style="zoom:50%;" />
+
+<h3 id="混合持久化（AOF-RDB）"><a href="#混合持久化（AOF-RDB）" class="headerlink" title="混合持久化（AOF+RDB）"></a>混合持久化（AOF+RDB）</h3><p>RDB快照刚执行完，肯定会有一部分写操作还会执行，那么在下次快照执行之前，这一部分写操作会导致父子进程的<strong>数据不一致</strong>。解决的方法就是<strong>混合使用AOF日志和内存快照</strong>（混合持久化）。<u>开启方式</u>就是将下面的参数设为yes。</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">aof-use-rdb-preamble yes</span><br></pre></td></tr></table></figure>
+
+<p>Redis 4.0提出的混合持久化，具体工作<strong>只发生</strong>在<u>AOF日志的重写过程</u>：</p>
+<ul>
+<li>首先fork出来的子进程先把共享内存中的数据<strong>以RDB方式</strong>写入AOF中</li>
+<li>然后重写缓冲区中的<strong>增量命令以AOF方式</strong>写入AOF文件中</li>
+<li>写入完成，通知主进程将这个混合持久化的AOF文件<strong>替换旧</strong>的AOF文件</li>
+</ul>
+<img src="https://img-blog.csdnimg.cn/img_convert/f67379b60d151262753fec3b817b8617.png" alt="图片" style="zoom:50%;" />
+
+<p>这样，AOF文件<u>前半部分</u>是RDB格式的<strong>全量数据</strong>，<u>后半部分</u>是AOF格式的<strong>增量数据</strong></p>
+<p>好处是：重启Redis加载数据的时候，<strong>加载速度很快</strong>（RDB直接加载到内存即可），加载完了再加载AOF内容，保证<strong>数据尽可能少的丢失</strong>。</p>
+<h1 id="缓存雪崩、击穿、穿透"><a href="#缓存雪崩、击穿、穿透" class="headerlink" title="缓存雪崩、击穿、穿透"></a>缓存雪崩、击穿、穿透</h1><p>雪崩和击穿都是缓存中的数据没法提供给用户了，用户只好去数据库中找了，一旦这个请求是<strong>大批量的</strong>，那么就会造成雪崩。如果数据批量不大，但是数据<strong>热度特别高</strong>，那么就是击穿，注意不是穿透，因为库上有数据。</p>
+<p>而穿透则是<strong>缓存找不到，数据库也找不到</strong>，相当于一个攻击层层穿透两个库，最后给<strong>打透了</strong>。</p>
+<h2 id="缓存雪崩"><a href="#缓存雪崩" class="headerlink" title="缓存雪崩"></a>缓存雪崩</h2><p>大批量数据访问缓存访不到，只能去库中找，有两个原因：</p>
+<ul>
+<li>大量数据同时过期</li>
+<li>Redis故障宕机</li>
+</ul>
+<img src="https://img-blog.csdnimg.cn/img_convert/717343a0da7a1b05edab1d1cdf8f28e5.png" alt="图片" style="zoom: 45%;" />
+
+<h3 id="大量数据同时过期"><a href="#大量数据同时过期" class="headerlink" title="大量数据同时过期"></a>大量数据同时过期</h3><p>对于大量数据过期可以采用以下几种办法应对：</p>
+<p>1）**<u>均匀设置过期时间</u><strong>：可以在设置过期时间的时候，</strong>加上一个随机数**，保证不会发生同时过期的现象。</p>
+<p>2）**<u>互斥锁</u><strong>：如果发现缓存中数据没有了，那肯定得去库里面找到然后重新构建缓存，这个时候可以加个互斥锁，保证</strong>同一时间只有一个请求<strong>在构建缓存，当然锁要</strong>设置超时时间**，防止意外出现导致阻塞。</p>
+<p>3）**<u>双key策略</u><strong>：即设置主key和备key，主key设置过期时间，而</strong>备key不设置<strong>，这样主key找不到了就去读备key的value。不过，更新缓存的时候要</strong>同时更新**主备key的value。</p>
+<p>4）<u><strong>后台更新缓存</strong></u>：<strong>不设置有效期</strong>，业务线程也不负责更新缓存。更新的工作交给<strong>后台线程定时更新</strong>。</p>
+<p>不过，缓存并不是永久有效，系统内存紧张还是会淘汰一部分数据。解决的方式有二：</p>
+<p>①后台线程不仅定时更新缓存，也<strong>定时检测缓存的有效性</strong>。不过总会在两个检测<strong>间隔内</strong>出现被淘汰但还没更新的</p>
+<p>②当业务线程发现数据失效后，通过<strong>消息队列</strong>发送消息<strong>通知后台线程</strong>更新缓存，用户体验较好</p>
+<p>所以虽说业务线不负责更新，还是<strong>间接的</strong>利用了业务线来完成缓存的更新</p>
+<p>对于<u>刚上线的业务</u>，我们有必要先进行<strong>缓存预热</strong>，即把一些数据提前存入缓存中。</p>
+<h3 id="Redis故障宕机"><a href="#Redis故障宕机" class="headerlink" title="Redis故障宕机"></a>Redis故障宕机</h3><p>Redis故障宕机引起的雪崩问题采用以下两种办法应对：</p>
+<p>1）<u><strong>服务熔断或请求限流机制</strong></u>：服务熔断就是<strong>暂停业务访问缓存</strong>，直接返回错误。直到缓存恢复正常，再进行访问；这种方式保证了数据库的正常运行，但是极大的阻塞了业务进行，所以可以启用请求限流，让<strong>少部分请求发送到数据库</strong>中。</p>
+<p>2）**<u>构建Redis缓存高可靠集群</u><strong>：通过</strong>主从节点**的方式构建可靠集群，当主节点宕机，直接切换为从节点。</p>
+<h2 id="缓存击穿"><a href="#缓存击穿" class="headerlink" title="缓存击穿"></a>缓存击穿</h2><p>就是<strong>热点数据过期</strong>了，数据库很容易被这个<strong>高并发量</strong>冲垮。</p>
+<p>可以认为击穿是雪崩的<strong>子集</strong></p>
+<p>应对方案有如下两种：</p>
+<ul>
+<li>**<u>互斥锁</u>**：保证同一时间只有一个业务线程更新缓存</li>
+<li><strong><u>不给热点数据设置过期时间</u><strong>：后台异步更新缓存，或者过期前，</strong>提前通知</strong>后台线程更新缓存和重设过期时间</li>
+</ul>
+<p>要知道，*<u>不设过期时间不代表缓存一直存在</u>*，很可能因为系统内存紧张而被淘汰，所以还是要做好反馈机制。</p>
+<h2 id="缓存穿透"><a href="#缓存穿透" class="headerlink" title="缓存穿透"></a>缓存穿透</h2><p>缓存和数据库<strong>都没有请求的数据</strong>，导致数据库压力骤增。</p>
+<p>一般<strong>业务误操作</strong>，也就是缓存和数据库的这部分数据被误删除了导致穿透现象；还有就是<strong>黑客恶意攻击</strong>，即故意访问大量不存在的数据业务。</p>
+<p>应对方案有三（<em>宗旨：避免访问数据库</em>）：</p>
+<p>1）<u><strong>非法请求限制</strong></u>：在API入口处判断请求参数<strong>是否合理</strong>，是否含有<strong>非法值</strong>，字段<strong>是否存在</strong>，判断出是非法请求就直接返回错误。</p>
+<p>2）**<u>缓存控制或默认值</u><strong>：可以专门</strong>针对出现缓存穿透的数据<strong>，在缓存中</strong>设置**一个空值或者默认值，这样可以避免访问数据库。</p>
+<p>3）**<u>布隆过滤器</u><strong>快速判断：在</strong>数据库写入数据时<strong>，使用布隆过滤器进行标记，一旦请求在缓存中找不到数据，</strong>先来到布隆过滤器**这里进行数据的存在性判断，避免了访问数据库。</p>
+<p>布隆过滤器基于<strong>哈希函数</strong>查找，存在<strong>哈希碰撞</strong>的可能性，所以布隆过滤器说数据存在，数据<strong>不一定存在</strong>，但是说数据不存在，就<strong>一定不存在</strong>。</p>
+<img src="https://img-blog.csdnimg.cn/img_convert/061e2c04e0ebca3425dd75dd035b6b7b.png" alt="图片" style="zoom:60%;" />
+
+<h1 id="主从复制的实现"><a href="#主从复制的实现" class="headerlink" title="主从复制的实现"></a>主从复制的实现</h1><p>如果数据只存在一台服务器上，一旦服务器宕机或故障，会导致严重的业务中断甚至数据丢失。所以为了避免中单点故障，就需要将服务器的数据保存在多台服务器上。</p>
+<p>这就带来了一个重要的问题——数据一致性如何保证？Redis给出的是<strong>主从复制模式</strong>，主从服务器遵从<strong>读写分离</strong></p>
+<p>如下图所示，主服务器可以<strong>读写</strong>，而从服务器一般是<strong>只读</strong>，一旦主服务器发生<strong>写操作</strong>，就把该操作<strong>同步</strong>给从服务器。</p>
+<img src="https://img-blog.csdnimg.cn/img_convert/2b7231b6aabb9a9a2e2390ab3a280b2d.png" alt="图片" style="zoom:50%;" />
+
+<h2 id="第一次同步"><a href="#第一次同步" class="headerlink" title="第一次同步"></a>第一次同步</h2><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 服务器 B 执行这条命令</span><br><span class="line">replicaof &lt;服务器 A 的 IP 地址&gt; &lt;服务器 A 的 Redis 端口号&gt;</span><br></pre></td></tr></table></figure>
+
+<p>在服务器B上执行该命令，B就会变成A的<strong>从服务器</strong>，然后开始与A进行<strong>第一次同步</strong></p>
+<p><u>第一次同步</u>有如下三阶段：</p>
+<img src="https://img-blog.csdnimg.cn/img_convert/ea4f7e86baf2435af3999e5cd38b6a26.png" alt="图片" style="zoom: 50%;" />
+
+<p>一、<u><strong>建立链接</strong>，协商同步</u>：</p>
+<p><u>1.1-1.2</u>：可以从图中看出来，执行完replicaof命令后，从服务器就<strong>发送psync命令</strong>，表示自己要进行数据同步。</p>
+<p>psync包含主服务器的<strong>runID</strong>（随机ID且唯一，但第一次不知道主服务器的runID，所以<strong>设为？</strong>）和复制进度<strong>offset</strong>（第一次是-1）。</p>
+<p><u>1.3-1.4</u>：主服务器收到psync会回应<strong>FULLRESYNC</strong>，包含了主服务器的runID和主服务器的复制进度offset，从服务器<strong>保存记录</strong>这俩信息。此命令目的是<strong>全量复制</strong>，即把所有数据赋值给从服务器。</p>
+<p>二、<u>主向从<strong>同步数据</strong></u>：</p>
+<p><u>2.1-2.3</u>：主服务器执行bgsave生成RDB文件，然后发给从服务器；</p>
+<p><u>2.4</u>：从服务器收到RDB文件后，<strong>先清空自己的数据再载入RDB</strong>；</p>
+<p>上述操作中，主服务器生成RDB因为是子进程<strong>复制页表</strong>，<strong>不会很大程度阻塞主线程</strong>的进行，但是在<strong>生成、发送、载入RDB</strong>的三个阶段，主服务器都有新的写操作执行的可能性，为了保证数据一致性，就要把这三个时间段的写操作命令写入到<strong>replication buffer缓冲区</strong>中。</p>
+<p>三、<u>主向从发送新的<strong>写操作</strong>命令</u></p>
+<p><u>3.1-3.2</u>：从服务器加载完RDB之后，主服务器将<strong>replication buffer</strong>中的写操作命令<strong>发送</strong>给从服务器，然后从服务器<strong>执行</strong>这些操作。</p>
+<p>至此，第一次同步结束~</p>
+<h2 id="命令传播"><a href="#命令传播" class="headerlink" title="命令传播"></a>命令传播</h2><p>为了<strong>避免</strong>频繁的TCP连接和断开带来<strong>性能开销</strong>，第一次同步后维持长连接，持续<strong>传播写操作</strong>，保证数据的一致性。</p>
+<p>即<strong>基于长连接的命令传播</strong>。</p>
+<img src="https://img-blog.csdnimg.cn/img_convert/03eacec67cc58ff8d5819d0872ddd41e.png" alt="图片" style="zoom:50%;" />
+
+<h2 id="分摊服务器压力"><a href="#分摊服务器压力" class="headerlink" title="分摊服务器压力"></a>分摊服务器压力</h2><p>一个从服务器还好，如果是一个服务器集群，那么在主服务器<strong>创建</strong>RDB的时候，务必会<strong>复制大量页表</strong>，从而对主线程造成<strong>阻塞</strong>；而在<strong>传播</strong>RDB的时候又会<strong>占用主服务器的网络带宽</strong>。</p>
+<p>如何解决这个压力集中的问题？</p>
+<p>在某个从服务器上执行如下的命令：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">replicaof &lt;目标服务器的IP&gt; 6379</span><br></pre></td></tr></table></figure>
+
+<p>如果目标服务器也是<strong>从服务器</strong>，那么<strong>目标服务器</strong>就是当前服务器的“<strong>经理</strong>”。那么它就有向下传播写操作的能力了。</p>
+<img src="https://img-blog.csdnimg.cn/img_convert/4d850bfe8d712d3d67ff13e59b919452.png" alt="图片" style="zoom: 45%;" />
+
+<h2 id="增量复制"><a href="#增量复制" class="headerlink" title="增量复制"></a>增量复制</h2><p>主从服务器在第一次同步之后虽然保持长连接，但是网络连接还是有可能中断，一旦<strong>网络中断</strong>，客户端在从服务器中读到的就是<strong>旧数据</strong>了。</p>
+<p>再次建立连接后，还是和第一次同步一样，传一个psync，但是这次的<strong>offset不是-1</strong>了，而是断开时自己的<strong>复制偏移量</strong>。</p>
+<img src="https://img-blog.csdnimg.cn/img_convert/e081b470870daeb763062bb873a4477e.png" alt="图片" style="zoom:50%;" />
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2022/06/02/Redis%E7%9F%A5%E8%AF%86%E7%82%B9/" data-id="cl3yfz0zx0000b8v6elnn24sa" data-title="Redis知识点" class="article-share-link">Share</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-回溯系列题解" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
     <a href="/2022/05/30/%E5%9B%9E%E6%BA%AF%E7%B3%BB%E5%88%97%E9%A2%98%E8%A7%A3/" class="article-date">
@@ -130,7 +384,7 @@
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line">    List&lt;List&lt;String&gt;&gt; res = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;();</span><br><span class="line">    LinkedList&lt;String&gt; path = <span class="keyword">new</span> <span class="title class_">LinkedList</span>&lt;&gt;();</span><br><span class="line">    <span class="keyword">public</span> List&lt;List&lt;String&gt;&gt; <span class="title function_">partition</span><span class="params">(String s)</span> &#123;</span><br><span class="line">        backTracking(s, <span class="number">0</span>);</span><br><span class="line">        <span class="keyword">return</span> res;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">backTracking</span><span class="params">(String s, <span class="type">int</span> index)</span> &#123;</span><br><span class="line">        <span class="comment">//终止条件</span></span><br><span class="line">        <span class="keyword">if</span>(index == s.length()) &#123;</span><br><span class="line">            res.add(<span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;(path));</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> index;i &lt; s.length();i++) &#123;</span><br><span class="line">            <span class="comment">//在模板的基础上，多了一个判断条件，如果是回文串再添加到path，否则直接进入下一次循环</span></span><br><span class="line">            <span class="keyword">if</span>(isPalindrome(s, index, i)) &#123;<span class="comment">//左闭右闭</span></span><br><span class="line">                <span class="type">String</span> <span class="variable">str</span> <span class="operator">=</span> s.substring(index, i + <span class="number">1</span>);<span class="comment">//左闭右开</span></span><br><span class="line">                path.add(str);</span><br><span class="line">                backTracking(s, i + <span class="number">1</span>);</span><br><span class="line">            	path.removeLast();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">isPalindrome</span><span class="params">(String s, <span class="type">int</span> left, <span class="type">int</span> right)</span> &#123;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> left, j = right;i &lt; j;i++, j--) &#123;</span><br><span class="line">            <span class="keyword">if</span>(s.charAt(i) != s.charAt(j)) &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <h2 id="☆leetcode-93-复原IP地址"><a href="#☆leetcode-93-复原IP地址" class="headerlink" title="☆leetcode 93.复原IP地址"></a>☆leetcode 93.复原IP地址</h2><p><u><strong>题目</strong>：有效 IP 地址 正好由四个整数（每个整数位于 0 到 255 之间组成，且<strong>不能含有前导 0）</strong>，整数之间用 ‘.’ 分隔。</u></p>
-<p><u>例如：”0.1.2.201” 和 “192.168.1.1” 是 <strong>有效</strong> IP 地址，但是 “0.011.255.245”、”192.168.1.312” 和 “<a href="mailto:&#49;&#x39;&#50;&#x2e;&#49;&#x36;&#x38;&#64;&#x31;&#x2e;&#49;">&#49;&#x39;&#50;&#x2e;&#49;&#x36;&#x38;&#64;&#x31;&#x2e;&#49;</a>“ 是 <strong>无效</strong> IP 地址。</u><br><u>给定一个只包含数字的字符串 s ，用以表示一个 IP 地址，返回所有可能的有效 IP 地址，这些地址可以通过在 s 中插入 ‘.’ 来形成。你 <strong>不能</strong> 重新排序或删除 s 中的任何数字。你可以按 <strong>任何</strong> 顺序返回答案。</u></p>
+<p><u>例如：”0.1.2.201” 和 “192.168.1.1” 是 <strong>有效</strong> IP 地址，但是 “0.011.255.245”、”192.168.1.312” 和 “<a href="mailto:&#x31;&#x39;&#50;&#46;&#49;&#54;&#x38;&#x40;&#x31;&#x2e;&#49;">&#x31;&#x39;&#50;&#46;&#49;&#54;&#x38;&#x40;&#x31;&#x2e;&#49;</a>“ 是 <strong>无效</strong> IP 地址。</u><br><u>给定一个只包含数字的字符串 s ，用以表示一个 IP 地址，返回所有可能的有效 IP 地址，这些地址可以通过在 s 中插入 ‘.’ 来形成。你 <strong>不能</strong> 重新排序或删除 s 中的任何数字。你可以按 <strong>任何</strong> 顺序返回答案。</u></p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line">    List&lt;String&gt; res = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;();</span><br><span class="line">    <span class="keyword">public</span> List&lt;String&gt; <span class="title function_">restoreIpAddresses</span><span class="params">(String s)</span> &#123;</span><br><span class="line">        <span class="keyword">if</span>(s.length() &gt; <span class="number">12</span>) <span class="keyword">return</span> res;<span class="comment">//简单的剪枝</span></span><br><span class="line">        backTracking(s, <span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">        <span class="keyword">return</span> res;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">backTracking</span><span class="params">(String s, <span class="type">int</span> index, <span class="type">int</span> pointCount)</span> &#123;</span><br><span class="line">        <span class="comment">//逗点为3个就不用继续循环了，直接判断最后剩下的字符串符不符合条件</span></span><br><span class="line">        <span class="keyword">if</span>(pointCount == <span class="number">3</span>) &#123;</span><br><span class="line">            <span class="keyword">if</span>(isValid(s, index, s.length() - <span class="number">1</span>)) &#123;</span><br><span class="line">                <span class="comment">//这个位置为什么可以直接添加s，可能因为s是形参，每次添加的s之间互不干扰</span></span><br><span class="line">                res.add(s);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> index;i &lt; s.length();i++) &#123;</span><br><span class="line">            <span class="keyword">if</span>(isValid(s, index, i)) &#123;</span><br><span class="line">                <span class="comment">//注意要从0开始加</span></span><br><span class="line">                s = s.substring(<span class="number">0</span>, i + <span class="number">1</span>) + <span class="string">&quot;.&quot;</span> + s.substring(i + <span class="number">1</span>);</span><br><span class="line">                pointCount++;</span><br><span class="line">                backTracking(s, i + <span class="number">2</span>, pointCount);</span><br><span class="line">                pointCount--;</span><br><span class="line">                <span class="comment">//这里删除逗点的方式是拼接逗点左右两边的字符串，而把逗点跳过去</span></span><br><span class="line">                s = s.substring(<span class="number">0</span>, i + <span class="number">1</span>) + s.substring(i + <span class="number">2</span>);</span><br><span class="line">            &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="comment">//一旦IP不合法，就没必要继续向下走了</span></span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">isValid</span><span class="params">(String s, <span class="type">int</span> start, <span class="type">int</span> end)</span> &#123;</span><br><span class="line">        <span class="keyword">if</span>(start &gt; end) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//判断是不是含有前导0</span></span><br><span class="line">        <span class="keyword">if</span>(s.charAt(start) == <span class="string">&#x27;0&#x27;</span> &amp;&amp; start != end) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="type">int</span> <span class="variable">num</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> start;i &lt;= end;i++) &#123;</span><br><span class="line">            num = num * <span class="number">10</span> + (s.charAt(i) - <span class="string">&#x27;0&#x27;</span>);</span><br><span class="line">            <span class="keyword">if</span>(num &gt; <span class="number">255</span>) &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <h1 id="子集问题"><a href="#子集问题" class="headerlink" title="子集问题"></a>子集问题</h1><h2 id="leetcode-78-子集"><a href="#leetcode-78-子集" class="headerlink" title="leetcode 78.子集"></a>leetcode 78.子集</h2><p><u><strong>题目</strong>：给你一个整数数组 <code>nums</code> ，数组中的元素 <strong>互不相同</strong> 。返回该数组所有可能的子集（幂集）。</u></p>
@@ -151,16 +405,36 @@
 <h2 id="leetcode-491-递增子序列"><a href="#leetcode-491-递增子序列" class="headerlink" title="leetcode 491.递增子序列"></a>leetcode 491.递增子序列</h2><p><u><strong>题目</strong>：给你一个整数数组 nums ，找出并返回所有该数组中不同的递增子序列，递增子序列中 <strong>至少有两个元素</strong> 。你可以按 任意顺序 返回答案。</u></p>
 <p><u>数组中可能含有重复元素，如出现<strong>两个整数相等</strong>，也可以视作递增序列的一种特殊情况。</u></p>
 <p><u>输入：nums &#x3D; [4,6,7,7]</u><br><u>输出：[[4,6],[4,6,7],[4,6,7,7],[4,7],[4,7,7],[6,7],[6,7,7],[7,7]]</u></p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line">    List&lt;List&lt;Integer&gt;&gt; res = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;();</span><br><span class="line">    LinkedList&lt;Integer&gt; path = <span class="keyword">new</span> <span class="title class_">LinkedList</span>&lt;&gt;();</span><br><span class="line">    <span class="keyword">public</span> List&lt;List&lt;Integer&gt;&gt; <span class="title function_">findSubsequences</span><span class="params">(<span class="type">int</span>[] nums)</span> &#123;</span><br><span class="line">        backTracking(nums, <span class="number">0</span>);</span><br><span class="line">        <span class="keyword">return</span> res;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">backTracking</span><span class="params">(<span class="type">int</span>[] nums, <span class="type">int</span> startIndex)</span> &#123;</span><br><span class="line">        <span class="comment">//一旦path中装了多于1个元素，就可以放进res中了</span></span><br><span class="line">        <span class="keyword">if</span>(path.size() &gt; <span class="number">1</span>) &#123;</span><br><span class="line">            res.add(<span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;(path));</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//每次树层遍历的开始，定义一个有着map功能的数组used，用于记录同层出现的数字</span></span><br><span class="line">        <span class="type">int</span>[] used = <span class="keyword">new</span> <span class="title class_">int</span>[<span class="number">201</span>];</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> startIndex;i &lt; nums.length;i++) &#123;</span><br><span class="line">            <span class="comment">//不满足递增或者nums[i]已经存在过都要进入下一次循环</span></span><br><span class="line">            <span class="keyword">if</span>(!path.isEmpty() &amp;&amp; nums[i] &lt; path.get(path.size() - <span class="number">1</span>) || used[nums[i] + <span class="number">100</span>] == <span class="number">1</span>) <span class="keyword">continue</span>;</span><br><span class="line">            <span class="comment">//不要忘了记录当前的nums[i]</span></span><br><span class="line">            used[nums[i] + <span class="number">100</span>] = <span class="number">1</span>;</span><br><span class="line">            path.add(nums[i]);</span><br><span class="line">            backTracking(nums, i + <span class="number">1</span>);</span><br><span class="line">            path.removeLast();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line">    List&lt;List&lt;Integer&gt;&gt; res = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;();</span><br><span class="line">    LinkedList&lt;Integer&gt; path = <span class="keyword">new</span> <span class="title class_">LinkedList</span>&lt;&gt;();</span><br><span class="line">    <span class="keyword">public</span> List&lt;List&lt;Integer&gt;&gt; <span class="title function_">findSubsequences</span><span class="params">(<span class="type">int</span>[] nums)</span> &#123;</span><br><span class="line">        backTracking(nums, <span class="number">0</span>);</span><br><span class="line">        <span class="keyword">return</span> res;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">backTracking</span><span class="params">(<span class="type">int</span>[] nums, <span class="type">int</span> startIndex)</span> &#123;</span><br><span class="line">        <span class="comment">//一旦path中装了多于1个元素，就可以放进res中了</span></span><br><span class="line">        <span class="keyword">if</span>(path.size() &gt; <span class="number">1</span>) &#123;</span><br><span class="line">            res.add(<span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;(path));</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//每次树层遍历的开始，定义一个有着map功能的数组used，用于记录同层出现的数字</span></span><br><span class="line">        <span class="type">int</span>[] used = <span class="keyword">new</span> <span class="title class_">int</span>[<span class="number">201</span>];</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> startIndex;i &lt; nums.length;i++) &#123;</span><br><span class="line">            <span class="comment">//不满足递增或者nums[i]已经存在过都要进入下一次循环</span></span><br><span class="line">            <span class="keyword">if</span>(!path.isEmpty() &amp;&amp; nums[i] &lt; path.get(path.size() - <span class="number">1</span>) || used[nums[i] + <span class="number">100</span>] == <span class="number">1</span>) <span class="keyword">continue</span>;</span><br><span class="line">            <span class="comment">//不要忘了记录当前的nums[i]</span></span><br><span class="line">            used[nums[i] + <span class="number">100</span>] = <span class="number">1</span>;</span><br><span class="line">            path.add(nums[i]);</span><br><span class="line">            backTracking(nums, i + <span class="number">1</span>);</span><br><span class="line">            path.removeLast();</span><br><span class="line">            <span class="comment">//这里很容易把user[nums[i] + 100] = 0，不可以的原因是used是针对本循环的，而不是回溯的全局变量，所以不要让used归零</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<h1 id="排列问题"><a href="#排列问题" class="headerlink" title="排列问题"></a>排列问题</h1><h2 id="leetcode-46-全排列"><a href="#leetcode-46-全排列" class="headerlink" title="leetcode 46.全排列"></a>leetcode 46.全排列</h2><p><u><strong>题目</strong>：给定一个不含重复数字的数组 <code>nums</code> ，返回其 <em>所有可能的全排列</em> 。你可以 <strong>按任意顺序</strong> 返回答案。</u></p>
+<h1 id="排列问题"><a href="#排列问题" class="headerlink" title="排列问题"></a>排列问题</h1><h2 id="leetcode-46-全排列（与491递增子序列一起食用）"><a href="#leetcode-46-全排列（与491递增子序列一起食用）" class="headerlink" title="leetcode 46.全排列（与491递增子序列一起食用）"></a>leetcode 46.全排列（与491递增子序列一起食用）</h2><p><u><strong>题目</strong>：给定一个不含重复数字的数组 <code>nums</code> ，返回其 <em>所有可能的全排列</em> 。你可以 <strong>按任意顺序</strong> 返回答案。</u></p>
 <p><u>输入：nums &#x3D; [1,2,3]</u><br><u>输出：[[1,2,3],[1,3,2],[2,1,3],[2,3,1],[3,1,2],[3,2,1]]</u></p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line">    List&lt;List&lt;Integer&gt;&gt; res = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;();</span><br><span class="line">    LinkedList&lt;Integer&gt; path = <span class="keyword">new</span> <span class="title class_">LinkedList</span>&lt;&gt;();</span><br><span class="line">    <span class="type">boolean</span>[] used;</span><br><span class="line">    <span class="keyword">public</span> List&lt;List&lt;Integer&gt;&gt; <span class="title function_">permute</span><span class="params">(<span class="type">int</span>[] nums)</span> &#123;</span><br><span class="line">        used = <span class="keyword">new</span> <span class="title class_">boolean</span>[nums.length];</span><br><span class="line">        backTracking(nums);</span><br><span class="line">        <span class="keyword">return</span> res;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">backTracking</span><span class="params">(<span class="type">int</span>[] nums)</span> &#123;</span><br><span class="line">        <span class="comment">//排列问题只有在path的长度和nums长度相等时才可以存入res，其实就是存入叶子节点</span></span><br><span class="line">        <span class="keyword">if</span>(path.size() == nums.length) &#123;</span><br><span class="line">            res.add(<span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;(path));</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//排列问题不需要指针，每一个位置都要考虑，所以i = 0</span></span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>;i &lt; nums.length;i++) &#123;</span><br><span class="line">            <span class="comment">//一旦之前标记过了，就说明path.contains(nums[i])，也可以用这个来判断</span></span><br><span class="line">            <span class="keyword">if</span>(used[i]) <span class="keyword">continue</span>;</span><br><span class="line">            used[i] = <span class="literal">true</span>;</span><br><span class="line">            path.add(nums[i]);</span><br><span class="line">            backTracking(nums);</span><br><span class="line">            path.removeLast();</span><br><span class="line">            <span class="comment">//不仅要从path里删除元素，也要让数组中该位置元素的标记归零</span></span><br><span class="line">            used[i] = <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
+<h4 id="1-为什么全排列的回溯过程中要让used-i-数组归位，而上一题491递增子序列不需要归位？"><a href="#1-为什么全排列的回溯过程中要让used-i-数组归位，而上一题491递增子序列不需要归位？" class="headerlink" title="1.为什么全排列的回溯过程中要让used[i]数组归位，而上一题491递增子序列不需要归位？"></a>1.为什么全排列的回溯过程中要让used[i]数组归位，而上一题491递增子序列不需要归位？</h4><p>因为全排列的used数组是全局变量，每次backTracking递归过程就是一次深度遍历，而used数组的目的就是让下一层的树枝for循环的时候，避免上面树枝中添加的元素，所以used的目的是**<u>树枝去重</u>**作用的。</p>
+<p>而对于递增子序列，我们的used并不是全局变量，而是每层树枝在广度遍历之前创建的一个**<u>树层去重</u><strong>的数组，如果nums取值范围非常大，我们还要用HashMap来替代数组，因为这道题只有201个不同数值，所以可以用</strong>数组模拟HashMap去重**。所以<u><em>树层遍历的used数组不应该因为回溯深度遍历而被回溯</em></u>。</p>
+<h4 id="2-为什么全排列需要used数组，而组合不需要？"><a href="#2-为什么全排列需要used数组，而组合不需要？" class="headerlink" title="2.为什么全排列需要used数组，而组合不需要？"></a>2.为什么全排列需要used数组，而组合不需要？</h4><p>因为全排列的[1,2,3]和[3,2,1]是两个不一样的结果，组合则是一样的结果。所以组合和子集问题我们都有一个指针，在每层树枝广度遍历的时候通过<strong>backTracking的形参中指针的传递</strong>就避免了重复元素。</p>
+<p>而全排列则不可以有指针，每一层树枝广度遍历的时候，必须要<strong>从0到nums.length每一个元素都要遍历</strong>，而为了避免上面树层已经添加过某些元素，在本层不可以添加了，就要一个负责<strong>深度遍历去重的数组used</strong>。</p>
 <h2 id="leetcode-47-全排列-II"><a href="#leetcode-47-全排列-II" class="headerlink" title="leetcode 47.全排列 II"></a>leetcode 47.全排列 II</h2><p><u><strong>题目</strong>：给定一个可包含重复数字的序列 <code>nums</code> ，<em><strong>按任意顺序</strong></em> 返回所有不重复的全排列。</u></p>
 <p><u>输入：nums &#x3D; [1,1,2]</u><br><u>输出：[[1,1,2], [1,2,1], [2,1,1]]</u></p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line">    List&lt;List&lt;Integer&gt;&gt; res = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;();</span><br><span class="line">    LinkedList&lt;Integer&gt; path = <span class="keyword">new</span> <span class="title class_">LinkedList</span>&lt;&gt;();</span><br><span class="line">    <span class="type">boolean</span>[] used;</span><br><span class="line">    <span class="keyword">public</span> List&lt;List&lt;Integer&gt;&gt; <span class="title function_">permuteUnique</span><span class="params">(<span class="type">int</span>[] nums)</span> &#123;</span><br><span class="line">        used = <span class="keyword">new</span> <span class="title class_">boolean</span>[nums.length];</span><br><span class="line">        Arrays.sort(nums);</span><br><span class="line">        backTracking(nums);</span><br><span class="line">        <span class="keyword">return</span> res;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">backTracking</span><span class="params">(<span class="type">int</span>[] nums)</span> &#123;</span><br><span class="line">        <span class="keyword">if</span>(path.size() == nums.length) &#123;</span><br><span class="line">            res.add(<span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;(path));</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>;i &lt; nums.length;i++) &#123;           </span><br><span class="line">            <span class="comment">//这里是重点，同层去重</span></span><br><span class="line">            <span class="keyword">if</span>(i &gt; <span class="number">0</span> &amp;&amp; nums[i] == nums[i - <span class="number">1</span>] &amp;&amp; used[i - <span class="number">1</span>] == <span class="literal">false</span>) &#123;</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span>(used[i] == <span class="literal">false</span>) &#123;</span><br><span class="line">                used[i] = <span class="literal">true</span>;</span><br><span class="line">                path.add(nums[i]);</span><br><span class="line">                backTracking(nums);</span><br><span class="line">                path.removeLast();</span><br><span class="line">                used[i] = <span class="literal">false</span>;</span><br><span class="line">            &#125; </span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line">    List&lt;List&lt;Integer&gt;&gt; res = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;();</span><br><span class="line">    LinkedList&lt;Integer&gt; path = <span class="keyword">new</span> <span class="title class_">LinkedList</span>&lt;&gt;();</span><br><span class="line">    <span class="type">boolean</span>[] used;</span><br><span class="line">    <span class="keyword">public</span> List&lt;List&lt;Integer&gt;&gt; <span class="title function_">permuteUnique</span><span class="params">(<span class="type">int</span>[] nums)</span> &#123;</span><br><span class="line">        used = <span class="keyword">new</span> <span class="title class_">boolean</span>[nums.length];</span><br><span class="line">        Arrays.sort(nums);</span><br><span class="line">        backTracking(nums);</span><br><span class="line">        <span class="keyword">return</span> res;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">backTracking</span><span class="params">(<span class="type">int</span>[] nums)</span> &#123;</span><br><span class="line">        <span class="keyword">if</span>(path.size() == nums.length) &#123;</span><br><span class="line">            res.add(<span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;(path));</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>;i &lt; nums.length;i++) &#123;           </span><br><span class="line">            <span class="comment">//这里是重点，树层去重</span></span><br><span class="line">            <span class="keyword">if</span>(i &gt; <span class="number">0</span> &amp;&amp; nums[i] == nums[i - <span class="number">1</span>] &amp;&amp; used[i - <span class="number">1</span>] == <span class="literal">false</span>) &#123;</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">//树枝去重</span></span><br><span class="line">            <span class="keyword">if</span>(used[i] == <span class="literal">false</span>) &#123;</span><br><span class="line">                used[i] = <span class="literal">true</span>;</span><br><span class="line">                path.add(nums[i]);</span><br><span class="line">                backTracking(nums);</span><br><span class="line">                path.removeLast();</span><br><span class="line">                used[i] = <span class="literal">false</span>;</span><br><span class="line">            &#125; </span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
+<p>这道题因为是含有重复元素的数组，所以我们去重一般选择的是<strong>同层去重</strong>，前提就是<strong>对nums数组先进行排序</strong>，这在组合题目中就练习过。</p>
+<p>结合上面的全排列，我们发现used数组是为了深度遍历而创建的，那么怎么利用他来进行树层去重呢，首先因为nums排序了，所以每层遍历的时候，都要比较当前元素和前一个元素（如果有的话）是否相等。我们还得证明前一个元素在<strong>同父节点的前一个子节点</strong>已经取过了，我们知道上一个子节点取完会<strong>回溯到父节点</strong>，然后走到本节点，相应的used[i - 1]也会置为false，所以如果used[i - 1] &#x3D;&#x3D; false，说明上一个同父的子节点已经取过了，又因为这两个相邻元素相等，我们这个子节点就没必要继续取了。按照这个思路，当两个相邻元素相等，但used[i - 1] &#x3D; true的时候，就说明前面子节点没添加（其实就是<strong>前面没有子节点，本节点是第一个</strong>），也就是左下角那种情况。</p>
+<img src="https://img-blog.csdnimg.cn/20201124201406192.png" alt="47.全排列II2" style="zoom:35%;" />
+
+<p>如果我们把判断条件中的used[i - 1] &#x3D;&#x3D; false改为true其实也可以，这就是一种树枝去重的方式，要注意和全排列中used[i] &#x3D;&#x3D; true区分开，本题既要判断used[i - 1] &#x3D;&#x3D; true又要判断used[i] &#x3D;&#x3D; true，整个流程如下图所示。可以看到出现了很多冗余的判断，直到最后的右下角，才得到了答案。原因是：我们始终判断的是<strong>前一个元素有没有在整个树枝中出现</strong>，如果<u>先添加最后一个元素</u>，那么前面的元素就可以一次添加进来了。</p>
+<img src="https://img-blog.csdnimg.cn/20201124201431571.png" alt="47.全排列II3" style="zoom: 33%;" />
+
+<h1 id="棋盘问题"><a href="#棋盘问题" class="headerlink" title="棋盘问题"></a>棋盘问题</h1><h2 id="leetcode-51-N皇后"><a href="#leetcode-51-N皇后" class="headerlink" title="leetcode 51.N皇后"></a>leetcode 51.N皇后</h2><p><u><strong>题目</strong>：按照国际象棋的规则，皇后可以攻击与之处在<strong>同一行</strong>或<strong>同一列</strong>或<strong>同一斜线上</strong>的棋子。</u></p>
+<p><u>n 皇后问题 研究的是如何将 n 个皇后放置在 n×n 的棋盘上，并且使皇后彼此之间不能相互攻击。</u></p>
+<p><u>给你一个整数 n ，返回所有不同的 n 皇后问题 的解决方案。</u></p>
+<p><u>每一种解法包含一个不同的 n 皇后问题 的棋子放置方案，该方案中 ‘Q’ 和 ‘.’ 分别代表了皇后和空位。</u></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line">    List&lt;List&lt;String&gt;&gt; res = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;();</span><br><span class="line">    <span class="keyword">public</span> List&lt;List&lt;String&gt;&gt; <span class="title function_">solveNQueens</span><span class="params">(<span class="type">int</span> n)</span> &#123;</span><br><span class="line">        <span class="type">char</span>[][] chessboard = <span class="keyword">new</span> <span class="title class_">char</span>[n][n];</span><br><span class="line">        <span class="comment">//先把数组的每一个位置填上&#x27;.&#x27;</span></span><br><span class="line">        <span class="keyword">for</span>(<span class="type">char</span>[] c : chessboard) &#123;</span><br><span class="line">            Arrays.fill(c, <span class="string">&#x27;.&#x27;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        backTracking(n, <span class="number">0</span>, chessboard);</span><br><span class="line">        <span class="keyword">return</span> res;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">backTracking</span><span class="params">(<span class="type">int</span> n, <span class="type">int</span> row, <span class="type">char</span>[][] chessboard)</span> &#123;</span><br><span class="line">        <span class="keyword">if</span>(row == n) &#123;</span><br><span class="line">            res.add(arrayToList(chessboard));</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> <span class="variable">col</span> <span class="operator">=</span> <span class="number">0</span>;col &lt; n;col++) &#123;</span><br><span class="line">            <span class="keyword">if</span>(isValid(n, row, col, chessboard)) &#123;</span><br><span class="line">                chessboard[row][col] = <span class="string">&#x27;Q&#x27;</span>;</span><br><span class="line">                backTracking(n, row + <span class="number">1</span>, chessboard);</span><br><span class="line">                chessboard[row][col] = <span class="string">&#x27;.&#x27;</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//将数组转换为集合</span></span><br><span class="line">    <span class="keyword">public</span> List&lt;String&gt; <span class="title function_">arrayToList</span><span class="params">(<span class="type">char</span>[][] chessboard)</span> &#123;</span><br><span class="line">        List&lt;String&gt; list = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;();</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">char</span>[] c : chessboard) &#123;</span><br><span class="line">            list.add(String.copyValueOf(c));</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> list;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//判断当前行和列能不能添加Q</span></span><br><span class="line">    <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">isValid</span><span class="params">(<span class="type">int</span> n, <span class="type">int</span> row, <span class="type">int</span> col, <span class="type">char</span>[][] chessboard)</span> &#123;</span><br><span class="line">        <span class="comment">//当前列每一行是否都没有Q</span></span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>;i &lt; n;i++) &#123;</span><br><span class="line">            <span class="keyword">if</span>(chessboard[i][col] == <span class="string">&#x27;Q&#x27;</span>) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//45°有没有Q</span></span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> row - <span class="number">1</span>, j = col - <span class="number">1</span>;i &gt;= <span class="number">0</span> &amp;&amp; j &gt;= <span class="number">0</span>;i--,j--) &#123;</span><br><span class="line">            <span class="comment">//这里写错了两次，是i,j不是row,col</span></span><br><span class="line">            <span class="keyword">if</span>(chessboard[i][j] == <span class="string">&#x27;Q&#x27;</span>) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//135°有没有Q</span></span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> row - <span class="number">1</span>, j = col + <span class="number">1</span>;i &gt;= <span class="number">0</span> &amp;&amp; j &lt;= n - <span class="number">1</span>;i--,j++) &#123;</span><br><span class="line">            <span class="comment">//这里写错了两次，是i,j不是row,col</span></span><br><span class="line">            <span class="keyword">if</span>(chessboard[i][j] == <span class="string">&#x27;Q&#x27;</span>) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h1><p>全排列问题，[1,2]和[2,1]不一样，也就是深度遍历的时候，每层都要<strong>从nums的头遍历到nums的尾</strong>，但必须要记录这一树枝上添加到path的元素，所以一定要用<strong>全局变量数组used</strong>，通过<strong>回溯过程</strong>将used归零，可以有效区分<strong>每个树枝</strong>不含重复元素。记住！每个根节点下面的子节点，都是走的根节点的backTracking()，所以子节点拥有的used<strong>一致的部分</strong>是根节点及其上面的节点，子节点与子节点之间的used互不影响。</p>
 
       
     </div>
@@ -1666,121 +1940,6 @@
 
 
   
-    <article id="post-个人对JVM的理解" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2022/05/11/%E4%B8%AA%E4%BA%BA%E5%AF%B9JVM%E7%9A%84%E7%90%86%E8%A7%A3/" class="article-date">
-  <time class="dt-published" datetime="2022-05-11T12:04:43.000Z" itemprop="datePublished">2022-05-11</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2022/05/11/%E4%B8%AA%E4%BA%BA%E5%AF%B9JVM%E7%9A%84%E7%90%86%E8%A7%A3/">个人对JVM的理解</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <h2 id="☆JVM内存结构："><a href="#☆JVM内存结构：" class="headerlink" title="☆JVM内存结构："></a>☆JVM内存结构：</h2><p><img src="D:\Picgo\img\image-20220511200810603.png" alt="image-20220511200810603"></p>
-<p>首先给出JVM的结构图，包括了类装载器子系统、运行时数据区、执行引擎、本地方法接口、垃圾回收（<strong>这里不确定</strong>）</p>
-<p>而内存结构呢，就是运行时数据区部分，也就包括了：程序计数器、虚拟机栈、本地方法栈、堆、方法区。其中方法区在jdk8以后就变成元数据区了。</p>
-<p><u>程序计数器</u>：</p>
-<p>是内存中很小的一个存储空间，可以看作是<strong>当前线程所执行的字节码的行号指示器</strong>。在程序运行过程中，线程是非常多的，但是CPU的核心数却是有限的，所以我们必须要通过不断切换线程来来为处理器分配时间，进而完成程序的执行。程序计数器就是为了实现线程切换用的，<strong>每个线程都用独立的程序计数器</strong>，两两互不干扰，其生命周期也与线程保持一致。</p>
-<p>垃圾回收和内存溢出都与程序计数器无关。</p>
-<h2 id="☆类加载机制整个过程是怎么样的"><a href="#☆类加载机制整个过程是怎么样的" class="headerlink" title="☆类加载机制整个过程是怎么样的"></a>☆类加载机制整个过程是怎么样的</h2><p><img src="D:\Picgo\img\image-20220512150709656.png" alt="image-20220512150709656"></p>
-<p>类加载机制的过程：首先Java虚拟机将描述类的数据从Class文件中<strong>加载到内存</strong>，然后对数据进行<strong>连接以及初始化</strong>的过程，最终形成了可以被JVM可以直接使用的类型。</p>
-<h3 id="1-加载"><a href="#1-加载" class="headerlink" title="1.加载"></a>1.加载</h3><p>加载只是整个“类加载”过程的第一步。这个过程Java虚拟机完成了三件事：</p>
-<p>1）通过一个类的全限定名来<strong>获取定义此类的二进制字节流</strong>。</p>
-<p>2）将这个字节流代表的静态存储结构<strong>转化</strong>为方法区的运行时数据结构（注意：这里仅仅是转化）。</p>
-<p>3）在内存中生成一个代表这个类的java.lang.Class对象，<strong>作为方法区这个类的各种数据访问入口</strong>。</p>
-<h3 id="2-验证"><a href="#2-验证" class="headerlink" title="2.验证"></a>2.验证</h3><p>作为连接的第一步，验证的目的主要是确保加载的Class字节流<strong>不会危害</strong>到虚拟机自身安全（本步骤对应的代码如果已经在之前执行过程中反复验证过了，就可以关掉该步骤，以缩短虚拟机类加载时间）：</p>
-<p>1）文件格式验证：验证字节流<strong>是否符合Class文件格式规范</strong></p>
-<p>2）元数据验证：对字节码进行<strong>语义分析</strong>，比如某个类有无父类，是否继承了不允许继承的类等一些违规的语义</p>
-<p>3）字节码验证：确定程序语义的<strong>合法性、逻辑性</strong>，较复杂，具体见《深入理解JVM》P270</p>
-<p>4）符号引用验证：这个验证要在后面的解析阶段发生，通俗来讲，就是<strong>检验该类是否缺少或者被禁止访问它依赖的某些资源</strong>。</p>
-<h3 id="3-准备"><a href="#3-准备" class="headerlink" title="3.准备"></a>3.准备</h3><p>本阶段开始正式为类中定义的<strong>静态变量分配内存</strong>并<strong>设置初始零值</strong>。注意：JDK 7之前，这部分变量分配在方法区中，而<strong>JDK 8之后，则分配到堆中</strong>。以下两点需要注意：</p>
-<p>1）这里分配内存和设置零值都<strong>仅限于类变量</strong>（静态变量），实例变量将在<strong>对象实例化时随着对象一起分配到Java堆中</strong>。</p>
-<p>2）注意是设置零值，<strong>一般情况不是初始化</strong>。</p>
-<p>3）特殊情况就是<strong>static final定义的变量</strong>，Javac<strong>编译时</strong>就已经为该变量生成ConstantValue属性（可以理解为<strong>设置初始零值</strong>），类加载的准备阶段，就<strong>直接为其赋值</strong>了。</p>
-<h3 id="4-解析"><a href="#4-解析" class="headerlink" title="4.解析"></a>4.解析</h3><p>将字节码中常量池内的符号引用替换为直接引用。</p>
-<p>1）符号引用：是任何形式的字面量，只要使用时能无歧义的“精准定位”即可。</p>
-<p>2）直接引用：可以是<strong>直接指向</strong>目标的<strong>指针</strong>、<strong>相对偏移量</strong>或能<strong>间接定位</strong>到目标的<strong>句柄</strong>。一旦有直接引用，那么相对应的<strong>目标必定在虚拟机内存中存在</strong>。</p>
-<h3 id="5-初始化"><a href="#5-初始化" class="headerlink" title="5.初始化"></a>5.初始化</h3><p>该阶段，虚拟机才正式开始执行类中编写的Java程序代码，将主导权移交给应用程序。在前面的”准备“阶段中，我们已经为类变量进行分配内存和设置零值的操作，接下来就<strong>轮到初始化阶段真正为这些变量赋值</strong>了。</p>
-<p>1）直接来讲，<strong>初始化就是执行类构造器clinit&gt;()方法的过程</strong>，clinit&gt;()是Javac编译器的自动生成物。</p>
-<p>2）clinit&gt;()是编译器自动收集类中<strong>所有的静态变量的赋值动作和静态语句块中的语句</strong>合并而成的，收集顺序就是源代码书写顺序。</p>
-<p>3）在子类执行clinit&gt;()方法前，<strong>先要执行其父类clinit&gt;()<strong>，这也是为什么父类静态语句块要先执行的原因。与类的构造函数（虚拟机视角的实例构造器init&gt;()方法）不同，</strong>不需要显示调用父类构造器</strong>。</p>
-<h2 id="☆类加载器"><a href="#☆类加载器" class="headerlink" title="☆类加载器"></a>☆类加载器</h2><p><img src="D:\Picgo\img\image-20220512194439270.png" alt="image-20220512194439270"></p>
-<p>前面提到，类加载机制的第一步就是加载，我们用到的工具自然是类加载器。其实类加载器分类很简单，就是C&#x2F;C++写的启动类加载器和Java写的类加载器，具体分类如下：</p>
-<p><img src="D:\Picgo\img\image-20220512194934161.png" alt="image-20220512194934161"></p>
-<h3 id="1-启动类加载器（引导类加载器-Bootstrap-ClassLoader）"><a href="#1-启动类加载器（引导类加载器-Bootstrap-ClassLoader）" class="headerlink" title="1.启动类加载器（引导类加载器, Bootstrap ClassLoader）"></a>1.启动类加载器（引导类加载器, Bootstrap ClassLoader）</h3><p>1）<strong>虚拟机自带</strong>，C++编写</p>
-<p>2）用来<strong>加载Java核心库</strong></p>
-<p>3）<strong>没有父加载器，也没有父类</strong></p>
-<p>4）<strong>加载其下面的</strong>扩展类加载器和系统类加载器</p>
-<h3 id="2-扩展类加载器（Extension-ClassLoader）"><a href="#2-扩展类加载器（Extension-ClassLoader）" class="headerlink" title="2.扩展类加载器（Extension ClassLoader）"></a>2.扩展类加载器（Extension ClassLoader）</h3><p>1）Java编写，**<u>独立存在于虚拟机外部</u>**</p>
-<p>2）<strong>继承自抽象类</strong>java.lang.ClassLoader</p>
-<p>3）父类加载器就是上边的Bootstrap ClassLoader</p>
-<h3 id="3-系统类加载器（应用程序类加载器，System-ClassLoader）"><a href="#3-系统类加载器（应用程序类加载器，System-ClassLoader）" class="headerlink" title="3.系统类加载器（应用程序类加载器，System ClassLoader）"></a>3.系统类加载器（应用程序类加载器，System ClassLoader）</h3><p>1）Java编写，**<u>独立存在于虚拟机外部</u>**</p>
-<p>2）<strong>继承自抽象类</strong>java.lang.ClassLoader</p>
-<p>3）父类加载器就是上边的Extension ClassLoader</p>
-<p>4）负责加载环境变量和系统属性指定路径下的类库</p>
-<p>5）程序的默认类加载器，<strong>一般Java应用类都是它加载的</strong>。</p>
-<h3 id="4-用户自定义类加载器"><a href="#4-用户自定义类加载器" class="headerlink" title="4.用户自定义类加载器"></a>4.用户自定义类加载器</h3><h2 id="☆双亲委派模型"><a href="#☆双亲委派模型" class="headerlink" title="☆双亲委派模型"></a>☆双亲委派模型</h2><p>首先我们要知道，虚拟机对class文件是<strong>按需加载</strong>的，也就是只有在需要使用该类的时候，才将其class文件加载到内存中生成class对象。</p>
-<p>那么加载某个class文件的时候，具体的过程是怎么样的呢？这时候就要引入我们的一种特殊模式：双亲委派模式。工作原理如下：</p>
-<p>1）一个类加载器收到类加载请求，<strong>先把请求依次委托其父类加载器去执行</strong>，请求<strong>最终到达顶层</strong>的启动类加载器。</p>
-<p>2）如果父类加载器<strong>可以完成类加载的任务，就成功返回</strong>。若不能完成，<strong>才交给子加载器</strong>进行加载。</p>
-<h3 id="沙箱安全机制"><a href="#沙箱安全机制" class="headerlink" title="沙箱安全机制"></a>沙箱安全机制</h3><p>其实就是利用了双亲委派模型的特点，假如我们定义一个String类，那么加载这个自定义String类的时候，<strong>会先委派到顶部的引导类加载器加载</strong>，引导类发现自己可以加载，就<strong>接着加载JDK自带的文件java.lang.String</strong>，这样就可以避免我们自定义String类对核心源代码的破坏。</p>
-<h3 id="双亲委派机制的优势"><a href="#双亲委派机制的优势" class="headerlink" title="双亲委派机制的优势"></a>双亲委派机制的优势</h3><p>1）避免类的重复加载</p>
-<p>2）保护程序安全，避免核心API被随意篡改</p>
-<h2 id="☆判断两个class对象是否相同，我们需要看什么？"><a href="#☆判断两个class对象是否相同，我们需要看什么？" class="headerlink" title="☆判断两个class对象是否相同，我们需要看什么？"></a>☆判断两个class对象是否相同，我们需要看什么？</h2><p>1）类的名字首先得相同，包名也得一致</p>
-<p>2）加载这个class的类加载器（<strong>ClassLoader实例对象</strong>）必须相同。</p>
-<h2 id="☆Java什么时候对类进行主动引用？"><a href="#☆Java什么时候对类进行主动引用？" class="headerlink" title="☆Java什么时候对类进行主动引用？"></a>☆Java什么时候对类进行主动引用？</h2><p>1）使用new关键字实例化对象的时候</p>
-<p>2）访问某个<strong>类（或接口）的静态变量</strong>，或者对该静态变量<strong>赋值</strong></p>
-<p>3）调用某个类的<strong>静态方法</strong></p>
-<p>4）使用java.lang.reflect包的方法对某个类进行<strong>反射调用</strong></p>
-<p>5）初始化某个类，<strong>优先触发其父类初始化</strong></p>
-<p>6）虚拟机启动时，用户需要<strong>指定一个要执行的主类</strong>（包括main()方法的那个类），虚拟机先初始化该类</p>
-<p>7）JDK 7开始提供<strong>动态语言支持</strong>（不懂）</p>
-<p>8）JDK 8在**接口中定义了默认方法(**default标识)，如果这个接口的实现类发生了初始化，那么该接口要率先初始化。</p>
-<h1 id="☆虚拟机栈的作用是什么？"><a href="#☆虚拟机栈的作用是什么？" class="headerlink" title="☆虚拟机栈的作用是什么？"></a>☆虚拟机栈的作用是什么？</h1><p>栈是<strong>运行时</strong>的单位，而堆是<strong>存储的</strong>单位。栈解决的是程序如何执行，如何处理数据的问题；而堆是解决数据存储的问题。当然一些数据也会存在栈中，只能说栈的主要功能是处理数据，它<strong>是线程私有的</strong>。内部存储着一个个栈帧，<strong>每一个栈帧对应一个Java方法</strong>。</p>
-<p>上面是比较泛泛的总结，虚拟机栈具体是什么作用呢？它主管程序的运行，<strong>在每个栈帧的局部变量表中保存相应方法的局部变量</strong>（8种<strong>基本数据</strong>类型、引用类型变量的<strong>引用地址</strong>），一<strong>部分结果</strong>，并参与方法的<strong>调用和返回</strong>。</p>
-<p>栈操作只有两个：</p>
-<p>1）执行方法的时候，<strong>进栈</strong>（入栈、压栈）</p>
-<p>2）方法执行结束的时候，<strong>出栈</strong></p>
-<p>所以栈<strong>没有垃圾回收机制</strong>，只<strong>存在栈溢出</strong>的现象。</p>
-<h1 id="☆虚拟机栈的常见异常？如何设置栈的大小？"><a href="#☆虚拟机栈的常见异常？如何设置栈的大小？" class="headerlink" title="☆虚拟机栈的常见异常？如何设置栈的大小？"></a>☆虚拟机栈的常见异常？如何设置栈的大小？</h1><p>当<strong>某个线程请求分配的栈容量超过</strong>了Java虚拟机栈允许的最大容量，虚拟机会报<strong>StackOverflowError</strong>，即栈溢出。</p>
-<p>我们可以通过-Xxx设置虚拟机栈的大小。在Idea的Run中，找到Edit Configurations，在当前程序的VM options中写入-Xxx256k即可。</p>
-<p>如果Java虚拟机栈可以动态扩展，但<strong>扩展的时候无法申请到足够的内存</strong>，或者创建新线程的时候<strong>没有足够内存去创建对应的虚拟机栈</strong>，则虚拟机会报OutOfMemoryError异常，也就是我们所说的OOM。</p>
-<h1 id="☆栈帧的内部结构"><a href="#☆栈帧的内部结构" class="headerlink" title="☆栈帧的内部结构"></a>☆栈帧的内部结构</h1><p>栈帧内部包括：局部变量表、操作数栈、动态链接、方法返回地址、一些附加信息。其中，<strong>局部变量表和操作数栈占的内存最大</strong>，主要影响栈帧的大小，而栈帧的大小决定了每个线程的虚拟机栈能存放多少个栈帧。</p>
-<p>1）局部变量表：就是<strong>数字数组</strong>，主要用于<strong>存储方法参数和定义在方法体内的局部变量</strong>，包括基本数据类型、对象引用、returnAddress类型。<strong>slot(变量槽)<strong>是最基本的存储单元，对于byte、short、char在存储前，被</strong>转换为int</strong>,而boolean也被<strong>转换为int</strong>，false对应0，true对应非0。他们都<strong>占用一个slot</strong>。long和double类型的变量<strong>占两个slot</strong>。</p>
-<p>栈帧的<strong>局部变量表与性能调优关系最为密切</strong>，因为在垃圾回收过程中，表中的变量是重要的<strong>垃圾回收根节点</strong>，只要<strong>被表中直接或间接引用的对象</strong>都不会被回收。</p>
-<p>2）操作数栈：在方法执行过程中，根据字节码指令，往栈中写入数据或提取数据，例如执行<strong>复制、交换、求和</strong>等操作。主要用于<strong>保存计算过程中的中间结果</strong>，同时作为计算过程中的<strong>变量临时存储空间</strong>。</p>
-<p>注意：操作数栈<strong>并非通过访问索引来进行数据访问</strong>的，它只是入栈出栈的一个实现工具。</p>
-<p>3）动态链接：<strong>指向运行时常量池</strong>中的该栈帧所属<strong>方法的引用</strong>。在类加载之前，符号引用都在class文件的常量池中，类加载后，这些符号引用就被<strong>类加载阶段的“解析”过程</strong>转换为调用方法的直接引用。动态链接就是<strong>来实现这个“解析”过程的</strong>。</p>
-<h1 id="☆局部变量和静态变量的对比"><a href="#☆局部变量和静态变量的对比" class="headerlink" title="☆局部变量和静态变量的对比"></a>☆局部变量和静态变量的对比</h1><p>我们知道静态变量就是类变量，是在累加载阶段就有初始化操作的，其一是<strong>“准备”阶段的初始化零值</strong>，另一阶段是<strong>”初始化“阶段为类变量赋初始值</strong>。</p>
-<p>对于局部变量，<strong>因为要放在局部变量表中，表没有初始化过程</strong>，所以我们必须在写代码的时候，人为初始化。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://example.com/2022/05/11/%E4%B8%AA%E4%BA%BA%E5%AF%B9JVM%E7%9A%84%E7%90%86%E8%A7%A3/" data-id="cl31jc9hq00000cv6gfxp6myd" data-title="个人对JVM的理解" class="article-share-link">Share</a>
-      
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
 
 
   <nav id="page-nav">
@@ -1804,7 +1963,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/05/">May 2022</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/06/">June 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/05/">May 2022</a></li></ul>
     </div>
   </div>
 
@@ -1815,6 +1974,10 @@
     <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2022/06/02/Redis%E7%9F%A5%E8%AF%86%E7%82%B9/">Redis知识点</a>
+          </li>
         
           <li>
             <a href="/2022/05/30/%E5%9B%9E%E6%BA%AF%E7%B3%BB%E5%88%97%E9%A2%98%E8%A7%A3/">回溯系列题解</a>
@@ -1830,10 +1993,6 @@
         
           <li>
             <a href="/2022/05/15/Java%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E7%82%B9/">Java基础知识点</a>
-          </li>
-        
-          <li>
-            <a href="/2022/05/14/%E6%A0%88%E4%B8%8E%E9%98%9F%E5%88%97%E9%A2%98%E8%A7%A3/">栈与队列题解</a>
           </li>
         
       </ul>
