@@ -52,7 +52,7 @@
 <meta property="og:image" content="https://static001.geekbang.org/resource/image/8b/76/8b6976fedd6e644022d4026581fb8d76.png">
 <meta property="og:image" content="https://static001.geekbang.org/resource/image/00/53/0014f97423bd75235a9187f492fb2453.png">
 <meta property="article:published_time" content="2022-05-11T03:37:29.914Z">
-<meta property="article:modified_time" content="2022-05-12T13:28:38.661Z">
+<meta property="article:modified_time" content="2022-06-03T14:31:03.334Z">
 <meta property="article:author" content="John Doe">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://static001.geekbang.org/resource/image/0d/d9/0d2070e8f84c4801adbfa03bda1f98d9.png">
@@ -362,7 +362,7 @@
 <p>N设置比较可以<strong>缓解IO瓶颈</strong>问题，但是<strong>主机异常重启，或断电</strong>啥的，就会<strong>丢失最近N个事务的binlog日志</strong>。</p>
 <h3 id="2-redo-log写入机制"><a href="#2-redo-log写入机制" class="headerlink" title="2.redo log写入机制"></a>2.redo log写入机制</h3><img src="https://static001.geekbang.org/resource/image/9d/d4/9d057f61d3962407f413deebc80526d4.png" alt="img" style="zoom: 67%;" />
 
-<p>也是直接上图，我们会发现redo log与binlog最大的不同就是“图小了”，小哪了？所有线程（事务）共用一个redo log buffer。这就说明：<strong>一个事务提交并写道page cache或持久化到磁盘中</strong>（写入到黄色或者绿色区域），<strong>会把当前buffer里所有其他未提交事务全“带走”</strong>。</p>
+<p>也是直接上图，我们会发现redo log与binlog最大的不同就是“图小了”，小哪了？所有线程（事务）共用一个redo log buffer。这就说明：<strong>一个事务提交并写到page cache或持久化到磁盘中</strong>（写入到黄色或者绿色区域），<strong>会把当前buffer里所有其他未提交事务全“带走”</strong>。</p>
 <p>同样redo log的写入也由一个参数控制，就是InnoDB提供的innodb_flush_log_at-trx_commit：</p>
 <p>1.参数为0，每次事务提交只把redo log留在redo log buffer中（<strong>留在缓冲区</strong>）</p>
 <p>2.参数为1，每次事务提交都将redo log直接持久化(<strong>fsync</strong>)到磁盘（<strong>执行IO</strong>）</p>
@@ -615,6 +615,10 @@
       <ul>
         
           <li>
+            <a href="/2022/06/04/%E8%B4%AA%E5%BF%83%E7%B3%BB%E5%88%97%E9%A2%98%E8%A7%A3/">贪心系列题解</a>
+          </li>
+        
+          <li>
             <a href="/2022/06/02/Redis%E7%9F%A5%E8%AF%86%E7%82%B9/">Redis知识点</a>
           </li>
         
@@ -628,10 +632,6 @@
         
           <li>
             <a href="/2022/05/17/%E4%BA%8C%E5%8F%89%E6%A0%91%E9%A2%98%E8%A7%A3/">二叉树题解</a>
-          </li>
-        
-          <li>
-            <a href="/2022/05/15/Java%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E7%82%B9/">Java基础知识点</a>
           </li>
         
       </ul>

@@ -34,8 +34,10 @@
 <meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/03eacec67cc58ff8d5819d0872ddd41e.png">
 <meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/4d850bfe8d712d3d67ff13e59b919452.png">
 <meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/e081b470870daeb763062bb873a4477e.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/2db4831516b9a8b79f833cf0593c1f12.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/5e9e65a4a59b3688fa37cadbd87bb5ac.png">
 <meta property="article:published_time" content="2022-06-02T05:43:35.000Z">
-<meta property="article:modified_time" content="2022-06-03T12:42:45.484Z">
+<meta property="article:modified_time" content="2022-06-04T06:03:50.249Z">
 <meta property="article:author" content="John Doe">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://img-blog.csdnimg.cn/img_convert/376128646c75a893ad47914858fa2131.png">
@@ -247,7 +249,7 @@
 <h3 id="混合持久化（AOF-RDB）"><a href="#混合持久化（AOF-RDB）" class="headerlink" title="混合持久化（AOF+RDB）"></a>混合持久化（AOF+RDB）</h3><p>RDB快照刚执行完，肯定会有一部分写操作还会执行，那么在下次快照执行之前，这一部分写操作会导致父子进程的<strong>数据不一致</strong>。解决的方法就是<strong>混合使用AOF日志和内存快照</strong>（混合持久化）。<u>开启方式</u>就是将下面的参数设为yes。</p>
 <figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">aof-use-rdb-preamble yes</span><br></pre></td></tr></table></figure>
 
-<p>Redis 4.0提出的混合持久化，具体工作<strong>只发生</strong>在<u>AOF日志的重写过程</u>：</p>
+<p><strong>Redis 4.0</strong>提出的混合持久化，具体工作<strong>只发生</strong>在<u>AOF日志的重写过程</u>：</p>
 <ul>
 <li>首先fork出来的子进程先把共享内存中的数据<strong>以RDB方式</strong>写入AOF中</li>
 <li>然后重写缓冲区中的<strong>增量命令以AOF方式</strong>写入AOF文件中</li>
@@ -296,7 +298,7 @@
 <p>布隆过滤器基于<strong>哈希函数</strong>查找，存在<strong>哈希碰撞</strong>的可能性，所以布隆过滤器说数据存在，数据<strong>不一定存在</strong>，但是说数据不存在，就<strong>一定不存在</strong>。</p>
 <img src="https://img-blog.csdnimg.cn/img_convert/061e2c04e0ebca3425dd75dd035b6b7b.png" alt="图片" style="zoom:60%;" />
 
-<h1 id="主从复制的实现"><a href="#主从复制的实现" class="headerlink" title="主从复制的实现"></a>主从复制的实现</h1><p>如果数据只存在一台服务器上，一旦服务器宕机或故障，会导致严重的业务中断甚至数据丢失。所以为了避免中单点故障，就需要将服务器的数据保存在多台服务器上。</p>
+<h1 id="主从复制的实现"><a href="#主从复制的实现" class="headerlink" title="主从复制的实现"></a>主从复制的实现</h1><p>如果数据只存在一台服务器上，一旦服务器宕机或故障，会导致严重的业务中断甚至数据丢失。所以为了避免<strong>单点故障</strong>，就需要将服务器的数据保存在多台服务器上，这也是<strong>避免缓存雪崩（服务器宕机）</strong>的一种方式。</p>
 <p>这就带来了一个重要的问题——数据一致性如何保证？Redis给出的是<strong>主从复制模式</strong>，主从服务器遵从<strong>读写分离</strong></p>
 <p>如下图所示，主服务器可以<strong>读写</strong>，而从服务器一般是<strong>只读</strong>，一旦主服务器发生<strong>写操作</strong>，就把该操作<strong>同步</strong>给从服务器。</p>
 <img src="https://img-blog.csdnimg.cn/img_convert/2b7231b6aabb9a9a2e2390ab3a280b2d.png" alt="图片" style="zoom:50%;" />
@@ -310,7 +312,7 @@
 <p>一、<u><strong>建立链接</strong>，协商同步</u>：</p>
 <p><u>1.1-1.2</u>：可以从图中看出来，执行完replicaof命令后，从服务器就<strong>发送psync命令</strong>，表示自己要进行数据同步。</p>
 <p>psync包含主服务器的<strong>runID</strong>（随机ID且唯一，但第一次不知道主服务器的runID，所以<strong>设为？</strong>）和复制进度<strong>offset</strong>（第一次是-1）。</p>
-<p><u>1.3-1.4</u>：主服务器收到psync会回应<strong>FULLRESYNC</strong>，包含了主服务器的runID和主服务器的复制进度offset，从服务器<strong>保存记录</strong>这俩信息。此命令目的是<strong>全量复制</strong>，即把所有数据赋值给从服务器。</p>
+<p><u>1.3-1.4</u>：主服务器收到psync会回应<strong>FULLRESYNC</strong>，包含了主服务器的runID和主服务器的<strong>复制进度offset</strong>，从服务器<strong>保存记录</strong>这俩信息。此命令目的是<strong>全量复制</strong>，即把所有数据赋值给从服务器。</p>
 <p>二、<u>主向从<strong>同步数据</strong></u>：</p>
 <p><u>2.1-2.3</u>：主服务器执行bgsave生成RDB文件，然后发给从服务器；</p>
 <p><u>2.4</u>：从服务器收到RDB文件后，<strong>先清空自己的数据再载入RDB</strong>；</p>
@@ -331,8 +333,28 @@
 <img src="https://img-blog.csdnimg.cn/img_convert/4d850bfe8d712d3d67ff13e59b919452.png" alt="图片" style="zoom: 45%;" />
 
 <h2 id="增量复制"><a href="#增量复制" class="headerlink" title="增量复制"></a>增量复制</h2><p>主从服务器在第一次同步之后虽然保持长连接，但是网络连接还是有可能中断，一旦<strong>网络中断</strong>，客户端在从服务器中读到的就是<strong>旧数据</strong>了。</p>
-<p>再次建立连接后，还是和第一次同步一样，传一个psync，但是这次的<strong>offset不是-1</strong>了，而是断开时自己的<strong>复制偏移量</strong>。</p>
+<p>网络断开后再恢复，如何*<u>保证主从服务器的一致性</u>*呢？</p>
+<p>Redis 2.8之前，一直采用<strong>全量复制</strong>，开销非常大。</p>
+<p><strong>Redis 2.8开始</strong>，主服务器只会把网络断开期间的<strong>相差</strong>的这一部分写操作传播给从服务器，即<strong>增量复制</strong>。</p>
+<ul>
+<li>再次建立连接后，还是和第一次同步一样，传一个psync，但是这次的<strong>offset不是-1</strong>了，而是断开时自己的<strong>复制偏移量</strong></li>
+<li>主服务器收到psync命令后，响应<strong>CONTINUE命令</strong>来告诉从服务器接下来采用增量复制</li>
+<li>然后主把这部分<strong>增量传给</strong>从服务器</li>
+</ul>
 <img src="https://img-blog.csdnimg.cn/img_convert/e081b470870daeb763062bb873a4477e.png" alt="图片" style="zoom:50%;" />
+
+<p>主服务器如何获知<u><em>这部分增量</em></u>的？</p>
+<p>主服务器在命令传播的时候，不仅把写操作传播给从服务器，也同时将写命令<strong>写入repl_backlog_buffer</strong>这个环形缓冲区，环形意味着<strong>超过容量即覆盖</strong>。</p>
+<p>当从服务器断开重连的时候，向主服务器发送的<strong>fsync</strong>命令包含了其<strong>复制偏移量slave_repl_offset</strong>，主服务器根据自己的<strong>master_repl_offset</strong>与其差值，来决定执行增量同步还是全量同步：</p>
+<p>如果<strong>差值小于</strong>一个扇形存储区域，那么就说明数据还在扇形缓冲区，然后就把扇形区的这部分增量数据<strong>写入到replication buffer</strong>，也就是第一次同步时专门负责传播增量数据的缓冲区，然后进行命令传播，即<strong>增量复制</strong>。</p>
+<p>如果大于一个扇形区域，就会发生<strong>覆盖</strong>，那么就只能进行<strong>全量复制</strong>了。</p>
+<img src="https://img-blog.csdnimg.cn/img_convert/2db4831516b9a8b79f833cf0593c1f12.png" alt="图片" style="zoom:60%;" />
+
+<p>所以一般扇形区域会设置的<strong>尽量大</strong>一些，就是为了<strong>避免全量复制</strong>这种抵消操作。</p>
+<p>估算公式如下：</p>
+<p>second是服务器<strong>断开后重连</strong>的平均时间</p>
+<p>write_size_per_second是主服务器平均每秒产生的<strong>写命令</strong>的数据<strong>大小</strong></p>
+<img src="https://img-blog.csdnimg.cn/img_convert/5e9e65a4a59b3688fa37cadbd87bb5ac.png" alt="图片" style="zoom: 90%;" />
 
       
     </div>
@@ -346,6 +368,15 @@
   
     
 <nav id="article-nav">
+  
+    <a href="/2022/06/04/%E8%B4%AA%E5%BF%83%E7%B3%BB%E5%88%97%E9%A2%98%E8%A7%A3/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          贪心系列题解
+        
+      </div>
+    </a>
   
   
     <a href="/2022/05/30/%E5%9B%9E%E6%BA%AF%E7%B3%BB%E5%88%97%E9%A2%98%E8%A7%A3/" id="article-nav-older" class="article-nav-link-wrap">
@@ -388,6 +419,10 @@
       <ul>
         
           <li>
+            <a href="/2022/06/04/%E8%B4%AA%E5%BF%83%E7%B3%BB%E5%88%97%E9%A2%98%E8%A7%A3/">贪心系列题解</a>
+          </li>
+        
+          <li>
             <a href="/2022/06/02/Redis%E7%9F%A5%E8%AF%86%E7%82%B9/">Redis知识点</a>
           </li>
         
@@ -401,10 +436,6 @@
         
           <li>
             <a href="/2022/05/17/%E4%BA%8C%E5%8F%89%E6%A0%91%E9%A2%98%E8%A7%A3/">二叉树题解</a>
-          </li>
-        
-          <li>
-            <a href="/2022/05/15/Java%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E7%82%B9/">Java基础知识点</a>
           </li>
         
       </ul>
