@@ -38,8 +38,10 @@
 <meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/5e9e65a4a59b3688fa37cadbd87bb5ac.png">
 <meta property="og:image" content="https://img-blog.csdnimg.cn/775865f6bd894dfba8d373ee54d79af1.png">
 <meta property="og:image" content="https://img-blog.csdnimg.cn/13e4361407ba46979e802eaa654dcf67.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/a6286053c6884cf58bf397d01674fe80.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/fdd5f695bb3643258662886f9fba0aab.png">
 <meta property="article:published_time" content="2022-06-02T05:43:35.000Z">
-<meta property="article:modified_time" content="2022-06-04T07:13:06.489Z">
+<meta property="article:modified_time" content="2022-06-06T08:18:46.632Z">
 <meta property="article:author" content="John Doe">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://img-blog.csdnimg.cn/img_convert/376128646c75a893ad47914858fa2131.png">
@@ -219,7 +221,7 @@
 <h4 id="数据副本的来由"><a href="#数据副本的来由" class="headerlink" title="数据副本的来由"></a>数据副本的来由</h4><p>主进程通过<strong>fork系统调用</strong>生成子进程时，OS会把主进程的<strong>页表</strong>复制给子进程，这样父子进程的虚拟内存指向了<strong>同一块物理内存</strong>（只读）</p>
 <img src="https://img-blog.csdnimg.cn/img_convert/5a1f2a90b5f3821c19bea3b7a5f27fa1.png" alt="img" style="zoom:50%;" />
 
-<h4 id="写时复制-Copy-On-Write"><a href="#写时复制-Copy-On-Write" class="headerlink" title="写时复制(Copy On Write)"></a>写时复制(Copy On Write)</h4><p>当父或子进程对这块内存发起写操作时，CPU会发起<strong>缺页中断</strong>（违反权限导致），OS会在[<strong>缺页异常处理函数</strong>]进行物理内存的复制（注意<strong>只是被执行写操作的这部分内存</strong>），然后重新设置内存映射关系，将父子进程的内存读写权限设置为<strong>可读写</strong>，最后才对内存进行写操作，这个过程称为<u>写时复制</u>。</p>
+<h4 id="写时复制-Copy-On-Write"><a href="#写时复制-Copy-On-Write" class="headerlink" title="写时复制(Copy On Write)"></a>写时复制(Copy On Write)</h4><p>当父进程对这块内存发起写操作时，CPU会发起<strong>缺页中断</strong>（违反权限导致），OS会在[<strong>缺页异常处理函数</strong>]进行物理内存的复制（注意<strong>只是被执行写操作的这部分内存</strong>），然后重新设置内存映射关系，将父子进程的<strong>这部分内存</strong>读写权限设置为<strong>可读写</strong>，最后才对内存进行写操作，这个过程称为<u>写时复制</u>。</p>
 <img src="https://img-blog.csdnimg.cn/img_convert/d4cfac545377b54dd035c775603b4936.png" alt="img" style="zoom:50%;" />
 
 <p>其实写时复制就是为了防止fork创建子进程的时候，<strong>物理内存复制时间过长</strong>，页表要比物理内存小的多，所以<strong>尽可能减少</strong>了<u>子进程创建时对父进程的阻塞</u>。</p>
@@ -363,17 +365,46 @@
 <h2 id="哨兵工作机制"><a href="#哨兵工作机制" class="headerlink" title="哨兵工作机制"></a>哨兵工作机制</h2><img src="https://img-blog.csdnimg.cn/775865f6bd894dfba8d373ee54d79af1.png" alt="哨兵的职责" style="zoom: 50%;" />
 
 <h3 id="判断主节点故障"><a href="#判断主节点故障" class="headerlink" title="判断主节点故障"></a>判断主节点故障</h3><p>哨兵会<strong>周期性</strong>地给主从节点发送<strong>PING</strong>命令，根据是否收到回应来判断是否正常运行。</p>
-<p>由于一个哨兵判断有偶然性，很可能是系统压力大或网络拥塞造成未收到回应。为了减少误判，用多个节点部署成<u><em>哨兵集群</em></u>（<strong>最少三台机器</strong>），一旦有一个哨兵判断主节点<strong>主观下线</strong>了，就开始”参考“其他哨兵的“观点”，相当于投票机制。</p>
+<p>由于一个哨兵判断有偶然性，很可能是系统压力大或网络拥塞造成未收到回应。为了减少误判，用多个节点部署成<u><em><strong>哨兵集群</strong></em></u>（最少<strong>三台</strong>机器），一旦有一个哨兵判断主节点<strong>主观下线</strong>了，就开始”参考“其他哨兵的“观点”，相当于投票机制。</p>
 <p>在哨兵配置文件中有一个<strong>quorum配置项</strong>（一般设置为哨兵个数的1&#x2F;2 + 1），如果投票数超过这个值，主节点就会被标记为<strong>客观下线</strong>。</p>
 <img src="https://img-blog.csdnimg.cn/13e4361407ba46979e802eaa654dcf67.png" alt="img" style="zoom:45%;" />
 
-<h3 id="选新的主节点"><a href="#选新的主节点" class="headerlink" title="选新的主节点"></a>选新的主节点</h3><p>选择新的主节点，必然要在从节点中选择，一定不能随机选，因为有些从节点可能网络连接不太好，选了它相当于选择了残疾人，所以要<strong>避开连接状态不好</strong>的节点。</p>
+<h3 id="选新的主节点"><a href="#选新的主节点" class="headerlink" title="选新的主节点"></a>选新的主节点</h3><p>选择新的主节点，必然要在从节点中选择，一定不能随机选，因为有些从节点可能网络连接不太好，选了它相当于选择了”残疾人”，所以要<strong>避开连接状态不好</strong>的节点。</p>
 <p>Redis中有一个down-after-milliseconds * 10的配置项，意为主从节点<strong>断后重连</strong>的最大超时时间，如果在<strong>这个时间内</strong>没连上，那就认为主从节点断连了，如果次数超过10次，说明这个<strong>从节点网络状况</strong>不好。</p>
 <p>过滤掉离线的和网络不好的节点后，开始三轮考察：</p>
-<p>第一轮：先选<strong>优先级最高</strong>的从服务器作为主服务器。配置项slava-priority可以设置。</p>
+<p>第一轮：先选<strong>优先级最高</strong>的从服务器作为主服务器。配置项slava-priority可以设置</p>
 <p>第二轮：选<strong>复制进度最靠前</strong>的从节点。比较谁的slave_repl_offset最接近master_repl_offset</p>
 <p>第三轮：前面都一样，就<strong>选ID小的</strong>从节点</p>
 <p><u>总结</u>：<em>先过滤离线的和网络不好的，然后进行三轮考察</em>，每一轮考察中，如果有胜出的节点，直接作为新主节点。</p>
+<h3 id="哨兵竞争主从故障转移"><a href="#哨兵竞争主从故障转移" class="headerlink" title="哨兵竞争主从故障转移"></a>哨兵竞争主从故障转移</h3><p>选定了哪个从节点作为接下来的主节点之后，就要决定哪个哨兵节点<strong>负责故障转移</strong>这项工作。</p>
+<p>首先要确定<strong>候选者</strong>：只有判断主节点是<strong>客观下线</strong>的哨兵才可以成为候选者。</p>
+<p>候选者如何成为leader？通过所有节点（包括自己）投票选举。所有节点只可以投给候选者赞成票，而且<strong>机会只有一次</strong>，这就意味着候选者可以投给自己（<strong>其实候选者都投给自己，然后向其他哨兵发起投票请求</strong>）。</p>
+<p>当候选者满足以下两个条件就可以成为leader：</p>
+<ul>
+<li>拿到<strong>一半以上</strong>数量（<strong>所有</strong>哨兵数量的一半 + 1）的赞成票；</li>
+<li>拿到的票数要 <strong>&gt;&#x3D;</strong> 哨兵配置文件中的<strong>quorum</strong>值</li>
+</ul>
+<p><u><em>问</em></u>：假如当前Redis 1主4从，5个哨兵，挂了2个，quorum设为3，判断主节点宕机能否判断其“<strong>客观下线</strong>”？主从能否<strong>自动切换</strong>？</p>
+<p><u><em>答</em></u>：还有3个哨兵，全部投“主观下线”，就<strong>可以判断“客观下线”</strong>了。对于主从故障转移，就要判断投票数能不能超过半数（<strong>5&#x2F;2 + 1 &#x3D; 3</strong>），能。再判断能不能超过quorum &#x3D; 3，前面判断过了，也能。所以<strong>可以自动切换</strong>。</p>
+<p><u><em>问</em></u>：还是5个哨兵，挂了3，quorum设为2呢？</p>
+<p>挂了3还有两个可以投票，而quorum正好改为2，所以<strong>可以判断“客观下线”</strong>。而（5&#x2F;2 + 1 &#x3D; 3），但是哨兵只有俩，赞成票数无法超过半数，所以<strong>无法自动切换</strong></p>
+<p><u><em>问</em>：</u>：还是5个哨兵，还是挂了3，但是quorum设为3？</p>
+<p>*<u>答</u>*：这个时候两票已经超不过quorum了，所以<strong>既无法判读“客观下线”，又无法自动切换</strong>。</p>
+<p>这里面我们故意把quorum随意调整了，就是为了证明<strong>quorum</strong>不是随便设置的，其最好设置为<strong>哨兵个数 &#x2F; 2 + 1</strong>，同时保证<strong>哨兵数量为奇数</strong>。</p>
+<h3 id="通知客户端新的主节点信息"><a href="#通知客户端新的主节点信息" class="headerlink" title="通知客户端新的主节点信息"></a>通知客户端新的主节点信息</h3><p>主从切换之后，新的主节点迫切需要被客户端知道，否则客户端都不知道该找谁进行写操作。</p>
+<p>Redis采用发布者&#x2F;订阅者机制来实现信息的通知的。每个哨兵节点提供发布者&#x2F;订阅者机制，客户端可以<strong>从哨兵订阅消息</strong>。</p>
+<p>假如客户端<strong>订阅了主从切换的事件</strong>，当哨兵选好了新的主节点，就会<strong>发布</strong>新主节点的<strong>IP和端口信息</strong>，客户端就<strong>收到</strong>了这个信息，就自然可以与新主节点通信了。</p>
+<h2 id="哨兵集群如何组成的"><a href="#哨兵集群如何组成的" class="headerlink" title="哨兵集群如何组成的"></a>哨兵集群如何组成的</h2><p>其实搭建哨兵并配置信息的时候，只需要设置<strong>主节点</strong>名字、IP和端口号以及quorum值。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sentinel monitor &lt;master-name&gt; &lt;ip&gt; &lt;redis-port&gt; &lt;quorum&gt; </span><br></pre></td></tr></table></figure>
+
+<p>既没有填其他<strong>哨兵节点</strong>信息，也没有填其他的<strong>从节点</strong>信息。</p>
+<p>其实哨兵节点之间是通过<u><em><strong>Redis的发布者&#x2F;订阅者机制</strong></em></u>来<strong>相互发现</strong>的。</p>
+<p>主节点上有一个订阅频道，名为_sentinel_:hello，比如下图的A把自己的IP和端口发到这个频道上，B、C订阅了这个频道，B、C就可以获取A的位置，进而形成哨兵集群。</p>
+<img src="https://img-blog.csdnimg.cn/a6286053c6884cf58bf397d01674fe80.png" alt="img" style="zoom: 40%;" />
+
+<p>那么哨兵又是<strong>如何监控</strong>从节点的呢？</p>
+<p>哨兵会向主节点发送INFO命令来获取从节点的信息，主节点就返回从节点列表。然后哨兵根据这个列表的信息，与每个从节点建立连接。</p>
+<img src="https://img-blog.csdnimg.cn/fdd5f695bb3643258662886f9fba0aab.png" alt="img" style="zoom:40%;" />
 
       
     </div>
