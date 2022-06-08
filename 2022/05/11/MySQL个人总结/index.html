@@ -51,8 +51,18 @@
 <meta property="og:image" content="https://static001.geekbang.org/resource/image/bc/45/bcf75aa3b0f496699fd7885426bc6245.png">
 <meta property="og:image" content="https://static001.geekbang.org/resource/image/8b/76/8b6976fedd6e644022d4026581fb8d76.png">
 <meta property="og:image" content="https://static001.geekbang.org/resource/image/00/53/0014f97423bd75235a9187f492fb2453.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20201010150116971.png#pic_center">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20201010150415789.png#pic_center">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20201117100620286.png#pic_center">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20201117101002301.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/2020111710115694.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20201117105815991.png#pic_center">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20201117110334814.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20201117110353157.png">
+<meta property="og:image" content="https://guide-blog-images.oss-cn-shenzhen.aliyuncs.com/github/javaguide/open-source-project/cluster-index.png">
+<meta property="og:image" content="https://guide-blog-images.oss-cn-shenzhen.aliyuncs.com/github/javaguide/open-source-project/no-cluster-index.png">
 <meta property="article:published_time" content="2022-05-11T03:37:29.914Z">
-<meta property="article:modified_time" content="2022-06-03T14:31:03.334Z">
+<meta property="article:modified_time" content="2022-06-08T07:06:04.814Z">
 <meta property="article:author" content="John Doe">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://static001.geekbang.org/resource/image/0d/d9/0d2070e8f84c4801adbfa03bda1f98d9.png">
@@ -145,6 +155,7 @@
 <h3 id="4-优化器（该怎么做）"><a href="#4-优化器（该怎么做）" class="headerlink" title="4.优化器（该怎么做）"></a>4.优化器（该怎么做）</h3><p>优化器是在表里面有多个索引的时候，决定使用哪个索引，或者多表关联(join)的时候，决定各表连接顺序。</p>
 <h3 id="5-执行器"><a href="#5-执行器" class="headerlink" title="5.执行器"></a>5.执行器</h3><p>要先判断当前用户<strong>是否对表有查询权限</strong>。为什么到这里才查权限，其实一共有三层查询权限的过程，引用极客的评论：“连接器是账号权限校验   分析器是库权限验证   执行器是语句在表中权限验证。”</p>
 <p>假如当前查询的字段<strong>没有索引</strong>，那么就是走全表扫描，具体操作<strong>不是存储引擎单独完成的，而是执行器每次调用InnoDB引擎的接口来走全表扫描的</strong>。</p>
+<p><u>记住！！！存储引擎是<strong>基于表</strong>的，而不是基于数据库的。</u></p>
 <p>如果<strong>有索引</strong>，那么执行器就<strong>直接调用InnoDB“满足条件的这一行”这个接口</strong>。</p>
 <p>我们在使用慢查询日志的时候看到的<strong>rows_examined</strong>的字段，表示<strong>语句执行过程中扫描了多少行</strong>，这个值其实就是<strong>执行器每次调用引擎</strong>获取数据行的时候<strong>累加</strong>的。<!--这里不确定执行器的这个累加值到底是怎么算的--></p>
 <p>不过需要注意的是，<strong>执行器调用一次，引擎可能扫描多行</strong>，所以引擎扫描行数和rows_examined<strong>并不完全相同</strong>。</p>
@@ -556,6 +567,42 @@
 <p>但是，假如当前日志盘的IO利用率是100%，那么<strong>执行更新操作会非常的慢</strong>，这个时候也说明主库出问题了，需要主备切换，但是<strong>当前update操作需要的资源很小</strong>，所以可能表现为：更新速度很快。这就<strong>误让我们认为</strong>主库还是可用的。</p>
 <h3 id="4-内部统计"><a href="#4-内部统计" class="headerlink" title="4.内部统计"></a>4.内部统计</h3><p>MySQL 5.6版本以后提供了performance_schema库，可以查询<strong>统计每次IO请求的时间</strong>，也就是对MySQL库实时监控。</p>
 <p>综上，作者建议<strong>优先update系统表</strong>，然后<strong>配合增加检测performance_schema</strong>的信息。</p>
+<h1 id="数据库三大范式"><a href="#数据库三大范式" class="headerlink" title="数据库三大范式"></a>数据库三大范式</h1><p><strong>第一范式</strong>：列（属性）不可分割，下面左边的表格中，进货和销售两大列要分开成右边的表格</p>
+<p><img src="https://img-blog.csdnimg.cn/20201010150116971.png#pic_center" alt="在这里插入图片描述" style="zoom: 45%;" />改成:<img src="https://img-blog.csdnimg.cn/20201010150415789.png#pic_center" alt="在这里插入图片描述" style="zoom: 60%;" /></p>
+<p><strong>第二范式</strong>：非主键的属性必须<strong>完全依赖主键</strong>属性。（不能只<strong>依赖主键的一部分</strong>）</p>
+<p>比如下面的表格，订单编号和商品号联合组成了主键，除了订单金额，其他元素都只与这个主键相关；而订单金额只与订单编号相关，而与商品号不相关，所以需要单独建立订单编号和订单金额的表，消除非主属性对主键的**<u>部分函数依赖</u>**。</p>
+<img src="https://img-blog.csdnimg.cn/20201117100620286.png#pic_center" alt="不符合第二范式" style="zoom:60%;" />
+
+<p>改成下面的两张表即可：</p>
+<p><img src="https://img-blog.csdnimg.cn/20201117101002301.png" alt="表一" style="zoom:60%;" /><img src="https://img-blog.csdnimg.cn/2020111710115694.png" alt="表二" style="zoom: 50%;" /></p>
+<p><strong>第三范式</strong>：任何非主属性不依赖于其他非主属性，即在2NF上，消除了**<u>传递依赖</u><strong>（</strong>非主属性之间**不能有依赖）</p>
+<p>图中的老师性别与年龄只与老师姓名有关，所以<strong>非主键之间</strong>出现了依赖，需要单独建立一张表</p>
+<img src="https://img-blog.csdnimg.cn/20201117105815991.png#pic_center" alt="不符合第三范式" style="zoom:70%;" />
+
+<p>改成下面的两张表即可：</p>
+<p><img src="https://img-blog.csdnimg.cn/20201117110334814.png" alt="表一" style="zoom:70%;" /><img src="https://img-blog.csdnimg.cn/20201117110353157.png" alt="表二" style="zoom:70%;" /></p>
+<h1 id="索引"><a href="#索引" class="headerlink" title="索引"></a>索引</h1><h2 id="底层数据结构"><a href="#底层数据结构" class="headerlink" title="底层数据结构"></a>底层数据结构</h2><h3 id="1-哈希表存储的弊端"><a href="#1-哈希表存储的弊端" class="headerlink" title="1.哈希表存储的弊端"></a>1.哈希表存储的弊端</h3><ul>
+<li><strong>哈希冲突</strong>问题，不过这个<strong>问题不大</strong>，可以通过拉链法、扩容数组甚至链表转换为红黑树去解决</li>
+<li>最大的问题是哈希表<strong>不支持顺序和范围查询</strong>。</li>
+</ul>
+<h3 id="2-B树和B-树的区别"><a href="#2-B树和B-树的区别" class="headerlink" title="2.B树和B+树的区别"></a>2.B树和B+树的区别</h3><ul>
+<li><strong>B树</strong>的所有节点<strong>既存放键key又存放数据data</strong>，而B+树只有<strong>叶子节点</strong>存放key和data，上层节点都<strong>只存放key</strong></li>
+<li>B树的叶子节点相互独立，B+树的叶子节点之间是<strong>双向链</strong></li>
+<li>B树的检索过程是对整棵树的每个节点做二分查找，可能到不了叶子节点就查到了；而B+树每次都是<strong>从根节点遍历到叶子节点</strong>，检索效率<strong>更稳定</strong>。</li>
+</ul>
+<h3 id="3-MyISAM引擎和InnoDB引擎的索引结构区别"><a href="#3-MyISAM引擎和InnoDB引擎的索引结构区别" class="headerlink" title="3.MyISAM引擎和InnoDB引擎的索引结构区别"></a>3.MyISAM引擎和InnoDB引擎的索引结构区别</h3><p>都使用B+树，但是实现方式不太一样：</p>
+<p>MyISAM引擎的B+树叶子节点的data域存放的是<strong>数据记录的地址</strong>。搜索索引的时候，如果某个key存在，就取出data域的地址值，然后读取该地址值位置的数据，也可以叫做“非聚簇索引”。</p>
+<p>InnoDB引擎的B+树叶子节点存放的<strong>本身就是数据文件</strong>，与MyISAM的<strong>索引文件和数据文件分离</strong>是不同的，所以InnoDB的索引存储了完整的数据文件，无论是聚簇索引还是非聚簇索引存放的存放的<strong>主键key都是值本身</strong>，而不是地址。</p>
+<h2 id="索引类型"><a href="#索引类型" class="headerlink" title="索引类型"></a>索引类型</h2><p>主键索引不用多说：</p>
+<img src="https://guide-blog-images.oss-cn-shenzhen.aliyuncs.com/github/javaguide/open-source-project/cluster-index.png" alt="img" style="zoom:25%;" />
+
+<p>二级索引注意一下，唯一索引、普通索引、前缀索引都是二级索引。</p>
+<img src="https://guide-blog-images.oss-cn-shenzhen.aliyuncs.com/github/javaguide/open-source-project/no-cluster-index.png" alt="img" style="zoom:25%;" />
+
+<p><strong>唯一索引</strong>是为了属性数据的唯一性，而<strong>不是为了查询效率</strong></p>
+<p><strong>普通索引</strong>是为了快速查询数据，<strong>允许数据重复和NULL</strong>。</p>
+<p><strong>前缀索引</strong>只适用于字符串类型的数据，即对字符串<strong>前几个字符</strong>创建索引。</p>
+<p><strong>全文索引</strong>：<strong>MySQL 5.6</strong>之前只有MyISAM支持，<strong>5.6</strong>之后InnoDB也支持全文索引。</p>
 
       
     </div>

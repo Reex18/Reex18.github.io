@@ -18,6 +18,7 @@
 <meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/cadf797496816eb343a19c2451437f1e.png">
 <meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/ab0b44f557f8b5bc7acb3a53d43ebfcb.png">
 <meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/85f597f7851b90d6c78bb0d8e39690fc.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/cabce0ce7e320bc9d9b5bde947b6811b.png">
 <meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/6f0ab40396b7fc2c15e6f4487d3a0ad7.png">
 <meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/28afd536c57a46447ddab0a2062abe84.png">
 <meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/4eeef4dd1bedd2ffe0b84d4eaa0dbdea.png">
@@ -41,7 +42,7 @@
 <meta property="og:image" content="https://img-blog.csdnimg.cn/a6286053c6884cf58bf397d01674fe80.png">
 <meta property="og:image" content="https://img-blog.csdnimg.cn/fdd5f695bb3643258662886f9fba0aab.png">
 <meta property="article:published_time" content="2022-06-02T05:43:35.000Z">
-<meta property="article:modified_time" content="2022-06-06T08:18:46.632Z">
+<meta property="article:modified_time" content="2022-06-07T07:16:55.212Z">
 <meta property="article:author" content="John Doe">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://img-blog.csdnimg.cn/img_convert/376128646c75a893ad47914858fa2131.png">
@@ -174,8 +175,11 @@
 <li>将表1的<strong>数据迁移</strong>到表2</li>
 <li>把表1表2<strong>身份互换</strong>，在表2新创建一个空白的哈希表，用于下次rehash</li>
 </ul>
-<h3 id="渐进式rehash"><a href="#渐进式rehash" class="headerlink" title="渐进式rehash"></a>渐进式rehash</h3><p>上面问题就处在数据迁移过程中会引发大量数据拷贝，导致请求阻塞，所以采用渐进式rehash。</p>
+<img src="https://img-blog.csdnimg.cn/img_convert/cabce0ce7e320bc9d9b5bde947b6811b.png" alt="img" style="zoom:50%;" />
+
+<h3 id="渐进式rehash"><a href="#渐进式rehash" class="headerlink" title="渐进式rehash"></a>渐进式rehash</h3><p>上面问题就处在数据迁移过程中会引发<strong>大量数据拷贝</strong>，导致<strong>请求阻塞</strong>，所以采用渐进式rehash。</p>
 <p>将一次拷贝<strong>分成多次进行</strong>，而且进行的时机是：对哈希表元素<strong>进行CRUD的时候</strong>，顺便将表1中索引位置上的所有key-value<strong>顺序迁移到表2</strong>，随着请求增多，渐进式完成了迁移操作。</p>
+<p>如果渐进式rehash期间，新增一个key-value，只会保存在哈希表2中，而<strong>哈希表1只减不增</strong>。</p>
 <h1 id="持久化"><a href="#持久化" class="headerlink" title="持久化"></a>持久化</h1><h2 id="AOF持久化"><a href="#AOF持久化" class="headerlink" title="AOF持久化"></a>AOF持久化</h2><p>AOF(Append Only File)就是<strong>保存写操作命令到日志</strong>中，<u>不保存读操作</u>。</p>
 <img src="https://img-blog.csdnimg.cn/img_convert/6f0ab40396b7fc2c15e6f4487d3a0ad7.png" alt="img" style="zoom: 67%;" />
 
