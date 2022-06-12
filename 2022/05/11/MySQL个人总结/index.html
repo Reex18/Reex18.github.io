@@ -14,6 +14,9 @@
 <meta property="og:description" content="01讲 | 基础架构：一条SQL查询语句是如何执行的？下图是MySQL的逻辑架构图   大体来说，MySQL可以分为Server层和存储引擎层两部分 Server层包括：连接器、查询缓存、分析器、优化器和执行器等。而不同的存储引擎共用一个Server层。 1.连接器连接器负责跟客户端建立连接、获取权限、维持和管理连接。 2.查询缓存MySQL拿到一个查询请求之后，会先到查询缓存中看看，之前查没查过">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://static001.geekbang.org/resource/image/0d/d9/0d2070e8f84c4801adbfa03bda1f98d9.png">
+<meta property="og:image" content="https://static001.geekbang.org/resource/image/82/d6/823acf76e53c0bdba7beab45e72e90d6.png">
+<meta property="og:image" content="https://static001.geekbang.org/resource/image/cd/6e/cda2a0d7decb61e59dddc83ac51efb6e.png">
+<meta property="og:image" content="https://static001.geekbang.org/resource/image/18/be/18fd5179b38c8c3804b313c3582cd1be.jpg">
 <meta property="og:image" content="https://static001.geekbang.org/resource/image/3e/86/3e30d9a5e67f711f5af2e2599e800286.png">
 <meta property="og:image" content="https://static001.geekbang.org/resource/image/50/28/5008d7e9e22be88a9c80916df4f4b328.png">
 <meta property="og:image" content="https://static001.geekbang.org/resource/image/74/ca/742249a31b83f4858c51bfe106a5daca.png">
@@ -62,7 +65,7 @@
 <meta property="og:image" content="https://guide-blog-images.oss-cn-shenzhen.aliyuncs.com/github/javaguide/open-source-project/cluster-index.png">
 <meta property="og:image" content="https://guide-blog-images.oss-cn-shenzhen.aliyuncs.com/github/javaguide/open-source-project/no-cluster-index.png">
 <meta property="article:published_time" content="2022-05-11T03:37:29.914Z">
-<meta property="article:modified_time" content="2022-06-08T07:06:04.814Z">
+<meta property="article:modified_time" content="2022-06-09T08:50:00.325Z">
 <meta property="article:author" content="John Doe">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://static001.geekbang.org/resource/image/0d/d9/0d2070e8f84c4801adbfa03bda1f98d9.png">
@@ -159,6 +162,49 @@
 <p>如果<strong>有索引</strong>，那么执行器就<strong>直接调用InnoDB“满足条件的这一行”这个接口</strong>。</p>
 <p>我们在使用慢查询日志的时候看到的<strong>rows_examined</strong>的字段，表示<strong>语句执行过程中扫描了多少行</strong>，这个值其实就是<strong>执行器每次调用引擎</strong>获取数据行的时候<strong>累加</strong>的。<!--这里不确定执行器的这个累加值到底是怎么算的--></p>
 <p>不过需要注意的是，<strong>执行器调用一次，引擎可能扫描多行</strong>，所以引擎扫描行数和rows_examined<strong>并不完全相同</strong>。</p>
+<h2 id="08讲-事务到底是隔离的还是不隔离的？"><a href="#08讲-事务到底是隔离的还是不隔离的？" class="headerlink" title="08讲 | 事务到底是隔离的还是不隔离的？"></a>08讲 | 事务到底是隔离的还是不隔离的？</h2><h3 id="1-可重复读隔离级别"><a href="#1-可重复读隔离级别" class="headerlink" title="1.可重复读隔离级别"></a>1.可重复读隔离级别</h3><p>先创建下面的表，只含有id和k两列，id为主键，插入了两行数据</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; CREATE TABLE `t` (</span><br><span class="line">  `id` int(11) NOT NULL,</span><br><span class="line">  `k` int(11) DEFAULT NULL,</span><br><span class="line">  PRIMARY KEY (`id`)</span><br><span class="line">) ENGINE=InnoDB;</span><br><span class="line">insert into t(id, k) values(1,1),(2,2);</span><br></pre></td></tr></table></figure>
+
+<p>在<strong>可重复读的隔离级别</strong>下执行下面的三个事务：</p>
+<img src="https://static001.geekbang.org/resource/image/82/d6/823acf76e53c0bdba7beab45e72e90d6.png" alt="img" style="zoom:50%;" />
+
+<p>注意start&#x2F;begin transaction不是事务的起点，起点是其后面的<strong>第一个操作InnoDB的语句</strong>；</p>
+<p>而start transaction with consistent snapshot顾名思义<strong>创建一致性视图</strong>，才是事务的<strong>起点</strong>。</p>
+<p>图中例子默认<strong>autocommit&#x3D;1</strong>，即<strong>除非显示声明事务开始</strong>，否则默认一个语句执行完就提交</p>
+<p>首先，因为是RR隔离级别，所以我们开启了事务以后，其他在当前事务之后的更新都不会被读取到，但是这只涉及查询语句。因为<strong>查询语句是快照读</strong>：</p>
+<p>比如事务A我们定义其事务Id为99，那么事务B就是100，事务C就是101，<strong>事务B和C的Id都比A要大</strong>，他们的快照不会被事务A中的查询语句读取到，所有最后事务A**读取的还是(1,1)**，即实现了可重复读。快照读有下面三种判断方式：</p>
+<p>​	1.事务已提交，但是在视图创建之后提交的，该视图不可见；（比如事务C对于A）</p>
+<p>​	2.事务已提交，而且在视图创建之前提交的，该视图就可见；（比如一个比A还早的事务提交过）</p>
+<p>​	3.事务未提交，那肯定不可见。（比如事务B对于A）</p>
+<p>以上是快照读，那么当前读是什么呢？</p>
+<p>对于增删改操作，数据都是<strong>先读后写</strong>的，这个读，就是<strong>读取当前最新的快照</strong>。对于查询语句，我们可以在select语句中加上lock in share mode（读锁，共享锁）或for update（写锁，排他锁），所以事务B更新的数据是在事务C更新结束后再更新的，即(1,2) -&gt; (1,3)。</p>
+<table>
+<thead>
+<tr>
+<th align="left"></th>
+<th align="left">S 锁（读锁）</th>
+<th>X 锁（写锁）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">S 锁</td>
+<td align="left">不冲突</td>
+<td>冲突</td>
+</tr>
+<tr>
+<td align="left">X 锁</td>
+<td align="left">冲突</td>
+<td>冲突</td>
+</tr>
+</tbody></table>
+<p>下面把事务发生流程稍微改动一下，即<strong>事务C</strong>在事务B更新、查询之前<strong>没有立刻提交</strong>（改成C’）：</p>
+<img src="https://static001.geekbang.org/resource/image/cd/6e/cda2a0d7decb61e59dddc83ac51efb6e.png" alt="img" style="zoom:50%;" />
+
+<p>这里C’因为没有及时提交，所以更新完变成(1,2)之后，正拿着这个快照版本的写锁还没释放，事务B是当前读，必须要读最新的版本，还必须得给最新版本加锁，这些步骤缺一不可，所以事务B的这个当前读操作就被C’的写锁给锁住了，<strong>必须等C’释放写锁</strong>，才可以继续进行当前读。</p>
+<h3 id="2-读提交隔离级别"><a href="#2-读提交隔离级别" class="headerlink" title="2.读提交隔离级别"></a>2.读提交隔离级别</h3><p>这个级别其实就<strong>不存在持续整个事务的一致性快照</strong>了，即start transaction with consistent snapshot和start&#x2F;begin transaction是<strong>没差别</strong>的。也就是说，<strong>每一个语句执行前都会重新计算出一个新的视图</strong>。</p>
+<img src="https://static001.geekbang.org/resource/image/18/be/18fd5179b38c8c3804b313c3582cd1be.jpg" alt="img" style="zoom:33%;" />
+
+<p>所以再来看上面A事务，我们就可以确定，C这次要比A事务发生的早，而且也提交了，所以读取(1,2)是没问题的。而B虽然也比A事务早，但是A事务执行的时候，<strong>B还没提交</strong>，所以A读取不到(1,3)，所以最终A读取的就是(1,2)。</p>
 <h2 id="16讲-“order-by”是怎么工作的？"><a href="#16讲-“order-by”是怎么工作的？" class="headerlink" title="16讲 | “order by”是怎么工作的？"></a>16讲 | “order by”是怎么工作的？</h2><h2 id="17讲-如何正确地显示随机消息"><a href="#17讲-如何正确地显示随机消息" class="headerlink" title="17讲 | 如何正确地显示随机消息"></a>17讲 | 如何正确地显示随机消息</h2><p>本文是沿着上一篇order by语句来进行展开的。本篇文章讲述一种排序的需求，即从大量数据（words）中随机查找若干个数据（word）。</p>
 <h3 id="1-order-by-rand"><a href="#1-order-by-rand" class="headerlink" title="1. order by rand()"></a>1. order by rand()</h3><p>如果用MySQL自带的随机语句order by rand()来进行查找，流程如下：</p>
 <p>1.先在<strong>内存中</strong>建立一个临时表，用来储存随机小数(R字段)以及word，此处需要扫描10000行</p>
@@ -421,14 +467,14 @@
 <p>但实际上这条语句在执行的时候是会报警的：</p>
 <img src="https://static001.geekbang.org/resource/image/96/2b/96c2be9c0fcbff66883118526b26652b.png" alt="img"  />
 
-<p>原因是该语句<strong>用了limit</strong>，主备库可能会<strong>走不同的索引</strong>。所以MySQL这样写有风险。</p>
+<p>原因是该语句<strong>用了limit</strong>，<strong>主备库</strong>可能会<strong>走不同的索引</strong>。所以MySQL这样写有风险。</p>
 <h4 id="2-binlog-format-x3D-row"><a href="#2-binlog-format-x3D-row" class="headerlink" title="2)binlog_format&#x3D;row"></a>2)binlog_format&#x3D;row</h4><p>如果binlog设置为row格式，那么binlog内容如下：</p>
 <img src="https://static001.geekbang.org/resource/image/d6/26/d67a38db154afff610ae3bb64e266826.png" alt="img"  />
 
 <p>这一次SQL原文变成了Table_map和Delete_rows：</p>
 <p>​		Table_map用于说明<strong>接下来操作的表是谁</strong></p>
 <p>​		Delete_rows用于<strong>定义删除的行为</strong></p>
-<p>实际上设置为row格式，binlog里面记录了真实删除行的主键id，也就是具体删除的参数，这就避免了主从库走不同索引导致的主从不一致的隐患。</p>
+<p>实际上设置为row格式，binlog里面记录了真实删除行的主键id，也就是具体删除的参数，这就避免了<strong>主从库走不同索引</strong>导致的主从不一致的隐患。</p>
 <h4 id="3-binlog-format-x3D-mixed"><a href="#3-binlog-format-x3D-mixed" class="headerlink" title="3)binlog_format&#x3D;mixed"></a>3)binlog_format&#x3D;mixed</h4><p>mixed格式就是statement和row格式的混合，MySQL会<strong>根据SQL语句是否可能引起主从不一致</strong>而选择row或者statement。这看起来很好，但其实row还有一大优势就是<strong>恢复数据</strong>！</p>
 <p>设置成row，delete语句回滚可以直接被转成insert，反之亦然。而update语句回滚只需要对调更新前后的两个数据即可。</p>
 <p>以上的操作，statement都不行，所以row格式主键称为主流。</p>
@@ -603,6 +649,12 @@
 <p><strong>普通索引</strong>是为了快速查询数据，<strong>允许数据重复和NULL</strong>。</p>
 <p><strong>前缀索引</strong>只适用于字符串类型的数据，即对字符串<strong>前几个字符</strong>创建索引。</p>
 <p><strong>全文索引</strong>：<strong>MySQL 5.6</strong>之前只有MyISAM支持，<strong>5.6</strong>之后InnoDB也支持全文索引。</p>
+<h1 id="事务"><a href="#事务" class="headerlink" title="事务"></a>事务</h1><h2 id="多事务并发带来的问题"><a href="#多事务并发带来的问题" class="headerlink" title="多事务并发带来的问题"></a>多事务并发带来的问题</h2><p>脏写：一个事务<strong>修改</strong>了另一个<strong>未提交事务</strong>修改的数据，会发生脏写。</p>
+<p>脏读：一个事务<strong>读取</strong>了另一个<strong>未提交事务</strong>修改的数据，会发生脏读。</p>
+<p>不可重复读：一个事务<strong>修改</strong>了另一个<strong>未提交事务</strong>正在读取的数据，导致事务前后读取数据不一致。</p>
+<p>幻读：一个事务对另一个<strong>未提交的事务</strong>正在查询的某些数据进行修改（<strong>增删</strong>）操作，会发生幻读。</p>
+<p>这里<u>幻读和不可重复读</u>的主要区别是：前者是新增或删除几条数据，引发<strong>记录的条数前后不一致</strong>；而后者是读取的数据被修改，引发<strong>读取的数据前后不一致</strong>。</p>
+<p>（<strong>个人理解</strong>）<u>脏读和不可重复读</u>的区别：前者是先修改再被读，后者是先读取再被修改。</p>
 
       
     </div>

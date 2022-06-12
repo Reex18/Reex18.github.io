@@ -42,7 +42,7 @@
 <meta property="og:image" content="https://img-blog.csdnimg.cn/a6286053c6884cf58bf397d01674fe80.png">
 <meta property="og:image" content="https://img-blog.csdnimg.cn/fdd5f695bb3643258662886f9fba0aab.png">
 <meta property="article:published_time" content="2022-06-02T05:43:35.000Z">
-<meta property="article:modified_time" content="2022-06-07T07:16:55.212Z">
+<meta property="article:modified_time" content="2022-06-10T13:27:48.782Z">
 <meta property="article:author" content="John Doe">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://img-blog.csdnimg.cn/img_convert/376128646c75a893ad47914858fa2131.png">
@@ -180,7 +180,7 @@
 <h3 id="渐进式rehash"><a href="#渐进式rehash" class="headerlink" title="渐进式rehash"></a>渐进式rehash</h3><p>上面问题就处在数据迁移过程中会引发<strong>大量数据拷贝</strong>，导致<strong>请求阻塞</strong>，所以采用渐进式rehash。</p>
 <p>将一次拷贝<strong>分成多次进行</strong>，而且进行的时机是：对哈希表元素<strong>进行CRUD的时候</strong>，顺便将表1中索引位置上的所有key-value<strong>顺序迁移到表2</strong>，随着请求增多，渐进式完成了迁移操作。</p>
 <p>如果渐进式rehash期间，新增一个key-value，只会保存在哈希表2中，而<strong>哈希表1只减不增</strong>。</p>
-<h1 id="持久化"><a href="#持久化" class="headerlink" title="持久化"></a>持久化</h1><h2 id="AOF持久化"><a href="#AOF持久化" class="headerlink" title="AOF持久化"></a>AOF持久化</h2><p>AOF(Append Only File)就是<strong>保存写操作命令到日志</strong>中，<u>不保存读操作</u>。</p>
+<h1 id="持久化"><a href="#持久化" class="headerlink" title="持久化"></a>持久化</h1><h2 id="AOF持久化-Append-Only-File"><a href="#AOF持久化-Append-Only-File" class="headerlink" title="AOF持久化(Append Only File)"></a>AOF持久化(Append Only File)</h2><p>AOF就是<strong>保存写操作命令到日志</strong>中，<u>不保存读操作</u>。</p>
 <img src="https://img-blog.csdnimg.cn/img_convert/6f0ab40396b7fc2c15e6f4487d3a0ad7.png" alt="img" style="zoom: 67%;" />
 
 
@@ -242,7 +242,7 @@
 <p>为了解决时间差问题，最后在AOF重写完成时必须还要阻塞一下，以便<strong>让子进程追上父进程</strong>：</p>
 <p>当子进程<strong>完成AOF重写工作后</strong>（扫描数据库所有数据。逐一把内存数据的键值对转换成一条命令，写入重写日志），向主进程发送信号（异步）。</p>
 <p>主进程<strong>调用信号处理函数</strong>，将AOF重写缓冲区的所有内容追加到新的AOF中，然后让新的AOF文件改名，覆盖旧的AOF文件。调用函数的时候一定要<strong>阻塞主进程</strong>，否则时间差还会存在。</p>
-<h2 id="RDB快照"><a href="#RDB快照" class="headerlink" title="RDB快照"></a>RDB快照</h2><p>如果说AOF相当于MySQL中的binlog，那么redolog就是Redis中的RDB快照了，两种技术存了不同的日志信息：</p>
+<h2 id="RDB快照-Redis-Database"><a href="#RDB快照-Redis-Database" class="headerlink" title="RDB快照(Redis Database)"></a>RDB快照(Redis Database)</h2><p>如果说AOF相当于MySQL中的binlog，那么redolog就是Redis中的RDB快照了，两种技术存了不同的日志信息：</p>
 <p>AOF：日志内容是<strong>操作命令</strong></p>
 <p>RDB：日志内容是<strong>二进制数据</strong></p>
 <p>这就带来了二者<u>恢复数据上的差异性</u>：Redis恢复数据的时候，直接<strong>将RDB读入内存即可</strong>；而AOF读入内存后，需要<strong>逐条执行操作命令</strong>才可以恢复。</p>
@@ -319,12 +319,12 @@
 
 <p>一、<u><strong>建立链接</strong>，协商同步</u>：</p>
 <p><u>1.1-1.2</u>：可以从图中看出来，执行完replicaof命令后，从服务器就<strong>发送psync命令</strong>，表示自己要进行数据同步。</p>
-<p>psync包含主服务器的<strong>runID</strong>（随机ID且唯一，但第一次不知道主服务器的runID，所以<strong>设为？</strong>）和复制进度<strong>offset</strong>（第一次是-1）。</p>
+<p>psync包含<strong>主服务器</strong>的<strong>runID</strong>（随机ID且唯一，但第一次不知道主服务器的runID，所以<strong>设为？</strong>）和复制进度<strong>offset</strong>（第一次是-1）。</p>
 <p><u>1.3-1.4</u>：主服务器收到psync会回应<strong>FULLRESYNC</strong>，包含了主服务器的runID和主服务器的<strong>复制进度offset</strong>，从服务器<strong>保存记录</strong>这俩信息。此命令目的是<strong>全量复制</strong>，即把所有数据赋值给从服务器。</p>
 <p>二、<u>主向从<strong>同步数据</strong></u>：</p>
 <p><u>2.1-2.3</u>：主服务器执行bgsave生成RDB文件，然后发给从服务器；</p>
 <p><u>2.4</u>：从服务器收到RDB文件后，<strong>先清空自己的数据再载入RDB</strong>；</p>
-<p>上述操作中，主服务器生成RDB因为是子进程<strong>复制页表</strong>，<strong>不会很大程度阻塞主线程</strong>的进行，但是在<strong>生成、发送、载入RDB</strong>的三个阶段，主服务器都有新的写操作执行的可能性，为了保证数据一致性，就要把这三个时间段的写操作命令写入到<strong>replication buffer缓冲区</strong>中。</p>
+<p>上述操作中，主服务器生成RDB<strong>不会很大程度阻塞主线程</strong>的进行(因为是子进程<strong>复制页表</strong>)，但是在<strong>生成、发送、载入RDB</strong>的三个阶段，主服务器都有新的写操作执行的可能性，为了保证数据一致性，就要把这三个时间段的写操作命令写入到<strong>replication buffer缓冲区</strong>中。</p>
 <p>三、<u>主向从发送新的<strong>写操作</strong>命令</u></p>
 <p><u>3.1-3.2</u>：从服务器加载完RDB之后，主服务器将<strong>replication buffer</strong>中的写操作命令<strong>发送</strong>给从服务器，然后从服务器<strong>执行</strong>这些操作。</p>
 <p>至此，第一次同步结束~</p>
@@ -396,7 +396,7 @@
 <p>*<u>答</u>*：这个时候两票已经超不过quorum了，所以<strong>既无法判读“客观下线”，又无法自动切换</strong>。</p>
 <p>这里面我们故意把quorum随意调整了，就是为了证明<strong>quorum</strong>不是随便设置的，其最好设置为<strong>哨兵个数 &#x2F; 2 + 1</strong>，同时保证<strong>哨兵数量为奇数</strong>。</p>
 <h3 id="通知客户端新的主节点信息"><a href="#通知客户端新的主节点信息" class="headerlink" title="通知客户端新的主节点信息"></a>通知客户端新的主节点信息</h3><p>主从切换之后，新的主节点迫切需要被客户端知道，否则客户端都不知道该找谁进行写操作。</p>
-<p>Redis采用发布者&#x2F;订阅者机制来实现信息的通知的。每个哨兵节点提供发布者&#x2F;订阅者机制，客户端可以<strong>从哨兵订阅消息</strong>。</p>
+<p>Redis采用<strong>发布者&#x2F;订阅者机制</strong>来实现信息的通知的。每个哨兵节点提供发布者&#x2F;订阅者机制，客户端可以<strong>从哨兵订阅消息</strong>。</p>
 <p>假如客户端<strong>订阅了主从切换的事件</strong>，当哨兵选好了新的主节点，就会<strong>发布</strong>新主节点的<strong>IP和端口信息</strong>，客户端就<strong>收到</strong>了这个信息，就自然可以与新主节点通信了。</p>
 <h2 id="哨兵集群如何组成的"><a href="#哨兵集群如何组成的" class="headerlink" title="哨兵集群如何组成的"></a>哨兵集群如何组成的</h2><p>其实搭建哨兵并配置信息的时候，只需要设置<strong>主节点</strong>名字、IP和端口号以及quorum值。</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sentinel monitor &lt;master-name&gt; &lt;ip&gt; &lt;redis-port&gt; &lt;quorum&gt; </span><br></pre></td></tr></table></figure>
