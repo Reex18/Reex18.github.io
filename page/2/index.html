@@ -71,6 +71,65 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-操作字符串题解" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2022/05/13/%E6%93%8D%E4%BD%9C%E5%AD%97%E7%AC%A6%E4%B8%B2%E9%A2%98%E8%A7%A3/" class="article-date">
+  <time class="dt-published" datetime="2022-05-13T03:26:25.000Z" itemprop="datePublished">2022-05-13</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2022/05/13/%E6%93%8D%E4%BD%9C%E5%AD%97%E7%AC%A6%E4%B8%B2%E9%A2%98%E8%A7%A3/">操作字符串题解</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="leetcode-541-反转字符串II"><a href="#leetcode-541-反转字符串II" class="headerlink" title="leetcode 541.反转字符串II"></a>leetcode 541.反转字符串II</h1><p>给定一个字符串 s 和一个整数 k，你需要对从字符串开头算起的每隔 2k 个字符的前 k 个字符进行反转。</p>
+<p>如果剩余字符少于 k 个，则将剩余字符全部反转。</p>
+<p>如果剩余字符小于 2k 但大于或等于 k 个，则反转前 k 个字符，其余字符保持原样。</p>
+<p>示例:</p>
+<p>输入: s &#x3D; “abcdefg”, k &#x3D; 2<br>输出: “bacdfeg”</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">reverseStr</span><span class="params">(String s, <span class="type">int</span> k)</span> &#123;</span><br><span class="line">        <span class="type">char</span>[] ch = s.toCharArray();</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>;i &lt; s.length();i += <span class="number">2</span> * k)&#123;</span><br><span class="line">            <span class="type">int</span> <span class="variable">start</span> <span class="operator">=</span> i;</span><br><span class="line">            <span class="type">int</span> <span class="variable">end</span> <span class="operator">=</span> Math.min(i + k - <span class="number">1</span>, s.length() - <span class="number">1</span>);</span><br><span class="line">            <span class="keyword">while</span>(start &lt; end)&#123;</span><br><span class="line">                <span class="type">char</span> <span class="variable">temp</span> <span class="operator">=</span> ch[start];</span><br><span class="line">                ch[start] = ch[end];</span><br><span class="line">                ch[end] = temp;</span><br><span class="line">                start++;</span><br><span class="line">                end--;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">String</span>(ch);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>for循环中的i，就相当于一个指针，每次走2*k个单位，走完一次，就定义当前反转字符串的起始位和终点位。</p>
+<p>注意：<strong>终点位的要取i + k - 1和s.length() - 1的最小值</strong>，因为最后一次如果反转个数不够k个的时候，就直接将当前字符串从start到s.length() - 1的所有字符串翻转即可。</p>
+<p>因为反转操作涉及字符串中每个字符的换位，所以最好将字符串转换为数组进行操作。最后记得再将数组转换为字符串。</p>
+<h1 id="leetcode-28-实现strStr"><a href="#leetcode-28-实现strStr" class="headerlink" title="leetcode 28.实现strStr()"></a>leetcode 28.实现strStr()</h1><p><u><strong>题目</strong>：实现 strStr() 函数。</u></p>
+<p><u>给定一个 haystack 字符串和一个 needle 字符串，在 haystack 字符串中找出 needle 字符串出现的第一个位置 (从0开始)。如果不存在，则返回 -1。</u></p>
+<p><u>示例 1: 输入: haystack &#x3D; “hello”, needle &#x3D; “ll” 输出: 2</u></p>
+<p><u>示例 2: 输入: haystack &#x3D; “aaaaa”, needle &#x3D; “bba” 输出: -1</u></p>
+<p><u>说明: 当 needle 是空字符串时，我们应当返回什么值呢？这是一个在面试中很好的问题。 对于本题而言，当 needle 是空字符串时我们应当返回 0 。这与C语言的 strstr() 以及 Java的 indexOf() 定义相符。</u></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">strStr</span><span class="params">(String haystack, String needle)</span> &#123;</span><br><span class="line">        <span class="type">int</span> <span class="variable">n</span> <span class="operator">=</span> haystack.length(), m = needle.length();</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>;i + m &lt;= n; i++)&#123;</span><br><span class="line">            <span class="type">boolean</span> <span class="variable">flag</span> <span class="operator">=</span> <span class="literal">true</span>;</span><br><span class="line">            <span class="keyword">for</span>(<span class="type">int</span> <span class="variable">j</span> <span class="operator">=</span> <span class="number">0</span>;j &lt; m;j++)&#123;</span><br><span class="line">                <span class="keyword">if</span>(haystack.charAt(i + j) != needle.charAt(j))&#123;</span><br><span class="line">                    flag = <span class="literal">false</span>;</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span>(flag)&#123;</span><br><span class="line">                <span class="keyword">return</span> i;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这道题我暂时只会暴力解法，后续学会了KMP算法会进行更新。</p>
+<p>暴力解法其实思路比较简单，让haystack数组指针依次向后递进，每递进一次，我们就从当前位置开始判断，该指针及其后面的元素是不是和needle的每个元素相同，如果都相同，那么我们就找到了needle出现的第一个位置。一旦有一个不同，那么就可以继续让haystack指针向后走了。</p>
+<p>这里我们需要定义一个boolean类型的变量flag，初始值是true，一定要注意其定义的位置：<strong>每次haystack递进一位就定义一个全新的flag</strong>，而<strong>不要定义为全局变量</strong>。因为这个flag是为每次寻找needle字符串服务的，所以<strong>每次比较都要用全新的flag</strong>。</p>
+<p><strong>每次寻找needle字符串的操作结束之后，都要看看flag还是不是true</strong>，如果还是true，说明找到了needle；如果是false，就说明上面的寻找过程中，出现了某个字符没匹配上。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2022/05/13/%E6%93%8D%E4%BD%9C%E5%AD%97%E7%AC%A6%E4%B8%B2%E9%A2%98%E8%A7%A3/" data-id="cl33vz9vp0000qwv64bvmbn7e" data-title="操作字符串题解" class="article-share-link">Share</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-哈希算法题目" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
     <a href="/2022/05/13/%E5%93%88%E5%B8%8C%E7%AE%97%E6%B3%95%E9%A2%98%E7%9B%AE/" class="article-date">
@@ -592,7 +651,7 @@
 <p>而start transaction with consistent snapshot顾名思义<strong>创建一致性视图</strong>，才是事务的<strong>起点</strong>。</p>
 <p>图中例子默认<strong>autocommit&#x3D;1</strong>，即<strong>除非显示声明事务开始</strong>，否则默认一个语句执行完就提交</p>
 <p>首先，因为是RR隔离级别，所以我们开启了事务以后，其他在当前事务之后的更新都不会被读取到，但是这只涉及查询语句。因为<strong>查询语句是快照读</strong>：</p>
-<p>比如事务A我们定义其事务Id为99，那么事务B就是100，事务C就是101，<strong>事务B和C的Id都比A要大</strong>，他们的快照不会被事务A中的查询语句读取到，所有最后事务A**读取的还是(1,1)**，即实现了可重复读。快照读有下面三种判断方式：</p>
+<p>比如事务A我们定义其事务Id为99，那么事务B就是100，事务C就是101，<strong>事务B和C的Id都比A要大</strong>，他们的快照不会被事务A中的查询语句读取到，所以最后事务A**读取的还是(1,1)**，即实现了可重复读。快照读有下面三种判断方式：</p>
 <p>​	1.事务已提交，但是在视图创建之后提交的，该视图不可见；（比如事务C对于A）</p>
 <p>​	2.事务已提交，而且在视图创建之前提交的，该视图就可见；（比如一个比A还早的事务提交过）</p>
 <p>​	3.事务未提交，那肯定不可见。（比如事务B对于A）</p>
@@ -1058,11 +1117,11 @@
 </ul>
 <h3 id="3-MyISAM引擎和InnoDB引擎的索引结构区别"><a href="#3-MyISAM引擎和InnoDB引擎的索引结构区别" class="headerlink" title="3.MyISAM引擎和InnoDB引擎的索引结构区别"></a>3.MyISAM引擎和InnoDB引擎的索引结构区别</h3><p>都使用B+树，但是实现方式不太一样：</p>
 <p>MyISAM引擎的B+树叶子节点的data域存放的是<strong>数据记录的地址</strong>。搜索索引的时候，如果某个key存在，就取出data域的地址值，然后读取该地址值位置的数据，也可以叫做“非聚簇索引”。</p>
-<p>InnoDB引擎的B+树叶子节点存放的<strong>本身就是数据文件</strong>，与MyISAM的<strong>索引文件和数据文件分离</strong>是不同的，所以InnoDB的索引存储了完整的数据文件，无论是聚簇索引还是非聚簇索引存放的存放的<strong>主键key都是值本身</strong>，而不是地址。</p>
+<p>InnoDB引擎的B+树叶子节点存放的<strong>本身就是数据文件</strong>，与MyISAM的<strong>索引文件和数据文件分离</strong>是不同的，所以InnoDB的索引存储了完整的数据文件，无论是聚簇索引还是非聚簇索引存放的<strong>主键key都是值本身</strong>，而不是地址。</p>
 <h2 id="索引类型"><a href="#索引类型" class="headerlink" title="索引类型"></a>索引类型</h2><p>主键索引不用多说：</p>
 <img src="https://guide-blog-images.oss-cn-shenzhen.aliyuncs.com/github/javaguide/open-source-project/cluster-index.png" alt="img" style="zoom:25%;" />
 
-<p>二级索引注意一下，唯一索引、普通索引、前缀索引都是二级索引。</p>
+<p>二级索引注意一下，唯一索引、普通索引、前缀索引<strong>都是二级索引</strong>。</p>
 <img src="https://guide-blog-images.oss-cn-shenzhen.aliyuncs.com/github/javaguide/open-source-project/no-cluster-index.png" alt="img" style="zoom:25%;" />
 
 <p><strong>唯一索引</strong>是为了属性数据的唯一性，而<strong>不是为了查询效率</strong></p>
@@ -1074,7 +1133,7 @@
 <p>不可重复读：一个事务<strong>修改</strong>了另一个<strong>未提交事务</strong>正在读取的数据，导致事务前后读取数据不一致。</p>
 <p>幻读：一个事务对另一个<strong>未提交的事务</strong>正在查询的某些数据进行修改（<strong>增删</strong>）操作，会发生幻读。</p>
 <p>这里<u>幻读和不可重复读</u>的主要区别是：前者是新增或删除几条数据，引发<strong>记录的条数前后不一致</strong>；而后者是读取的数据被修改，引发<strong>读取的数据前后不一致</strong>。</p>
-<p>（<strong>个人理解</strong>）<u>脏读和不可重复读</u>的区别：前者是先修改再被读，后者是先读取再被修改。</p>
+<p>（<strong>个人理解</strong>）<u>脏读和不可重复读</u>的区别：前者是先修改再被读，后者是先读取，<strong>被修改后再读</strong>。</p>
 
       
     </div>
@@ -1127,6 +1186,10 @@
       <ul>
         
           <li>
+            <a href="/2022/06/20/acm%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA%E7%BB%83%E4%B9%A0/">acm输入输出练习</a>
+          </li>
+        
+          <li>
             <a href="/2022/06/04/%E8%B4%AA%E5%BF%83%E7%B3%BB%E5%88%97%E9%A2%98%E8%A7%A3/">贪心系列题解</a>
           </li>
         
@@ -1140,10 +1203,6 @@
         
           <li>
             <a href="/2022/05/29/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%94%E8%AE%B0/">操作系统笔记</a>
-          </li>
-        
-          <li>
-            <a href="/2022/05/17/%E4%BA%8C%E5%8F%89%E6%A0%91%E9%A2%98%E8%A7%A3/">二叉树题解</a>
           </li>
         
       </ul>
