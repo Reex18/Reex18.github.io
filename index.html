@@ -93,7 +93,62 @@
     
     <div class="e-content article-entry" itemprop="articleBody">
       
-        
+        <h2 id="Linux组管理和权限管理"><a href="#Linux组管理和权限管理" class="headerlink" title="Linux组管理和权限管理"></a>Linux组管理和权限管理</h2><h3 id="1-修改文件所有者"><a href="#1-修改文件所有者" class="headerlink" title="1.修改文件所有者"></a>1.修改文件所有者</h3><p>指令：chown 用户名 文件名</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">chown tom apple.txt</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-组及用户的创建"><a href="#2-组及用户的创建" class="headerlink" title="2.组及用户的创建"></a>2.组及用户的创建</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">groupadd monster</span><br><span class="line">useradd fox</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-创建用户并将其放入组中"><a href="#3-创建用户并将其放入组中" class="headerlink" title="3.创建用户并将其放入组中"></a>3.创建用户并将其放入组中</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">useradd -g monster fox</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-改变用户所在组-用户已存在"><a href="#4-改变用户所在组-用户已存在" class="headerlink" title="4.改变用户所在组(用户已存在)"></a>4.改变用户所在组(用户已存在)</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">usermod -g monster fox</span><br></pre></td></tr></table></figure>
+
+<h3 id="5-修改文件-x2F-目录所在组"><a href="#5-修改文件-x2F-目录所在组" class="headerlink" title="5.修改文件&#x2F;目录所在组"></a>5.修改文件&#x2F;目录所在组</h3><p>指令：chgrp 组名 文件&#x2F;目录</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">chgrp fruit orange.text</span><br><span class="line">chgrp fruit lemon</span><br></pre></td></tr></table></figure>
+
+<h3 id="6-权限介绍"><a href="#6-权限介绍" class="headerlink" title="6.权限介绍"></a>6.权限介绍</h3><p>ls -l 显示内容如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-rwxrw-r-- 1 root root 1213 Feb 2 09:39 abc</span><br></pre></td></tr></table></figure>
+
+<p>第0位是文件类型：l是链接，d是目录，c是字符设备文件如鼠标键盘，b是块设备如硬盘</p>
+<ul>
+<li><p>1-3位是<strong>所有者</strong>对文件的权限-User</p>
+</li>
+<li><p>4-6位是<strong>所属组</strong>对文件的权限-Group</p>
+</li>
+<li><p>7-9位是<strong>其他用户</strong>对文件的权限-Other</p>
+</li>
+<li><p>1代表文件的<strong>硬链接数</strong>或者目录的<strong>子目录数</strong>；前面的root代表<strong>所属用户</strong>；后面的root代表<strong>所属组</strong></p>
+</li>
+<li><p>1213代表<strong>文件大小</strong>（字节）；Feb 2 09:39代表<strong>最后修改时间</strong>；abc代表<strong>文件&#x2F;目录名</strong></p>
+<ul>
+<li><p>对于普通文件来说：rwx分别是可读取，查看；可修改（不代表可删除）；可被执行（execute）</p>
+</li>
+<li><p>对于目录来说：rwx分别代表可读取目录内容；可修改包括对目录内部进行创建+删除+重命名操作；可以进入目录</p>
+</li>
+<li><p>rwx也可以用数字表示，r&#x3D;4,w&#x3D;2,x&#x3D;1</p>
+</li>
+</ul>
+</li>
+</ul>
+<p>这里的可被执行x权限，对于目录来说是至关重要的：1.因为<strong>目录只有赋予了x执行权限，才可以进入</strong>，否则读r和写w都是空谈；2.有了执行x权限，只能进入目录，<strong>必须有可读r权限才可以看到目录的内容</strong>；3.目录的文件能不能删除，<strong>只取决于文件所在目录是否有写w权限</strong>，没有对目录的w权限就无法删除目录内的所有文件（<em>文件所有者除外</em>  <u>存疑？</u>）。</p>
+<p>对于<strong>普通文件</strong>，可执行x权限没什么用。</p>
+<p>对于<strong>shell脚本</strong>，如果没有x权限，则无法执行。</p>
+<h3 id="7-修改权限"><a href="#7-修改权限" class="headerlink" title="7.修改权限"></a>7.修改权限</h3><p><strong>chmod</strong>(change mode)可修改文件&#x2F;目录的权限</p>
+<p>1.给abc的user读写执行权限，group读和执行权限，other读和执行权限</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">chmod u=rwx,g=rx,o=rx abc</span><br><span class="line">chmod 755 abc</span><br></pre></td></tr></table></figure>
+
+<p>2.给abc文件user<strong>去除</strong>执行权限，group<strong>增加</strong>写权限</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">chmod u-x,g+w abc</span><br></pre></td></tr></table></figure>
+
+<p>3.给abc文件<strong>所有用户添加</strong>读的权限</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">chmod a+r abc</span><br></pre></td></tr></table></figure>
+
+<h3 id="8-修改文件-x2F-目录所有者"><a href="#8-修改文件-x2F-目录所有者" class="headerlink" title="8.修改文件&#x2F;目录所有者"></a>8.修改文件&#x2F;目录所有者</h3><p>指令：chown newowner 文件&#x2F;目录</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">chown tom /home/abc.txt</span><br><span class="line">目录及目录下所有文件都改成tom所属，需要用递归-R</span><br><span class="line">chown -R tom /home/test</span><br></pre></td></tr></table></figure>
+
+<h3 id="9-修改文件-x2F-目录所在组"><a href="#9-修改文件-x2F-目录所在组" class="headerlink" title="9.修改文件&#x2F;目录所在组"></a>9.修改文件&#x2F;目录所在组</h3><p>指令：chgrp newgroup 文件&#x2F;目录 </p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">chgrp shaolin /home/abc.text</span><br><span class="line">目录及目录下所有文件都改成shaolin所属，需要用递归-R</span><br><span class="line">chgrp -R shaolin /home/test</span><br></pre></td></tr></table></figure>
+
+
       
     </div>
     <footer class="article-footer">
