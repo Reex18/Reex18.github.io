@@ -17,8 +17,13 @@
 <meta property="og:image" content="d:/Picgo/img/image-20220512150709656.png">
 <meta property="og:image" content="d:/Picgo/img/image-20220512194439270.png">
 <meta property="og:image" content="d:/Picgo/img/image-20220512194934161.png">
+<meta property="og:image" content="c:/Users/Reex/AppData/Roaming/Typora/typora-user-images/image-20220622200249524.png">
+<meta property="og:image" content="c:/Users/Reex/AppData/Roaming/Typora/typora-user-images/image-20220623163626173.png">
+<meta property="og:image" content="c:/Users/Reex/AppData/Roaming/Typora/typora-user-images/image-20220623171737389.png">
+<meta property="og:image" content="c:/Users/Reex/AppData/Roaming/Typora/typora-user-images/image-20220623193754551.png">
+<meta property="og:image" content="c:/Users/Reex/AppData/Roaming/Typora/typora-user-images/image-20220623201600578.png">
 <meta property="article:published_time" content="2022-05-11T12:04:43.000Z">
-<meta property="article:modified_time" content="2022-05-28T06:09:03.556Z">
+<meta property="article:modified_time" content="2022-06-25T13:55:30.345Z">
 <meta property="article:author" content="John Doe">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="d:/Picgo/img/image-20220511200810603.png">
@@ -160,6 +165,7 @@
 <p>6）虚拟机启动时，用户需要<strong>指定一个要执行的主类</strong>（包括main()方法的那个类），虚拟机先初始化该类</p>
 <p>7）JDK 7开始提供<strong>动态语言支持</strong>（不懂）</p>
 <p>8）JDK 8在**接口中定义了默认方法(**default标识)，如果这个接口的实现类发生了初始化，那么该接口要率先初始化。</p>
+<h1 id="程序计数器"><a href="#程序计数器" class="headerlink" title="程序计数器"></a>程序计数器</h1><p>程序计数器（pc寄存器）存放的是该方法要执行的下一条指令的值（存疑）。</p>
 <h1 id="☆虚拟机栈的作用是什么？"><a href="#☆虚拟机栈的作用是什么？" class="headerlink" title="☆虚拟机栈的作用是什么？"></a>☆虚拟机栈的作用是什么？</h1><p>栈是<strong>运行时</strong>的单位，而堆是<strong>存储的</strong>单位。栈解决的是程序如何执行，如何处理数据的问题；而堆是解决数据存储的问题。当然一些数据也会存在栈中，只能说栈的主要功能是处理数据，它<strong>是线程私有的</strong>。内部存储着一个个栈帧，<strong>每一个栈帧对应一个Java方法</strong>。</p>
 <p>上面是比较泛泛的总结，虚拟机栈具体是什么作用呢？它主管程序的运行，<strong>在每个栈帧的局部变量表中保存相应方法的局部变量</strong>（8种<strong>基本数据</strong>类型、引用类型变量的<strong>引用地址</strong>），一<strong>部分结果</strong>，并参与方法的<strong>调用和返回</strong>。</p>
 <p>栈操作只有两个：</p>
@@ -172,11 +178,56 @@
 <h1 id="☆栈帧的内部结构"><a href="#☆栈帧的内部结构" class="headerlink" title="☆栈帧的内部结构"></a>☆栈帧的内部结构</h1><p>栈帧内部包括：局部变量表、操作数栈、动态链接、方法返回地址、一些附加信息。其中，<strong>局部变量表和操作数栈占的内存最大</strong>，主要影响栈帧的大小，而栈帧的大小决定了每个线程的虚拟机栈能存放多少个栈帧。</p>
 <p>1）局部变量表：就是<strong>数字数组</strong>，主要用于<strong>存储方法参数和定义在方法体内的局部变量</strong>，包括基本数据类型、对象引用、returnAddress类型。<strong>slot(变量槽)<strong>是最基本的存储单元，对于byte、short、char在存储前，被</strong>转换为int</strong>,而boolean也被<strong>转换为int</strong>，false对应0，true对应非0。他们都<strong>占用一个slot</strong>。long和double类型的变量<strong>占两个slot</strong>。</p>
 <p>栈帧的<strong>局部变量表与性能调优关系最为密切</strong>，因为在垃圾回收过程中，表中的变量是重要的<strong>垃圾回收根节点</strong>，只要<strong>被表中直接或间接引用的对象</strong>都不会被回收。</p>
-<p>2）操作数栈：在方法执行过程中，根据字节码指令，往栈中写入数据或提取数据，例如执行<strong>复制、交换、求和</strong>等操作。主要用于<strong>保存计算过程中的中间结果</strong>，同时作为计算过程中的<strong>变量临时存储空间</strong>。</p>
-<p>注意：操作数栈<strong>并非通过访问索引来进行数据访问</strong>的，它只是入栈出栈的一个实现工具。</p>
+<p>2）操作数栈(其<strong>大小在编译时就确定</strong>了)：在方法执行过程中，根据字节码指令，往栈中写入数据或提取数据，例如执行<strong>复制、交换、求和</strong>等操作。主要用于<strong>保存计算过程中的中间结果</strong>，同时作为计算过程中的<strong>变量临时存储空间</strong>。</p>
+<p>注意：操作数栈<strong>并非通过访问索引</strong>来进行数据访问的，它只是入栈出栈的一个实现工具。</p>
 <p>3）动态链接：<strong>指向运行时常量池</strong>中的该栈帧所属<strong>方法的引用</strong>。在类加载之前，符号引用都在class文件的常量池中，类加载后，这些符号引用就被<strong>类加载阶段的“解析”过程</strong>转换为调用方法的直接引用。动态链接就是<strong>来实现这个“解析”过程的</strong>。</p>
+<p>4）方法返回地址：存放调用该方法的<strong>pc寄存器的值</strong>（存疑）。本质上就是：比如当前方法退出了，意为当前方法出栈，<strong>那么就要恢复上层方法的栈帧</strong>，这时我们就需要程序计数器的值，所以方法返回地址就存放了这个值（类比接力赛传棒）。</p>
+<p>动态链接，方法返回地址和其他附加信息被称为<strong>帧数据区</strong>。</p>
+<p>总的来说，每一个栈帧对应一个方法，但是方法要运行就必须有一个专门的数据结构来对数据进行操作，这个数据结构就是操作数栈，数据就是局部变量表中的数据，方法执行过程中，各种字节码指令负责操作数栈的入栈出栈操作。</p>
 <h1 id="☆局部变量和静态变量的对比"><a href="#☆局部变量和静态变量的对比" class="headerlink" title="☆局部变量和静态变量的对比"></a>☆局部变量和静态变量的对比</h1><p>我们知道静态变量就是类变量，是在累加载阶段就有初始化操作的，其一是<strong>“准备”阶段的初始化零值</strong>，另一阶段是<strong>”初始化“阶段为类变量赋初始值</strong>。</p>
 <p>对于局部变量，<strong>因为要放在局部变量表中，表没有初始化过程</strong>，所以我们必须在写代码的时候，人为初始化。</p>
+<h1 id="静态绑定和动态绑定"><a href="#静态绑定和动态绑定" class="headerlink" title="静态绑定和动态绑定"></a>静态绑定和动态绑定</h1><p>静态绑定&#x2F;链接（对应早期绑定）就是（被调用的方法）<strong>符号引用转换为直接引用在编译期</strong>就可以确定下来，比如定义一个<strong>final的常量或方法</strong>，此时这个符号在编译期就可以确定，没有多态的特性。</p>
+<p>动态绑定&#x2F;链接（对应晚期绑定）就是（被调用的方法）符号引用转换为直接引用是<strong>在运行期间</strong>才可以确定下来，正是因为Java具有<strong>多态</strong>的特性，所以才有了动态链接。</p>
+<h1 id="虚方法表"><a href="#虚方法表" class="headerlink" title="虚方法表"></a>虚方法表</h1><p>简单来说就是father类继承了Object类，然后写了两个新方法，然后Son类继承了father类，然后重写了father类的两个新方法，那么在Son调用这两个新方法的时候就会去father中找，但是调用object类的时候，就可以直接从虚方法表中找到，不用先上father中找，然后再去Object中找了。</p>
+<p>这样就实现了，调用方法的时候，根据虚方法表直接确定压入操作数栈的直接引用，不用再一层层向上判断。</p>
+<img src="C:\Users\Reex\AppData\Roaming\Typora\typora-user-images\image-20220622200249524.png" alt="image-20220622200249524" style="zoom:50%;" />
+
+<h1 id="本地方法接口和本地方法栈"><a href="#本地方法接口和本地方法栈" class="headerlink" title="本地方法接口和本地方法栈"></a>本地方法接口和本地方法栈</h1><p>本地方法接口就是一个java<strong>调用非java代码</strong>（C代码）的接口。</p>
+<p>本地方法栈在运行时数据区内部，用于<strong>管理本地方法的调用</strong>。</p>
+<h1 id="JVM实例-进程-运行时数据区的关系"><a href="#JVM实例-进程-运行时数据区的关系" class="headerlink" title="JVM实例-进程-运行时数据区的关系"></a>JVM实例-进程-运行时数据区的关系</h1><p>一个jvm实例对应着一个进程，一个进程只有一个运行时数据区。因为一个进程拥有多个线程，所以多线程共享一个堆和方法区，而他们各自拥有自己的程序计数器、虚拟机栈和本地方法栈。</p>
+<h1 id="Java堆"><a href="#Java堆" class="headerlink" title="Java堆"></a>Java堆</h1><p>JVM一启动，引导类加载器就把JVM实例加载出来了，<strong>JVM实例创建出来了，运行时数据区就确定了</strong>，所以堆区的大小也就确定了。堆上的物理空间不是连续的，但逻辑上应该视为连续的。</p>
+<p>栈、堆、方法区之间的关系如图所示：</p>
+<img src="C:\Users\Reex\AppData\Roaming\Typora\typora-user-images\image-20220623163626173.png" alt="image-20220623163626173" style="zoom: 50%;" />
+
+<h1 id="对象在堆中的分配过程"><a href="#对象在堆中的分配过程" class="headerlink" title="对象在堆中的分配过程"></a>对象在堆中的分配过程</h1><p>new出来的对象先放在Eden区，当Eden区满了，触发YGC&#x2F;Minor GC即垃圾回收，剩余的对象放入servivor的to区，survivor的<strong>from区和to区必须有一个是空的，谁空谁是to区</strong>。</p>
+<p>所以<strong>触发YGC之后，Eden区必为空</strong>，多出来的放入survivor的to区，放不下就放老年代。</p>
+<p>如果survivor区满了，会触发GC吗？不会，只有Eden区满了才会触发YGC，其实YGC不仅回收Eden区，也回收两个survivor区，也就是说<strong>YGC回收的是整个新生代区的垃圾，但是只有Eden区满了才会触发YGC</strong>。</p>
+<p>什么时候survivor满了？我们要知道：**<u>只有YGC的时候，才会从Eden和from区向to区转移对象</u>**，survivor满了的意思就是当前需要转移到to区的对象所占内存大于to区的内存，那么多出来的就会晋升至老年代（这时候就无视对象年龄）</p>
+<p><strong>-Xx:MaxTenuringThreshold</strong>&#x3D; N是新生代到老年代的<strong>阈值</strong>，超过这个值就会晋升到老年代，当老年代满了，就会触发Major GC。</p>
+<h1 id="为什么要有TLAB"><a href="#为什么要有TLAB" class="headerlink" title="为什么要有TLAB?"></a>为什么要有TLAB?</h1><p>TLAB(Thread Local Allocation Buffer)本地线程分配缓冲，说白了就是，一个运行数据区（只有一个堆）对应着一个进程，一个进程有多个线程，<strong>多个线程共享一个堆内的数据</strong>，高并发环境下会带来<strong>线程不安全问题</strong>。</p>
+<p>下图画的有点大，其实TLAB内存非常小，仅占整个**Eden区的1%**（这里好像是每个线程占1%，不确定）。</p>
+<p>注意：TLAB<strong>不能完全说是线程私有的</strong>，因为其他线程也<strong>可以访问</strong>这部分空间，但在这部分空间分<strong>配内存的权力</strong>只有当前线程拥有。</p>
+<img src="C:\Users\Reex\AppData\Roaming\Typora\typora-user-images\image-20220623171737389.png" alt="image-20220623171737389" style="zoom:60%;" />
+
+<h1 id="逃逸分析"><a href="#逃逸分析" class="headerlink" title="逃逸分析"></a>逃逸分析</h1><p>逃逸分析就是分析<strong>对象的动态作用域</strong>：</p>
+<p>当一个对象只<strong>在当前方法中被定义并调用</strong>，就是没有逃逸，就可以将当前对象放入栈中，即<strong>栈上分配</strong>。</p>
+<p>当一个对象在当前方法定义之后，不仅在当前方法调用，还在<strong>外部方法调用</strong>，则发生了逃逸。</p>
+<h3 id="栈上分配"><a href="#栈上分配" class="headerlink" title="栈上分配"></a>栈上分配</h3><p>将堆分配转换为栈分配</p>
+<h3 id="同步省略"><a href="#同步省略" class="headerlink" title="同步省略"></a>同步省略</h3><p>一个对象<strong>只被一个线程访问</strong>（未逃逸），那么可以把对该对象的同步操作去掉（<strong>删除同步锁</strong>）。</p>
+<h3 id="分离对象或标量替换"><a href="#分离对象或标量替换" class="headerlink" title="分离对象或标量替换"></a>分离对象或标量替换</h3><p>一个对象其实就是<strong>多个元素的聚合量</strong>，如果逃逸分析后发现当前对象只被一个线程调用，那么这个聚合量就可以被打散，放入栈中。比如对象Tom有name, age, sex，那么就可以将之前存放在堆中的Tom变量转换为标量name,age,sex分配到栈的局部变量表中。</p>
+<h1 id="方法区"><a href="#方法区" class="headerlink" title="方法区"></a>方法区</h1><p>方法区相当于JVM的“接口”，而永久代、元空间相当于JVM具体实现的类</p>
+<p>jdk7及之前方法区在hotspot虚拟机<strong>具体实现</strong>是永久代；</p>
+<p>jdk8以后方法区的<strong>具体实现</strong>是元空间（不占用虚拟机设置的内存，而是<strong>使用本地内存</strong>）。</p>
+<p>JVM中方法区不能等价为元空间，只是hotspot虚拟机（默认虚拟机）的方法区等价为元空间</p>
+<p><strong>方法区主要存放的是Class类</strong>，而堆主要存放的是实例化的对象。</p>
+<p>下图可以看到，Person类在加载过程中是存到方法区的，而对象person如果是在方法中定义的，那么就是局部变量，存放在栈帧的局部变量表中，只不过存放的是地址，真正的对象是存放在堆中的。</p>
+<img src="C:\Users\Reex\AppData\Roaming\Typora\typora-user-images\image-20220623193754551.png" alt="image-20220623193754551" style="zoom:50%;" />
+
+<h2 id="方法区的内部结构"><a href="#方法区的内部结构" class="headerlink" title="方法区的内部结构"></a>方法区的内部结构</h2><p>方法区存放着[<strong>类型信息</strong>（域&#x2F;属性信息和方法信息）]、[<strong>运行时常量池</strong>（常量、静态变量）]、[JIT代码缓存]。</p>
+<p>类型信息：这个类型的完整有效名（<strong>包名</strong>.类名）、直接父类有效名、修饰符、<strong>直接接口的有序表</strong></p>
+<p>域&#x2F;属性信息：属性名称、类型、修饰符以及声明顺序</p>
+<p>方法信息：方法名称、返回类型、参数的数量和类型、修饰符、字节码、操作数栈、局部变量表及大小、异常表</p>
+<img src="C:\Users\Reex\AppData\Roaming\Typora\typora-user-images\image-20220623201600578.png" alt="image-20220623201600578" style="zoom: 40%;" />
 
       
     </div>
@@ -241,6 +292,14 @@
       <ul>
         
           <li>
+            <a href="/2022/06/26/Linux%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">Linux学习笔记</a>
+          </li>
+        
+          <li>
+            <a href="/2022/06/24/%E9%93%BE%E8%A1%A8%E9%A2%98%E8%A7%A3/">链表题解</a>
+          </li>
+        
+          <li>
             <a href="/2022/06/20/acm%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA%E7%BB%83%E4%B9%A0/">acm输入输出练习</a>
           </li>
         
@@ -250,14 +309,6 @@
         
           <li>
             <a href="/2022/06/02/Redis%E7%9F%A5%E8%AF%86%E7%82%B9/">Redis知识点</a>
-          </li>
-        
-          <li>
-            <a href="/2022/05/30/%E5%9B%9E%E6%BA%AF%E7%B3%BB%E5%88%97%E9%A2%98%E8%A7%A3/">回溯系列题解</a>
-          </li>
-        
-          <li>
-            <a href="/2022/05/29/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%94%E8%AE%B0/">操作系统笔记</a>
           </li>
         
       </ul>

@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>链表题解 | Reex</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="111 leetcode 203.移除链表元素题目：给你一个链表的头节点 head 和一个整数 val ，请你删除链表中所有满足 Node.val &#x3D;&#x3D; val 的节点，并返回 新的头节点 。   输入：head &#x3D; [1,2,6,3,4,5,6], val &#x3D; 6输出：[1,2,3,4,5]* 123456789101112131415class Solution &amp;#123">
+<meta property="og:type" content="article">
+<meta property="og:title" content="链表题解">
+<meta property="og:url" content="http://example.com/2022/06/24/%E9%93%BE%E8%A1%A8%E9%A2%98%E8%A7%A3/index.html">
+<meta property="og:site_name" content="Reex">
+<meta property="og:description" content="111 leetcode 203.移除链表元素题目：给你一个链表的头节点 head 和一个整数 val ，请你删除链表中所有满足 Node.val &#x3D;&#x3D; val 的节点，并返回 新的头节点 。   输入：head &#x3D; [1,2,6,3,4,5,6], val &#x3D; 6输出：[1,2,3,4,5]* 123456789101112131415class Solution &amp;#123">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://assets.leetcode.com/uploads/2021/03/06/removelinked-list.jpg">
+<meta property="og:image" content="https://assets.leetcode.com/uploads/2021/02/19/rev1ex1.jpg">
+<meta property="og:image" content="https://assets.leetcode.com/uploads/2020/10/03/swap_ex1.jpg">
+<meta property="og:image" content="https://assets.leetcode.com/uploads/2020/10/03/remove_ex1.jpg">
+<meta property="og:image" content="https://assets.leetcode.com/uploads/2018/12/07/circularlinkedlist.png">
+<meta property="og:image" content="https://assets.leetcode-cn.com/aliyun-lc-upload/uploads/2018/12/14/160_statement.png">
+<meta property="og:image" content="https://assets.leetcode-cn.com/aliyun-lc-upload/uploads/2018/12/07/circularlinkedlist.png">
+<meta property="article:published_time" content="2022-06-24T10:54:39.000Z">
+<meta property="article:modified_time" content="2022-06-26T04:01:33.199Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://assets.leetcode.com/uploads/2021/03/06/removelinked-list.jpg">
+  
+    <link rel="alternate" href="/atom.xml" title="Reex" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+<meta name="generator" content="Hexo 6.1.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Reex</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-链表题解" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2022/06/24/%E9%93%BE%E8%A1%A8%E9%A2%98%E8%A7%A3/" class="article-date">
+  <time class="dt-published" datetime="2022-06-24T10:54:39.000Z" itemprop="datePublished">2022-06-24</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      链表题解
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>111</p>
+<h2 id="leetcode-203-移除链表元素"><a href="#leetcode-203-移除链表元素" class="headerlink" title="leetcode 203.移除链表元素"></a>leetcode 203.移除链表元素</h2><p><u><strong>题目</strong>：给你一个链表的头节点 <code>head</code> 和一个整数 <code>val</code> ，请你删除链表中所有满足 <code>Node.val == val</code> 的节点，并返回 <strong>新的头节点</strong> 。</u></p>
+<img src="https://assets.leetcode.com/uploads/2021/03/06/removelinked-list.jpg" alt="img" style="zoom:50%;" />
+
+<p><u>输入：head &#x3D; [1,2,6,3,4,5,6], val &#x3D; 6</u><br><u>输出：[1,2,3,4,5]</u>*</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> ListNode <span class="title function_">removeElements</span><span class="params">(ListNode head, <span class="type">int</span> val)</span> &#123;</span><br><span class="line">        <span class="type">ListNode</span> <span class="variable">dummy</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ListNode</span>();</span><br><span class="line">        dummy.next = head;</span><br><span class="line">        <span class="type">ListNode</span> <span class="variable">cur</span> <span class="operator">=</span> dummy;</span><br><span class="line">        <span class="keyword">while</span>(cur.next != <span class="literal">null</span>) &#123;</span><br><span class="line">            <span class="keyword">if</span>(cur.next.val == val) &#123;</span><br><span class="line">                cur.next = cur.next.next;</span><br><span class="line">            &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">                cur = cur.next;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> dummy.next;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="leetcode-206-反转链表"><a href="#leetcode-206-反转链表" class="headerlink" title="leetcode 206.反转链表"></a>leetcode 206.反转链表</h2><p><u><strong>题目</strong>：给你单链表的头节点 <code>head</code> ，请你反转链表，并返回反转后的链表</u>。</p>
+<img src="https://assets.leetcode.com/uploads/2021/02/19/rev1ex1.jpg" alt="img" style="zoom:50%;" />
+
+<p><u>输入：head &#x3D; [1,2,3,4,5]</u><br><u>输出：[5,4,3,2,1]</u></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> ListNode <span class="title function_">reverseList</span><span class="params">(ListNode head)</span> &#123;</span><br><span class="line">        <span class="type">ListNode</span> <span class="variable">pre</span> <span class="operator">=</span> <span class="literal">null</span>, cur = head;</span><br><span class="line">        <span class="type">ListNode</span> <span class="variable">temp</span> <span class="operator">=</span> <span class="literal">null</span>;</span><br><span class="line">        <span class="keyword">while</span>(cur != <span class="literal">null</span>) &#123;</span><br><span class="line">            temp = cur.next;</span><br><span class="line">            cur.next = pre;</span><br><span class="line">            pre = cur;</span><br><span class="line">            cur = temp;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> pre;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="leetcode-24-两两交换链表中的节点"><a href="#leetcode-24-两两交换链表中的节点" class="headerlink" title="leetcode 24.两两交换链表中的节点"></a>leetcode 24.两两交换链表中的节点</h2><p><u><strong>题目</strong>：给你一个链表，两两交换其中相邻的节点，并返回交换后链表的头节点。你必须在不修改节点内部的值的情况下完成本题（即，只能进行节点交换）。</u></p>
+<img src="https://assets.leetcode.com/uploads/2020/10/03/swap_ex1.jpg" alt="img" style="zoom:50%;" />
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//单指针pre</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> ListNode <span class="title function_">swapPairs</span><span class="params">(ListNode head)</span> &#123;</span><br><span class="line">        <span class="type">ListNode</span> <span class="variable">dummyNode</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ListNode</span>(<span class="number">0</span>, head);</span><br><span class="line">        <span class="type">ListNode</span> <span class="variable">pre</span> <span class="operator">=</span> dummyNode;</span><br><span class="line">        <span class="type">ListNode</span> <span class="variable">temp</span> <span class="operator">=</span> <span class="literal">null</span>;</span><br><span class="line">        <span class="keyword">while</span>(pre.next != <span class="literal">null</span> &amp;&amp; pre.next.next != <span class="literal">null</span>) &#123;</span><br><span class="line">            <span class="comment">//获得第三个节点（后面的第一个节点）</span></span><br><span class="line">            temp = head.next.next;</span><br><span class="line">            <span class="comment">//将前面的节点与第二个节点相连</span></span><br><span class="line">            pre.next = head.next;</span><br><span class="line">            <span class="comment">//第二个节点与第一个节点相连</span></span><br><span class="line">            head.next.next = head;</span><br><span class="line">            <span class="comment">//第一个节点与第三个节点</span></span><br><span class="line">            head.next = temp;</span><br><span class="line">            <span class="comment">//将前指针指向第一个节点（改之后的第二个节点）</span></span><br><span class="line">            pre = head;</span><br><span class="line">            <span class="comment">//后指针指向第三个节点（下一组节点的首个节点）</span></span><br><span class="line">            head = temp;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> dummyNode.next;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//三指针node1,node2,pre</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> ListNode <span class="title function_">swapPairs</span><span class="params">(ListNode head)</span> &#123;</span><br><span class="line">        <span class="type">ListNode</span> <span class="variable">dummyNode</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ListNode</span>(<span class="number">0</span>, head);</span><br><span class="line">        <span class="type">ListNode</span> <span class="variable">pre</span> <span class="operator">=</span> dummyNode;</span><br><span class="line">        <span class="keyword">while</span>(pre.next != <span class="literal">null</span> &amp;&amp; pre.next.next != <span class="literal">null</span>) &#123;</span><br><span class="line">            <span class="comment">//分别保存第一个节点和第二个节点的位置(避免直接对head进行操作)</span></span><br><span class="line">            <span class="type">ListNode</span> <span class="variable">node1</span> <span class="operator">=</span> pre.next;</span><br><span class="line">            <span class="type">ListNode</span> <span class="variable">node2</span> <span class="operator">=</span> pre.next.next;</span><br><span class="line">            node1.next = node2.next;</span><br><span class="line">            pre.next = node2;</span><br><span class="line">            node2.next = node1;</span><br><span class="line">            pre = node1;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> dummyNode.next;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//递归法：</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> ListNode <span class="title function_">swapPairs</span><span class="params">(ListNode head)</span> &#123;</span><br><span class="line">        <span class="comment">//如果本次不够两个节点，就不需要反转，直接返回该组节点head即可</span></span><br><span class="line">        <span class="keyword">if</span>(head == <span class="literal">null</span> || head.next == <span class="literal">null</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> head;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//保存第二个节点</span></span><br><span class="line">        <span class="type">ListNode</span> <span class="variable">temp</span> <span class="operator">=</span> head.next;</span><br><span class="line">        <span class="comment">//当前头结点指向后面反转后的头结点（重点！）</span></span><br><span class="line">        head.next = swapPairs(temp.next);</span><br><span class="line">        <span class="comment">//当前第二个节点指向头结点</span></span><br><span class="line">        temp.next = head;</span><br><span class="line">        <span class="keyword">return</span> temp;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="leetcode-19-删除链表的倒数第N个结点"><a href="#leetcode-19-删除链表的倒数第N个结点" class="headerlink" title="leetcode 19.删除链表的倒数第N个结点"></a>leetcode 19.删除链表的倒数第N个结点</h2><p><u><strong>题目</strong>：给你一个链表，删除链表的倒数第 <code>n</code> 个结点，并且返回链表的头结点。</u></p>
+<img src="https://assets.leetcode.com/uploads/2020/10/03/remove_ex1.jpg" alt="img" style="zoom:50%;" />
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> ListNode <span class="title function_">removeNthFromEnd</span><span class="params">(ListNode head, <span class="type">int</span> n)</span> &#123;</span><br><span class="line">        <span class="type">ListNode</span> <span class="variable">dummy</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ListNode</span>(<span class="number">0</span>, head);</span><br><span class="line">        <span class="type">ListNode</span> <span class="variable">pre</span> <span class="operator">=</span> dummy;</span><br><span class="line">        <span class="type">ListNode</span> <span class="variable">cur</span> <span class="operator">=</span> dummy;</span><br><span class="line">        <span class="keyword">while</span>(n-- &gt; <span class="number">0</span>) &#123;</span><br><span class="line">            cur = cur.next;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">while</span>(cur.next != <span class="literal">null</span>) &#123;</span><br><span class="line">            pre = pre.next;</span><br><span class="line">            cur = cur.next;</span><br><span class="line">        &#125;</span><br><span class="line">        pre.next = pre.next.next;</span><br><span class="line">        <span class="keyword">return</span> dummy.next;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>以倒数第二个节点n&#x3D;2为例，我们发现：只要让后指针cur从dummy向右走n个节点，那么cur和pre始终相隔n个节点。这样，当cur和pre同时向后走的时候，cur走到了最后一个节点时pre正好走到<strong>待删除节点的前面一个节点</strong>。</p>
+<h2 id="leetcode-142-环形链表-II"><a href="#leetcode-142-环形链表-II" class="headerlink" title="leetcode 142 环形链表 II"></a>leetcode 142 环形链表 II</h2><p><u><strong>题目</strong>：给定一个链表的头节点  head ，返回链表开始入环的第一个节点。 如果链表无环，则返回 null。</u></p>
+<p><u>如果链表中有某个节点，可以通过连续跟踪 next 指针再次到达，则链表中存在环。 为了表示给定链表中的环，评测系统内部使用整数 pos 来表示链表尾连接到链表中的位置（索引从 0 开始）。如果 pos 是 -1，则在该链表中没有环。注意：pos 不作为参数进行传递，仅仅是为了标识链表的实际情况。</u></p>
+<p><u>不允许修改链表。</u></p>
+<img src="https://assets.leetcode.com/uploads/2018/12/07/circularlinkedlist.png" alt="img" style="zoom: 67%;" />
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> ListNode <span class="title function_">detectCycle</span><span class="params">(ListNode head)</span> &#123;</span><br><span class="line">        <span class="type">ListNode</span> <span class="variable">slow</span> <span class="operator">=</span> head;</span><br><span class="line">        <span class="type">ListNode</span> <span class="variable">fast</span> <span class="operator">=</span> head;</span><br><span class="line">        <span class="keyword">while</span>(fast != <span class="literal">null</span> &amp;&amp; fast.next != <span class="literal">null</span>) &#123;</span><br><span class="line">            fast = fast.next.next;</span><br><span class="line">            slow = slow.next;</span><br><span class="line">            <span class="comment">//一旦两指针相遇，就定义一个从head头指针出发的init指针，slow指针默认向后走</span></span><br><span class="line">            <span class="keyword">if</span>(fast == slow) &#123;</span><br><span class="line">                <span class="type">ListNode</span> <span class="variable">init</span> <span class="operator">=</span> head;</span><br><span class="line">                <span class="keyword">while</span>(init != slow) &#123;</span><br><span class="line">                    init = init.next;</span><br><span class="line">                    slow = slow.next;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">return</span> slow;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="leetcode-面试题02-07-链表相交"><a href="#leetcode-面试题02-07-链表相交" class="headerlink" title="leetcode 面试题02.07.链表相交"></a>leetcode 面试题02.07.链表相交</h2><p><u><strong>题目</strong>：给你两个单链表的头节点 headA 和 headB ，请你找出并返回两个单链表相交的起始节点。如果两个链表没有交点，返回 null 。</u></p>
+<p><u>图示两个链表在节点 c1 开始相交：</u></p>
+<img src="https://assets.leetcode-cn.com/aliyun-lc-upload/uploads/2018/12/14/160_statement.png" alt="img" style="zoom:50%;" />
+
+<p><u>题目数据 <strong>保证</strong> 整个链式结构中不存在环。</u></p>
+<p><u><strong>注意</strong>，函数返回结果后，链表必须 <strong>保持其原始结构</strong> 。</u></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//法一：</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> ListNode <span class="title function_">getIntersectionNode</span><span class="params">(ListNode headA, ListNode headB)</span> &#123;</span><br><span class="line">        <span class="type">ListNode</span> <span class="variable">curA</span> <span class="operator">=</span> headA, curB = headB;</span><br><span class="line">        <span class="keyword">while</span>(curA != curB) &#123;</span><br><span class="line">            curA = curA != <span class="literal">null</span> ? curA.next : headB;</span><br><span class="line">            curB = curB != <span class="literal">null</span> ? curB.next : headA;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> curA;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//法二：</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> ListNode <span class="title function_">getIntersectionNode</span><span class="params">(ListNode headA, ListNode headB)</span> &#123;</span><br><span class="line">        <span class="type">ListNode</span> <span class="variable">curA</span> <span class="operator">=</span> headA, curB = headB;</span><br><span class="line">        <span class="type">int</span> <span class="variable">lenA</span> <span class="operator">=</span> <span class="number">1</span>, lenB = <span class="number">1</span>;</span><br><span class="line">        <span class="comment">//1.先把AB链表的长度求出来</span></span><br><span class="line">        <span class="keyword">while</span>(curA != <span class="literal">null</span>) &#123;</span><br><span class="line">            curA = curA.next;</span><br><span class="line">            lenA++;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">while</span>(curB != <span class="literal">null</span>) &#123;</span><br><span class="line">            curB = curB.next;</span><br><span class="line">            lenB++;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//2.易错！！！：一定要先归位，否则后面两两交换的指针curA,curB是null</span></span><br><span class="line">        curA = headA;</span><br><span class="line">        curB = headB;</span><br><span class="line">        <span class="comment">//3.判断谁大，B大就把A换成B</span></span><br><span class="line">        <span class="keyword">if</span>(lenB &gt; lenA) &#123;</span><br><span class="line">            <span class="type">int</span> <span class="variable">temp</span> <span class="operator">=</span> lenA;</span><br><span class="line">            lenA = lenB;</span><br><span class="line">            lenB = temp;</span><br><span class="line">            <span class="type">ListNode</span> <span class="variable">tempNode</span> <span class="operator">=</span> curA;</span><br><span class="line">            curA = curB;</span><br><span class="line">            curB = tempNode;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//4.计算两链表差值</span></span><br><span class="line">        <span class="type">int</span> <span class="variable">len</span> <span class="operator">=</span> lenA - lenB;</span><br><span class="line">        <span class="comment">//5.让长链表的指针指向与短链表等长的位置</span></span><br><span class="line">        <span class="keyword">while</span>(len-- &gt; <span class="number">0</span>) &#123;</span><br><span class="line">            curA = curA.next;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//6.让A和B在相等长度的起点同时向后走</span></span><br><span class="line">        <span class="keyword">while</span>(curA != curB) &#123;</span><br><span class="line">            curA = curA.next;</span><br><span class="line">            curB = curB.next;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> curA;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这道题法一的思路就是：我们假设AB有公共部分长度为c，A总长度为a，那么非公共长度就是a - c；同理，B总长度为b，非公共长度为b - c。那么当A从头走到尾的时候（curA &#x3D;&#x3D; null），再继续从B的头结点headB继续向后走，直到走到公共节点时，一共走了a + (b - c)；而B从头走到尾，再从headA走到公共节点，一共走了b + (a - c)；我们发现这两个长度是相等的。</p>
+<p>如果没有公共交点，那么两个指针curA和curB最多走完a + b（最少就是两链表长度相等，各自走完自己的长度就同时等于零了）最后到null的时候就可以返回null了。双方一定是同时走到null的。</p>
+<p>所以总的来说循环条件就是curA !&#x3D; curB。</p>
+<h2 id="leetcode-141-环形链表"><a href="#leetcode-141-环形链表" class="headerlink" title="leetcode 141.环形链表"></a>leetcode 141.环形链表</h2><p><u><strong>题目</strong>：给你一个链表的头节点 head ，判断链表中是否有环。</u></p>
+<p><u>如果链表中有某个节点，可以通过连续跟踪 next 指针再次到达，则链表中存在环。 为了表示给定链表中的环，评测系统内部使用整数 pos 来表示链表尾连接到链表中的位置（索引从 0 开始）。注意：pos 不作为参数进行传递 。仅仅是为了标识链表的实际情况。</u></p>
+<p><u>如果链表中存在环 ，则返回 true 。 否则，返回 false</u> </p>
+<img src="https://assets.leetcode-cn.com/aliyun-lc-upload/uploads/2018/12/07/circularlinkedlist.png" alt="img" style="zoom: 50%;" />
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">hasCycle</span><span class="params">(ListNode head)</span> &#123;</span><br><span class="line">        <span class="type">ListNode</span> <span class="variable">slow</span> <span class="operator">=</span> head, fast = head;</span><br><span class="line">        <span class="keyword">while</span>(fast != <span class="literal">null</span> &amp;&amp; fast.next != <span class="literal">null</span>) &#123;</span><br><span class="line">            slow = slow.next;</span><br><span class="line">            fast = fast.next.next;</span><br><span class="line">            <span class="keyword">if</span>(fast == slow) &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2022/06/24/%E9%93%BE%E8%A1%A8%E9%A2%98%E8%A7%A3/" data-id="cl4uw2rdm0001w4v680s74f42" data-title="链表题解" class="article-share-link">Share</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2022/06/26/Linux%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Linux学习笔记
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2022/06/20/acm%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA%E7%BB%83%E4%B9%A0/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">acm输入输出练习</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/06/">June 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/05/">May 2022</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2022/06/26/Linux%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">Linux学习笔记</a>
+          </li>
+        
+          <li>
+            <a href="/2022/06/24/%E9%93%BE%E8%A1%A8%E9%A2%98%E8%A7%A3/">链表题解</a>
+          </li>
+        
+          <li>
+            <a href="/2022/06/20/acm%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA%E7%BB%83%E4%B9%A0/">acm输入输出练习</a>
+          </li>
+        
+          <li>
+            <a href="/2022/06/04/%E8%B4%AA%E5%BF%83%E7%B3%BB%E5%88%97%E9%A2%98%E8%A7%A3/">贪心系列题解</a>
+          </li>
+        
+          <li>
+            <a href="/2022/06/02/Redis%E7%9F%A5%E8%AF%86%E7%82%B9/">Redis知识点</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2022 John Doe<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>
