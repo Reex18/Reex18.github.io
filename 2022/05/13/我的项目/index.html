@@ -31,8 +31,9 @@
 <meta property="og:image" content="c:/Users/Reex/AppData/Roaming/Typora/typora-user-images/image-20220520170844188.png">
 <meta property="og:image" content="c:/Users/Reex/AppData/Roaming/Typora/typora-user-images/image-20220521193636861.png">
 <meta property="og:image" content="c:/Users/Reex/AppData/Roaming/Typora/typora-user-images/image-20220524163219968.png">
+<meta property="og:image" content="c:/Users/Reex/AppData/Roaming/Typora/typora-user-images/image-20220628145328194.png">
 <meta property="article:published_time" content="2022-05-13T12:30:20.000Z">
-<meta property="article:modified_time" content="2022-06-12T13:39:51.190Z">
+<meta property="article:modified_time" content="2022-06-28T06:55:15.143Z">
 <meta property="article:author" content="John Doe">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="c:/Users/Reex/AppData/Roaming/Typora/typora-user-images/image-20220518210741410.png">
@@ -519,6 +520,11 @@
 </ul>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> RedisTemplate redisTemplate;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//1.优先从缓存中取值</span></span><br><span class="line">    <span class="keyword">private</span> User <span class="title function_">getCache</span><span class="params">(<span class="type">int</span> userId)</span> &#123;</span><br><span class="line">        <span class="type">String</span> <span class="variable">redisKey</span> <span class="operator">=</span> RedisKeyUtil.getUserKey(userId);</span><br><span class="line">        <span class="keyword">return</span> (User) redisTemplate.opsForValue().get(redisKey);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//2.取不到数据就初始化缓存数据(从mysql中取数据存到redis中)</span></span><br><span class="line">    <span class="keyword">private</span> User <span class="title function_">initCache</span><span class="params">(<span class="type">int</span> userId)</span> &#123;</span><br><span class="line">        <span class="type">User</span> <span class="variable">user</span> <span class="operator">=</span> userMapper.selectById(userId);</span><br><span class="line">        <span class="type">String</span> <span class="variable">redisKey</span> <span class="operator">=</span> RedisKeyUtil.getUserKey(userId);</span><br><span class="line">        redisTemplate.opsForValue().set(redisKey, user, <span class="number">3600</span>, TimeUnit.SECONDS);<span class="comment">//设置1h过期时间</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//3.数据变更时清除缓存数据</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">void</span> <span class="title function_">clearCache</span><span class="params">(<span class="type">int</span> userId)</span> &#123;</span><br><span class="line">        <span class="type">String</span> <span class="variable">redisKey</span> <span class="operator">=</span> RedisKeyUtil.getUserKey(userId);</span><br><span class="line">        redisTemplate.delete(redisKey);</span><br><span class="line">    &#125;	</span><br><span class="line"></span><br><span class="line">	<span class="comment">//通过用户id查找用户信息user</span></span><br><span class="line">    <span class="keyword">public</span> User <span class="title function_">findUserById</span><span class="params">(<span class="type">int</span> id)</span>&#123;</span><br><span class="line"><span class="comment">//      废弃return userMapper.selectById(id);</span></span><br><span class="line">        <span class="comment">//改从Redis中取user，取不到就去数据库找到并init-Redis库，然后返回user</span></span><br><span class="line">        <span class="type">User</span> <span class="variable">user</span> <span class="operator">=</span> getCache(id);</span><br><span class="line">        <span class="keyword">if</span>(user == <span class="literal">null</span>) &#123;</span><br><span class="line">            user = initCache(id);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> user;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">//激活</span></span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">activation</span><span class="params">(<span class="type">int</span> userId, String code)</span>&#123;</span><br><span class="line">        <span class="type">User</span> <span class="variable">user</span> <span class="operator">=</span> userMapper.selectById(userId);</span><br><span class="line">        <span class="keyword">if</span>(user.getStatus() == <span class="number">1</span>)&#123;</span><br><span class="line">            <span class="keyword">return</span> ACTIVATION_REPEAT;<span class="comment">//如果用户状态已经为1，说明当前是重复激活</span></span><br><span class="line">        &#125;<span class="keyword">else</span> <span class="keyword">if</span>(user.getActivationCode().equals(code))&#123;</span><br><span class="line">            userMapper.updateStatus(userId, <span class="number">1</span>);<span class="comment">//如果用户状态不为1，而且当前激活码满足条件，就把状态设为1</span></span><br><span class="line">            <span class="comment">//因为更新了用户信息，所以清除缓存中用户的信息</span></span><br><span class="line">            clearCache(userId);</span><br><span class="line">            <span class="keyword">return</span> ACTIVATION_SUCCESS;</span><br><span class="line">        &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">            <span class="keyword">return</span> ACTIVATION_FAILURE;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">//更新用户头像</span></span><br><span class="line"> 	<span class="keyword">public</span> <span class="type">int</span> <span class="title function_">updateHeader</span><span class="params">(<span class="type">int</span> userId, String headerUrl)</span>&#123;</span><br><span class="line"><span class="comment">//      废弃return userMapper.updateHeader(userId, headerUrl);</span></span><br><span class="line">        </span><br><span class="line">        <span class="type">int</span> <span class="variable">rows</span> <span class="operator">=</span> userMapper.updateHeader(userId, headerUrl);</span><br><span class="line">        <span class="comment">//因为更新了用户信息，所以清除缓存中用户的信息</span></span><br><span class="line">        clearCache(userId);</span><br><span class="line">        <span class="keyword">return</span> rows;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
 
+<h1 id="Spring整合Kafka"><a href="#Spring整合Kafka" class="headerlink" title="Spring整合Kafka"></a>Spring整合Kafka</h1><p>首先导入kafka包，然后在application.properties配置文件中，写入如下配置：</p>
+<img src="C:\Users\Reex\AppData\Roaming\Typora\typora-user-images\image-20220628145328194.png" alt="image-20220628145328194" style="zoom: 67%;" />
+
+<p>分别对应了kafka服务器地址；消费者组id；消费者根据索引offset获取信息时，需要提交（记录）这个索引；消费者提交索引的频率为3000ms（3s）</p>
+
       
     </div>
     <footer class="article-footer">
@@ -569,7 +575,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/06/">June 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/05/">May 2022</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/07/">July 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/06/">June 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/05/">May 2022</a></li></ul>
     </div>
   </div>
 
@@ -580,6 +586,10 @@
     <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2022/07/01/%E5%8D%81%E5%A4%A7%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95/">十大排序算法</a>
+          </li>
         
           <li>
             <a href="/2022/06/26/Linux%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">Linux学习笔记</a>
@@ -595,10 +605,6 @@
         
           <li>
             <a href="/2022/06/04/%E8%B4%AA%E5%BF%83%E7%B3%BB%E5%88%97%E9%A2%98%E8%A7%A3/">贪心系列题解</a>
-          </li>
-        
-          <li>
-            <a href="/2022/06/02/Redis%E7%9F%A5%E8%AF%86%E7%82%B9/">Redis知识点</a>
           </li>
         
       </ul>

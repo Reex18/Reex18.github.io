@@ -17,8 +17,10 @@
 <meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/516738c4058cdf9109e40a7812ef4239.png">
 <meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/cadf797496816eb343a19c2451437f1e.png">
 <meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/ab0b44f557f8b5bc7acb3a53d43ebfcb.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/a3b1f6235cf0587115b21312fe60289c.png">
 <meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/85f597f7851b90d6c78bb0d8e39690fc.png">
 <meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/cabce0ce7e320bc9d9b5bde947b6811b.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/85f597f7851b90d6c78bb0d8e39690fc.png">
 <meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/6f0ab40396b7fc2c15e6f4487d3a0ad7.png">
 <meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/28afd536c57a46447ddab0a2062abe84.png">
 <meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/4eeef4dd1bedd2ffe0b84d4eaa0dbdea.png">
@@ -42,7 +44,7 @@
 <meta property="og:image" content="https://img-blog.csdnimg.cn/a6286053c6884cf58bf397d01674fe80.png">
 <meta property="og:image" content="https://img-blog.csdnimg.cn/fdd5f695bb3643258662886f9fba0aab.png">
 <meta property="article:published_time" content="2022-06-02T05:43:35.000Z">
-<meta property="article:modified_time" content="2022-06-10T13:27:48.782Z">
+<meta property="article:modified_time" content="2022-06-28T13:07:04.494Z">
 <meta property="article:author" content="John Doe">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://img-blog.csdnimg.cn/img_convert/376128646c75a893ad47914858fa2131.png">
@@ -136,7 +138,7 @@
 <h3 id="SDS结构设计"><a href="#SDS结构设计" class="headerlink" title="SDS结构设计"></a>SDS结构设计</h3><img src="https://img-blog.csdnimg.cn/img_convert/516738c4058cdf9109e40a7812ef4239.png" alt="img" style="zoom: 67%;" />
 
 <p>len：SDS直接记录了字符串的长度，所以<strong>复杂度降为o(1)</strong></p>
-<p>alloc：记录了<strong>分配</strong>给字符数组的空间长度，在修改字符串的时候，首先<strong>计算alloc - len</strong>够不够用，不够的话<strong>自动扩展</strong>空间长度，所以<strong>无缓存区溢出的风险</strong></p>
+<p>alloc：记录了<strong>分配</strong>给字符数组的空间长度，在修改字符串的时候，首先<strong>计算alloc - len</strong>够不够用，不够的话<strong>自动扩展</strong>空间长度(小于1MB翻倍扩容，大于1MB按1MB扩容)，所以<strong>无缓存区溢出的风险</strong></p>
 <p>flags：记录了五种类型的sds</p>
 <p>buf[]：不仅可以保存字符串，也可以<strong>保存任意格式的二进制数据</strong></p>
 <h2 id="链表"><a href="#链表" class="headerlink" title="链表"></a>链表</h2><img src="https://img-blog.csdnimg.cn/img_convert/cadf797496816eb343a19c2451437f1e.png" alt="img" style="zoom:50%;" />
@@ -152,15 +154,21 @@
 <li><strong>内存不连续</strong>，无法很好利用CPU缓存（与数组相比）</li>
 <li>保存每个节点都需要分配一个链表节点结构头，<strong>内存开销大</strong></li>
 </ul>
-<h2 id="压缩列表"><a href="#压缩列表" class="headerlink" title="压缩列表"></a>压缩列表</h2><p><strong>Redis3.0</strong>的产物，为了设计一个<strong>内存紧凑型</strong>的数据结构，节省内存开销，创造了压缩列表</p>
+<h2 id="压缩列表"><a href="#压缩列表" class="headerlink" title="压缩列表"></a>压缩列表</h2><p><strong>Redis3.0</strong>的产物，为了设计一个<strong>内存紧凑型</strong>的数据结构，节省内存开销，创造了压缩列表，它是由<strong>连续内存块</strong>组成的<strong>顺序型</strong>数据结构，<u>类似数组</u>。</p>
 <img src="https://img-blog.csdnimg.cn/img_convert/ab0b44f557f8b5bc7acb3a53d43ebfcb.png" alt="img" style="zoom: 67%;" />
 
-<p>表头前三个字段分别记录了[整个压缩列表<strong>占用的内存字节数</strong>]，[尾部节点举例起始地址的字节数（<strong>尾部偏移量</strong>）]，[包含的<strong>节点数量</strong>]。最后的[zlend]相当于\0，代表<strong>结束点</strong>。</p>
+<p>表头前三个字段分别记录了[整个压缩列表<strong>占用的内存字节数</strong>]，[尾部节点距离起始地址的字节数（<strong>尾部偏移量</strong>）]，[包含的<strong>节点数量</strong>]。最后的[zlend]相当于\0，代表<strong>结束点</strong>。</p>
 <p>通过这三个字段可以容易的查到表头和表尾（复杂度为o(1)），但是查找其他元素就是o(n)</p>
+<p>压缩列表节点entry包含了三部分：</p>
+<p><strong>prevlen</strong>:前一个节点的长度</p>
+<p><strong>encoding</strong>:当前节点实际数据类型及长度</p>
+<p><strong>data</strong>:当前节点的实际数据</p>
+<img src="https://img-blog.csdnimg.cn/img_convert/a3b1f6235cf0587115b21312fe60289c.png" alt="img" style="zoom:50%;" />
+
 <p>**<u>缺点明显</u>**：</p>
 <ul>
 <li>不能保存过多元素，会导致查询效率降低</li>
-<li>新增或修改某个元素，内存空间需要重新分配，很可能导致<strong>连锁更新</strong>（多米诺效应）</li>
+<li>新增或修改某个元素，内存空间需要重新分配，很可能导致<strong>连锁更新</strong>（由于存在prevlen多米诺效应）</li>
 </ul>
 <p>**<u>使用场景</u>**：</p>
 <p><strong>节点数量足够小</strong>，即使发生连锁更新，代价也很小。</p>
@@ -180,6 +188,18 @@
 <h3 id="渐进式rehash"><a href="#渐进式rehash" class="headerlink" title="渐进式rehash"></a>渐进式rehash</h3><p>上面问题就处在数据迁移过程中会引发<strong>大量数据拷贝</strong>，导致<strong>请求阻塞</strong>，所以采用渐进式rehash。</p>
 <p>将一次拷贝<strong>分成多次进行</strong>，而且进行的时机是：对哈希表元素<strong>进行CRUD的时候</strong>，顺便将表1中索引位置上的所有key-value<strong>顺序迁移到表2</strong>，随着请求增多，渐进式完成了迁移操作。</p>
 <p>如果渐进式rehash期间，新增一个key-value，只会保存在哈希表2中，而<strong>哈希表1只减不增</strong>。</p>
+<h3 id="rehash触发条件"><a href="#rehash触发条件" class="headerlink" title="rehash触发条件"></a>rehash触发条件</h3><img src="https://img-blog.csdnimg.cn/img_convert/85f597f7851b90d6c78bb0d8e39690fc.png" alt="img" style="zoom: 67%;" />
+
+<p>负载因子**&gt;&#x3D;1<strong>，Redis没有进行</strong>RDB快照<strong>或没有进行</strong>AOF重写**时，就进行rehash；</p>
+<p>负载因子**&gt;&#x3D;5<strong>，哈希冲突严重，</strong>强制进行**rehash。</p>
+<h2 id="整数集合"><a href="#整数集合" class="headerlink" title="整数集合"></a>整数集合</h2><p>整数集合时<strong>Set对象的底层实现之一</strong>，当一个Set对象<strong>只包含</strong>整数元素，并且元素<strong>数量不大</strong>时，就会使用整数集合这个数据结构。</p>
+<p>本质上是一块<strong>连续内存空间</strong>：保存数据的<strong>容器</strong>是contents数组，但是<strong>数据类型取决于encoding属性</strong>的值。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">intset</span> &#123;</span></span><br><span class="line">    <span class="comment">//编码方式</span></span><br><span class="line">    <span class="type">uint32_t</span> encoding;</span><br><span class="line">    <span class="comment">//集合包含的元素数量</span></span><br><span class="line">    <span class="type">uint32_t</span> length;</span><br><span class="line">    <span class="comment">//保存元素的数组</span></span><br><span class="line">    <span class="type">int8_t</span> contents[];</span><br><span class="line">&#125; intset;</span><br></pre></td></tr></table></figure>
+
+<h3 id="整数集合的升级"><a href="#整数集合的升级" class="headerlink" title="整数集合的升级"></a>整数集合的升级</h3><p>当整数集合中全是int16_t类型的数据，突然<strong>来了一个较长的</strong>int32_t类型数据，那么就会发生整数集合的升级操作。这样的好处是：尽可能地<strong>节省内存资源</strong>，有大的再扩容，没有就维持当前数据类型。</p>
+<p>整数集合<strong>只升级不降级</strong>。</p>
+<h2 id="跳表"><a href="#跳表" class="headerlink" title="跳表"></a>跳表</h2><p>Zset对象的底层实现用到了<strong>跳表</strong>和哈希表，其优势是能支持**平均o(logN)**的节点查找。</p>
+<p><strong>跳表</strong>支持Zset对象的<strong>范围查询</strong>，而哈希表支持其<strong>常数复杂度</strong>获得<strong>元素权重</strong>。</p>
 <h1 id="持久化"><a href="#持久化" class="headerlink" title="持久化"></a>持久化</h1><h2 id="AOF持久化-Append-Only-File"><a href="#AOF持久化-Append-Only-File" class="headerlink" title="AOF持久化(Append Only File)"></a>AOF持久化(Append Only File)</h2><p>AOF就是<strong>保存写操作命令到日志</strong>中，<u>不保存读操作</u>。</p>
 <img src="https://img-blog.csdnimg.cn/img_convert/6f0ab40396b7fc2c15e6f4487d3a0ad7.png" alt="img" style="zoom: 67%;" />
 
@@ -460,7 +480,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/06/">June 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/05/">May 2022</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/07/">July 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/06/">June 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/05/">May 2022</a></li></ul>
     </div>
   </div>
 
@@ -471,6 +491,10 @@
     <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2022/07/01/%E5%8D%81%E5%A4%A7%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95/">十大排序算法</a>
+          </li>
         
           <li>
             <a href="/2022/06/26/Linux%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">Linux学习笔记</a>
@@ -486,10 +510,6 @@
         
           <li>
             <a href="/2022/06/04/%E8%B4%AA%E5%BF%83%E7%B3%BB%E5%88%97%E9%A2%98%E8%A7%A3/">贪心系列题解</a>
-          </li>
-        
-          <li>
-            <a href="/2022/06/02/Redis%E7%9F%A5%E8%AF%86%E7%82%B9/">Redis知识点</a>
           </li>
         
       </ul>
