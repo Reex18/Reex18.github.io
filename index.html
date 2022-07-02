@@ -71,6 +71,44 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-股票问题题解" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2022/07/02/%E8%82%A1%E7%A5%A8%E9%97%AE%E9%A2%98%E9%A2%98%E8%A7%A3/" class="article-date">
+  <time class="dt-published" datetime="2022-07-02T09:04:00.000Z" itemprop="datePublished">2022-07-02</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2022/07/02/%E8%82%A1%E7%A5%A8%E9%97%AE%E9%A2%98%E9%A2%98%E8%A7%A3/">股票问题题解</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2022/07/02/%E8%82%A1%E7%A5%A8%E9%97%AE%E9%A2%98%E9%A2%98%E8%A7%A3/" data-id="cl53nr1pu00002kv6hs8i35of" data-title="股票问题题解" class="article-share-link">Share</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-十大排序算法" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
     <a href="/2022/07/01/%E5%8D%81%E5%A4%A7%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95/" class="article-date">
@@ -93,7 +131,13 @@
     
     <div class="e-content article-entry" itemprop="articleBody">
       
-        
+        <h2 id="冒泡排序"><a href="#冒泡排序" class="headerlink" title="冒泡排序"></a>冒泡排序</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span>[] sortArray(<span class="type">int</span>[] nums) &#123;</span><br><span class="line">        <span class="comment">//i的取值范围是难点！受j的取值范围影响，当i取最大值nums.length - 2时，j &lt; 1,即j可取最小值0</span></span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>;i &lt; nums.length - <span class="number">1</span>;i++) &#123;</span><br><span class="line">            <span class="comment">//每次定义一个标志，一旦该标志在下层循环中没有发生变化，则说明已经排序好了，不需要再排了</span></span><br><span class="line">            <span class="type">boolean</span> <span class="variable">flag</span> <span class="operator">=</span> <span class="literal">true</span>;</span><br><span class="line">            <span class="comment">//第二个难点依旧是取值范围，j的取值范围每次都要随着i的增加而减小，因为每次最后位置的元素已经排好</span></span><br><span class="line">            <span class="keyword">for</span>(<span class="type">int</span> <span class="variable">j</span> <span class="operator">=</span> <span class="number">0</span>;j &lt; nums.length - <span class="number">1</span> - i;j++) &#123;</span><br><span class="line">                <span class="keyword">if</span>(nums[j] &gt; nums[j + <span class="number">1</span>]) &#123;</span><br><span class="line">                    <span class="type">int</span> <span class="variable">temp</span> <span class="operator">=</span> nums[j];</span><br><span class="line">                    nums[j] = nums[j + <span class="number">1</span>];</span><br><span class="line">                    nums[j + <span class="number">1</span>] = temp;</span><br><span class="line">                    flag = <span class="literal">false</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span>(flag) &#123;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> nums;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<img src="https://www.runoob.com/wp-content/uploads/2019/03/bubbleSort.gif" alt="img" style="zoom: 67%;" />
+
+<h2 id="快速排序"><a href="#快速排序" class="headerlink" title="快速排序"></a>快速排序</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span>[] sortArray(<span class="type">int</span>[] nums) &#123;</span><br><span class="line">        quickSort(nums, <span class="number">0</span>, nums.length - <span class="number">1</span>);</span><br><span class="line">        <span class="keyword">return</span> nums;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">quickSort</span><span class="params">(<span class="type">int</span>[] nums, <span class="type">int</span> left, <span class="type">int</span> right)</span> &#123;</span><br><span class="line">        <span class="keyword">if</span>(left &lt; right) &#123;</span><br><span class="line">            <span class="comment">//确定基准</span></span><br><span class="line">            <span class="type">int</span> <span class="variable">pivot</span> <span class="operator">=</span> randomizedPartition(nums, left, right);</span><br><span class="line">            <span class="comment">//递归地进行快排（这里很容易写错）</span></span><br><span class="line">            quickSort(nums, left, pivot - <span class="number">1</span>);</span><br><span class="line">            quickSort(nums, pivot + <span class="number">1</span>, right);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//在范围内随机找一点与即将成为pivot的left点对换，避免每次都取left值</span></span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">randomizedPartition</span><span class="params">(<span class="type">int</span>[] nums, <span class="type">int</span> left, <span class="type">int</span> right)</span> &#123;</span><br><span class="line">        <span class="type">int</span> <span class="variable">pivot</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Random</span>().nextInt(right - left + <span class="number">1</span>) + left;</span><br><span class="line">        <span class="comment">//将随机位置的值nums[pivot]赋给nums[left]</span></span><br><span class="line">        swap(nums, pivot, left);</span><br><span class="line">        <span class="comment">//将交换随机值之后的nums进行排列</span></span><br><span class="line">        <span class="keyword">return</span> partition(nums, left, right);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//将小于nums[pivot]的值都放在pivot左边,大于nums[pivot]的值都放在pivot右边。</span></span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">partition</span><span class="params">(<span class="type">int</span>[] nums, <span class="type">int</span> left, <span class="type">int</span> right)</span> &#123;</span><br><span class="line">        <span class="comment">//取左边界为基准pivot</span></span><br><span class="line">        <span class="type">int</span> <span class="variable">pivot</span> <span class="operator">=</span> left;</span><br><span class="line">        <span class="comment">//从pivot右边第一位开始</span></span><br><span class="line">        <span class="type">int</span> <span class="variable">index</span> <span class="operator">=</span> pivot + <span class="number">1</span>;</span><br><span class="line">        <span class="comment">//一开始右指针i与左指针index重合</span></span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> index;i &lt;= right;i++) &#123;</span><br><span class="line">            <span class="comment">//一旦右指针i指向的元素比pivot指向的小，就把这个值赋给index，并让左指针index向右移动</span></span><br><span class="line">            <span class="keyword">if</span>(nums[i] &lt; nums[pivot]) &#123;</span><br><span class="line">                swap(nums, i, index);</span><br><span class="line">                index++;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//最后不要忘了让基准移向左指针index的右边，保证所有的小值在pivot左边，大值在pivot右边。</span></span><br><span class="line">        swap(nums, pivot, index - <span class="number">1</span>);</span><br><span class="line">        <span class="comment">//交换的只是值，但是所以pivot的位置就变为index - 1</span></span><br><span class="line">        <span class="keyword">return</span> index - <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">swap</span><span class="params">(<span class="type">int</span>[] nums, <span class="type">int</span> left, <span class="type">int</span> right)</span> &#123;</span><br><span class="line">        <span class="type">int</span> <span class="variable">temp</span> <span class="operator">=</span> nums[left];</span><br><span class="line">        nums[left] = nums[right];</span><br><span class="line">        nums[right] = temp;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
       
     </div>
     <footer class="article-footer">
@@ -146,7 +190,7 @@
 <h3 id="6-权限介绍"><a href="#6-权限介绍" class="headerlink" title="6.权限介绍"></a>6.权限介绍</h3><p>ls -l 显示内容如下：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-rwxrw-r-- 1 root root 1213 Feb 2 09:39 abc</span><br></pre></td></tr></table></figure>
 
-<p>第0位是文件类型：l是链接，d是目录，c是字符设备文件如鼠标键盘，b是块设备如硬盘</p>
+<p>第0位是文件类型：-是普通文件，l是链接，d是目录，c是字符设备文件如鼠标键盘，b是块设备如硬盘</p>
 <ul>
 <li><p>1-3位是<strong>所有者</strong>对文件的权限-User</p>
 </li>
@@ -154,11 +198,11 @@
 </li>
 <li><p>7-9位是<strong>其他用户</strong>对文件的权限-Other</p>
 </li>
-<li><p>1代表文件的<strong>硬链接数</strong>或者目录的<strong>子目录数</strong>；前面的root代表<strong>所属用户</strong>；后面的root代表<strong>所属组</strong></p>
+<li><p>1代表文件的<strong>硬链接数</strong>（文件副本）或者目录的<strong>子目录数</strong>；前面的root代表<strong>所属用户</strong>；后面的root代表<strong>所属组</strong></p>
 </li>
 <li><p>1213代表<strong>文件大小</strong>（字节）；Feb 2 09:39代表<strong>最后修改时间</strong>；abc代表<strong>文件&#x2F;目录名</strong></p>
 <ul>
-<li><p>对于普通文件来说：rwx分别是可读取，查看；可修改（不代表可删除）；可被执行（execute）</p>
+<li><p>对于普通文件来说：rwx分别是可读取；可修改（不代表可删除）；可被执行（execute）</p>
 </li>
 <li><p>对于目录来说：rwx分别代表可读取目录内容；可修改包括对目录内部进行创建+删除+重命名操作；可以进入目录</p>
 </li>
@@ -167,10 +211,10 @@
 </ul>
 </li>
 </ul>
-<p>这里的可被执行x权限，对于目录来说是至关重要的：1.因为<strong>目录只有赋予了x执行权限，才可以进入</strong>，否则读r和写w都是空谈；2.有了执行x权限，只能进入目录，<strong>必须有可读r权限才可以看到目录的内容</strong>；3.目录的文件能不能删除，<strong>只取决于文件所在目录是否有写w权限</strong>，没有对目录的w权限就无法删除目录内的所有文件（<em>文件所有者除外</em>  <u>存疑？</u>）。</p>
+<p>这里的可被执行x权限，对于目录来说是至关重要的：1.因为<strong>目录只有赋予了x执行权限，才可以进入</strong>，否则读r和写w都是空谈；2.有了执行x权限，只能进入目录，<strong>必须有可读r权限才可以看到目录的内容</strong>；3.目录的文件能不能删除，<strong>只取决于文件所在目录是否有写w权限</strong>，没有对目录的w权限就无法删除目录内的任意文件（<em>文件所有者除外</em>  <u>存疑？</u>）。</p>
 <p>对于<strong>普通文件</strong>，可执行x权限没什么用。</p>
 <p>对于<strong>shell脚本</strong>，如果没有x权限，则无法执行。</p>
-<h3 id="7-修改权限"><a href="#7-修改权限" class="headerlink" title="7.修改权限"></a>7.修改权限</h3><p><strong>chmod</strong>(change mode)可修改文件&#x2F;目录的权限</p>
+<h3 id="7-修改权限"><a href="#7-修改权限" class="headerlink" title="7.修改权限"></a>7.修改权限</h3><p><strong>chmod</strong>(change mode)可修改文件&#x2F;目录的权限       </p>
 <p>1.给abc的user读写执行权限，group读和执行权限，other读和执行权限</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">chmod u=rwx,g=rx,o=rx abc</span><br><span class="line">chmod 755 abc</span><br></pre></td></tr></table></figure>
 
@@ -1567,73 +1611,11 @@
 
 
   
-    <article id="post-Java基础知识点" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2022/05/15/Java%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E7%82%B9/" class="article-date">
-  <time class="dt-published" datetime="2022-05-15T09:03:41.000Z" itemprop="datePublished">2022-05-15</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2022/05/15/Java%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E7%82%B9/">Java基础知识点</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <h2 id="集合框架"><a href="#集合框架" class="headerlink" title="集合框架"></a>集合框架</h2><img src="https://javaguide.cn/assets/java-collection-hierarchy.1727461b.png" alt="img"  />
-
-<h2 id="为什么要使用集合？"><a href="#为什么要使用集合？" class="headerlink" title="为什么要使用集合？"></a>为什么要使用集合？</h2><p>数组一旦声明了，长度就不可变；</p>
-<p>数组存储数据类型单一，而且有序且可重复的，特点也单一；</p>
-<p>集合提高了数据存储的灵活性，不仅可以不同<strong>类型</strong>、不同<strong>数量</strong>，还可以<strong>控制元素重复</strong>，并且保存具有<strong>映射关系</strong>的数据。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//  数组转换为类型一致的集合</span></span><br><span class="line">  <span class="type">int</span> [] arr1=&#123;<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>&#125;;</span><br><span class="line">  <span class="comment">//  注意：这里直接传入int [] 的数组，返回的List的泛型参数为 int [],而不是Integer</span></span><br><span class="line">  List&lt;<span class="type">int</span>[]&gt; list1 = Arrays.asList(arr1);</span><br></pre></td></tr></table></figure>
-
-
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Integer [] arr2=&#123;<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>&#125;;</span><br><span class="line"><span class="comment">//  传入的参数类型为 Integer时，返回泛型参数就是Integer</span></span><br><span class="line">List&lt;Integer&gt; list2 = Arrays.asList(arr2);</span><br></pre></td></tr></table></figure>
-
-<h2 id="ArrayList和LinkedList区别与联系？"><a href="#ArrayList和LinkedList区别与联系？" class="headerlink" title="ArrayList和LinkedList区别与联系？"></a>ArrayList和LinkedList区别与联系？</h2><p>A和L都实现了List接口，他们都是<strong>线程不安全的</strong>；</p>
-<p>A底层使用的是<u>Object[]数组</u>，L底层使用的是<u>双向链表</u>；</p>
-<p>A在数组中的某个位置<strong>删除，插入</strong>元素都需要让整个数组跟着移动，L虽然不会移动，但是需要先移动到那个位置才能进行插入或删除操作，所以<strong>两者复杂度都较高</strong>，L只有头和尾插入或删除时，时间复杂度时o(1)。</p>
-<p><strong>A支持快速随机访问</strong>，因为数组下标。而L不行。</p>
-<p>A占内存主要是因为<strong>尾部需要预留空间</strong>，L空间花费更多体现在每个结点要记录的内容。</p>
-<p>A好，用A，<strong>能用L的地方都能用A</strong>。</p>
-<h2 id="comparable和comparator区别？"><a href="#comparable和comparator区别？" class="headerlink" title="comparable和comparator区别？"></a>comparable和comparator区别？</h2><p>comparable接口是java.lang包下的，接口有comareTo(Object obj)方法</p>
-<p>comparator接口时java.util工具包下的，接口中有compare(Object obj1, Object obj2)方法</p>
-<h2 id="HashMap的底层实现"><a href="#HashMap的底层实现" class="headerlink" title="HashMap的底层实现"></a>HashMap的底层实现</h2><p>JDK 1.7之前，底层是<strong>数组+链表</strong>的形式存储数据的。每次存储都对数据执行扰动函数，得到hash值，如果哈希碰撞，就equals比较，若相等则覆盖，如<strong>不等则拉链法</strong>，即用链表存储。</p>
-<p>JDK 1.8之后，底层是<strong>数组+链表+红黑树</strong>。还是用扰动函数，但是<strong>扰动函数有所更新</strong>，减少了哈希碰撞几率，但是如果碰撞还是equals比较，若相等则覆盖，若不等则拉链法，当链表长度大于阈值（默认8），则检查当前数组长度是否大于64，<strong>小于64则扩容数组</strong>（这里需要rehash），大于64则将超过阈值的链表<strong>转化为红黑树</strong>。</p>
-<h2 id="HashMap长度为什么是2的幂次方？"><a href="#HashMap长度为什么是2的幂次方？" class="headerlink" title="HashMap长度为什么是2的幂次方？"></a>HashMap长度为什么是2的幂次方？</h2><p><strong>这个还没搞懂</strong></p>
-<h2 id="ConcurrentHashMap和Hashtable的区别？"><a href="#ConcurrentHashMap和Hashtable的区别？" class="headerlink" title="ConcurrentHashMap和Hashtable的区别？"></a>ConcurrentHashMap和Hashtable的区别？</h2><p>先说Hashtable，<strong>全表锁</strong>，效率很低</p>
-<p>对于<strong>JDK 1.7</strong>的cchashmap，用segment即<strong>分段锁</strong>，只要多个线程没有哈希碰撞到同一个段就没事。</p>
-<p><strong>JDK 1.8</strong>以后的cchashmap，<strong>只锁当前的链表或者红黑树的首节点</strong>，只要hash冲突不到数组的同一个节点上，就没事。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://example.com/2022/05/15/Java%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E7%82%B9/" data-id="cl39jz0gd00001cv61jgv7ohf" data-title="Java基础知识点" class="article-share-link">Share</a>
-      
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
 
 
   <nav id="page-nav">
     
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
   </nav>
 
 </section>
@@ -1665,6 +1647,10 @@
       <ul>
         
           <li>
+            <a href="/2022/07/02/%E8%82%A1%E7%A5%A8%E9%97%AE%E9%A2%98%E9%A2%98%E8%A7%A3/">股票问题题解</a>
+          </li>
+        
+          <li>
             <a href="/2022/07/01/%E5%8D%81%E5%A4%A7%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95/">十大排序算法</a>
           </li>
         
@@ -1678,10 +1664,6 @@
         
           <li>
             <a href="/2022/06/20/acm%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA%E7%BB%83%E4%B9%A0/">acm输入输出练习</a>
-          </li>
-        
-          <li>
-            <a href="/2022/06/04/%E8%B4%AA%E5%BF%83%E7%B3%BB%E5%88%97%E9%A2%98%E8%A7%A3/">贪心系列题解</a>
           </li>
         
       </ul>

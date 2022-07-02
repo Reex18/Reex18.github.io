@@ -6,15 +6,19 @@
   
   <title>十大排序算法 | Reex</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta property="og:type" content="article">
+  <meta name="description" content="冒泡排序12345678910111213141516171819202122class Solution &amp;#123;    public int[] sortArray(int[] nums) &amp;#123;        &#x2F;&#x2F;i的取值范围是难点！受j的取值范围影响，当i取最大值nums.length - 2时，j &lt; 1,即j可取最小值0        for(int i &#x3D; 0;i &amp;">
+<meta property="og:type" content="article">
 <meta property="og:title" content="十大排序算法">
 <meta property="og:url" content="http://example.com/2022/07/01/%E5%8D%81%E5%A4%A7%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95/index.html">
 <meta property="og:site_name" content="Reex">
+<meta property="og:description" content="冒泡排序12345678910111213141516171819202122class Solution &amp;#123;    public int[] sortArray(int[] nums) &amp;#123;        &#x2F;&#x2F;i的取值范围是难点！受j的取值范围影响，当i取最大值nums.length - 2时，j &lt; 1,即j可取最小值0        for(int i &#x3D; 0;i &amp;">
 <meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://www.runoob.com/wp-content/uploads/2019/03/bubbleSort.gif">
 <meta property="article:published_time" content="2022-07-01T01:58:17.000Z">
-<meta property="article:modified_time" content="2022-07-01T01:58:17.681Z">
+<meta property="article:modified_time" content="2022-07-01T03:29:55.226Z">
 <meta property="article:author" content="John Doe">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://www.runoob.com/wp-content/uploads/2019/03/bubbleSort.gif">
   
     <link rel="alternate" href="/atom.xml" title="Reex" type="application/atom+xml">
   
@@ -93,7 +97,13 @@
     
     <div class="e-content article-entry" itemprop="articleBody">
       
-        
+        <h2 id="冒泡排序"><a href="#冒泡排序" class="headerlink" title="冒泡排序"></a>冒泡排序</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span>[] sortArray(<span class="type">int</span>[] nums) &#123;</span><br><span class="line">        <span class="comment">//i的取值范围是难点！受j的取值范围影响，当i取最大值nums.length - 2时，j &lt; 1,即j可取最小值0</span></span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>;i &lt; nums.length - <span class="number">1</span>;i++) &#123;</span><br><span class="line">            <span class="comment">//每次定义一个标志，一旦该标志在下层循环中没有发生变化，则说明已经排序好了，不需要再排了</span></span><br><span class="line">            <span class="type">boolean</span> <span class="variable">flag</span> <span class="operator">=</span> <span class="literal">true</span>;</span><br><span class="line">            <span class="comment">//第二个难点依旧是取值范围，j的取值范围每次都要随着i的增加而减小，因为每次最后位置的元素已经排好</span></span><br><span class="line">            <span class="keyword">for</span>(<span class="type">int</span> <span class="variable">j</span> <span class="operator">=</span> <span class="number">0</span>;j &lt; nums.length - <span class="number">1</span> - i;j++) &#123;</span><br><span class="line">                <span class="keyword">if</span>(nums[j] &gt; nums[j + <span class="number">1</span>]) &#123;</span><br><span class="line">                    <span class="type">int</span> <span class="variable">temp</span> <span class="operator">=</span> nums[j];</span><br><span class="line">                    nums[j] = nums[j + <span class="number">1</span>];</span><br><span class="line">                    nums[j + <span class="number">1</span>] = temp;</span><br><span class="line">                    flag = <span class="literal">false</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span>(flag) &#123;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> nums;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<img src="https://www.runoob.com/wp-content/uploads/2019/03/bubbleSort.gif" alt="img" style="zoom: 67%;" />
+
+<h2 id="快速排序"><a href="#快速排序" class="headerlink" title="快速排序"></a>快速排序</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span>[] sortArray(<span class="type">int</span>[] nums) &#123;</span><br><span class="line">        quickSort(nums, <span class="number">0</span>, nums.length - <span class="number">1</span>);</span><br><span class="line">        <span class="keyword">return</span> nums;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">quickSort</span><span class="params">(<span class="type">int</span>[] nums, <span class="type">int</span> left, <span class="type">int</span> right)</span> &#123;</span><br><span class="line">        <span class="keyword">if</span>(left &lt; right) &#123;</span><br><span class="line">            <span class="comment">//确定基准</span></span><br><span class="line">            <span class="type">int</span> <span class="variable">pivot</span> <span class="operator">=</span> randomizedPartition(nums, left, right);</span><br><span class="line">            <span class="comment">//递归地进行快排（这里很容易写错）</span></span><br><span class="line">            quickSort(nums, left, pivot - <span class="number">1</span>);</span><br><span class="line">            quickSort(nums, pivot + <span class="number">1</span>, right);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//在范围内随机找一点与即将成为pivot的left点对换，避免每次都取left值</span></span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">randomizedPartition</span><span class="params">(<span class="type">int</span>[] nums, <span class="type">int</span> left, <span class="type">int</span> right)</span> &#123;</span><br><span class="line">        <span class="type">int</span> <span class="variable">pivot</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Random</span>().nextInt(right - left + <span class="number">1</span>) + left;</span><br><span class="line">        <span class="comment">//将随机位置的值nums[pivot]赋给nums[left]</span></span><br><span class="line">        swap(nums, pivot, left);</span><br><span class="line">        <span class="comment">//将交换随机值之后的nums进行排列</span></span><br><span class="line">        <span class="keyword">return</span> partition(nums, left, right);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//将小于nums[pivot]的值都放在pivot左边,大于nums[pivot]的值都放在pivot右边。</span></span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">partition</span><span class="params">(<span class="type">int</span>[] nums, <span class="type">int</span> left, <span class="type">int</span> right)</span> &#123;</span><br><span class="line">        <span class="comment">//取左边界为基准pivot</span></span><br><span class="line">        <span class="type">int</span> <span class="variable">pivot</span> <span class="operator">=</span> left;</span><br><span class="line">        <span class="comment">//从pivot右边第一位开始</span></span><br><span class="line">        <span class="type">int</span> <span class="variable">index</span> <span class="operator">=</span> pivot + <span class="number">1</span>;</span><br><span class="line">        <span class="comment">//一开始右指针i与左指针index重合</span></span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> index;i &lt;= right;i++) &#123;</span><br><span class="line">            <span class="comment">//一旦右指针i指向的元素比pivot指向的小，就把这个值赋给index，并让左指针index向右移动</span></span><br><span class="line">            <span class="keyword">if</span>(nums[i] &lt; nums[pivot]) &#123;</span><br><span class="line">                swap(nums, i, index);</span><br><span class="line">                index++;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//最后不要忘了让基准移向左指针index的右边，保证所有的小值在pivot左边，大值在pivot右边。</span></span><br><span class="line">        swap(nums, pivot, index - <span class="number">1</span>);</span><br><span class="line">        <span class="comment">//交换的只是值，但是所以pivot的位置就变为index - 1</span></span><br><span class="line">        <span class="keyword">return</span> index - <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">swap</span><span class="params">(<span class="type">int</span>[] nums, <span class="type">int</span> left, <span class="type">int</span> right)</span> &#123;</span><br><span class="line">        <span class="type">int</span> <span class="variable">temp</span> <span class="operator">=</span> nums[left];</span><br><span class="line">        nums[left] = nums[right];</span><br><span class="line">        nums[right] = temp;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
       
     </div>
     <footer class="article-footer">
@@ -106,6 +116,15 @@
   
     
 <nav id="article-nav">
+  
+    <a href="/2022/07/02/%E8%82%A1%E7%A5%A8%E9%97%AE%E9%A2%98%E9%A2%98%E8%A7%A3/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          股票问题题解
+        
+      </div>
+    </a>
   
   
     <a href="/2022/06/26/Linux%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" id="article-nav-older" class="article-nav-link-wrap">
@@ -148,6 +167,10 @@
       <ul>
         
           <li>
+            <a href="/2022/07/02/%E8%82%A1%E7%A5%A8%E9%97%AE%E9%A2%98%E9%A2%98%E8%A7%A3/">股票问题题解</a>
+          </li>
+        
+          <li>
             <a href="/2022/07/01/%E5%8D%81%E5%A4%A7%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95/">十大排序算法</a>
           </li>
         
@@ -161,10 +184,6 @@
         
           <li>
             <a href="/2022/06/20/acm%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA%E7%BB%83%E4%B9%A0/">acm输入输出练习</a>
-          </li>
-        
-          <li>
-            <a href="/2022/06/04/%E8%B4%AA%E5%BF%83%E7%B3%BB%E5%88%97%E9%A2%98%E8%A7%A3/">贪心系列题解</a>
           </li>
         
       </ul>
