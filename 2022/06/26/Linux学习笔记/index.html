@@ -13,10 +13,14 @@
 <meta property="og:site_name" content="Reex">
 <meta property="og:description" content="Linux组管理和权限管理1.修改文件所有者指令：chown 用户名 文件名 1chown tom apple.txt  2.组及用户的创建12groupadd monsteruseradd fox  3.创建用户并将其放入组中1useradd -g monster fox  4.改变用户所在组(用户已存在)1usermod -g monster fox  5.修改文件&#x2F;目录所在组指令：">
 <meta property="og:locale" content="en_US">
+<meta property="og:image" content="c:/Users/Reex/AppData/Roaming/Typora/typora-user-images/image-20220704155829183.png">
+<meta property="og:image" content="c:/Users/Reex/AppData/Roaming/Typora/typora-user-images/image-20220704195049537.png">
+<meta property="og:image" content="c:/Users/Reex/AppData/Roaming/Typora/typora-user-images/image-20220704195205184.png">
 <meta property="article:published_time" content="2022-06-26T05:47:11.000Z">
-<meta property="article:modified_time" content="2022-07-02T03:51:02.751Z">
+<meta property="article:modified_time" content="2022-07-04T12:28:46.511Z">
 <meta property="article:author" content="John Doe">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="c:/Users/Reex/AppData/Roaming/Typora/typora-user-images/image-20220704155829183.png">
   
     <link rel="alternate" href="/atom.xml" title="Reex" type="application/atom+xml">
   
@@ -150,6 +154,34 @@
 <h3 id="9-修改文件-x2F-目录所在组"><a href="#9-修改文件-x2F-目录所在组" class="headerlink" title="9.修改文件&#x2F;目录所在组"></a>9.修改文件&#x2F;目录所在组</h3><p>指令：chgrp newgroup 文件&#x2F;目录 </p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">chgrp shaolin /home/abc.text</span><br><span class="line">目录及目录下所有文件都改成shaolin所属，需要用递归-R</span><br><span class="line">chgrp -R shaolin /home/test</span><br></pre></td></tr></table></figure>
 
+<h2 id="Linux定时任务调度"><a href="#Linux定时任务调度" class="headerlink" title="Linux定时任务调度"></a>Linux定时任务调度</h2><h3 id="crond-任务调度"><a href="#crond-任务调度" class="headerlink" title="crond 任务调度"></a>crond 任务调度</h3><p>整个过程就是设置etc&#x2F;crontab任务调度文件：</p>
+<p>1.执行crontab -e来编辑定时任务</p>
+<p>2.写入具体的定时任务语句</p>
+<p><strong>具体实例</strong>：</p>
+<p>每隔一分钟，将当前date时间追加到&#x2F;tmp&#x2F;mydate文件中</p>
+<p><strong>指令</strong>：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">crontab -e ---&gt; */1**** date &gt;&gt; /tmp/mydate</span><br></pre></td></tr></table></figure>
+
+<img src="C:\Users\Reex\AppData\Roaming\Typora\typora-user-images\image-20220704155829183.png" alt="image-20220704155829183" style="zoom:70%;" />
+
+<img src="C:\Users\Reex\AppData\Roaming\Typora\typora-user-images\image-20220704195049537.png" alt="image-20220704195049537" style="zoom:70%;" />
+
+<img src="C:\Users\Reex\AppData\Roaming\Typora\typora-user-images\image-20220704195205184.png" alt="image-20220704195205184" style="zoom:70%;" />
+
+<h3 id="crond相关指令"><a href="#crond相关指令" class="headerlink" title="crond相关指令"></a>crond相关指令</h3><p>crontab -r : 终止任务调度</p>
+<p>crontab -l : 列出当前有哪些任务调度（相当于查看etc&#x2F;crontab文件）</p>
+<p>service crond restart : 重启任务调度</p>
+<h3 id="at定时任务"><a href="#at定时任务" class="headerlink" title="at定时任务"></a>at定时任务</h3><p>at命令是定时执行一次的命令，必须要求<strong>守护进程atd</strong>在后台进程运行，每60s检查作业队列的运行情况。</p>
+<p>可以通过以下命令查看at的守护进程atd是否启动：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ps -ef | grep atd</span><br></pre></td></tr></table></figure>
+
+<p><strong>实例</strong>：</p>
+<p>1.两天后的下午五点执行&#x2F;bin&#x2F;ls &#x2F;home</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">at 5pm + 2days</span><br><span class="line">//输入回车后显示at&gt;，然后在后面输入具体要执行的命令</span><br><span class="line">/bin/ls /home</span><br></pre></td></tr></table></figure>
+
+<p>2.两分钟后，输出指定时间到&#x2F;root&#x2F;date200.log</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">at now + 2 minutes</span><br><span class="line">date &gt; /root/date200.log</span><br></pre></td></tr></table></figure>
+
 
       
     </div>
@@ -214,6 +246,10 @@
       <ul>
         
           <li>
+            <a href="/2022/07/06/SQL%E9%A2%98%E8%A7%A3/">SQL题解</a>
+          </li>
+        
+          <li>
             <a href="/2022/07/02/%E8%82%A1%E7%A5%A8%E9%97%AE%E9%A2%98%E9%A2%98%E8%A7%A3/">股票问题题解</a>
           </li>
         
@@ -227,10 +263,6 @@
         
           <li>
             <a href="/2022/06/24/%E9%93%BE%E8%A1%A8%E9%A2%98%E8%A7%A3/">链表题解</a>
-          </li>
-        
-          <li>
-            <a href="/2022/06/20/acm%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA%E7%BB%83%E4%B9%A0/">acm输入输出练习</a>
           </li>
         
       </ul>
