@@ -36,8 +36,9 @@
 <meta property="og:image" content="https://cdn.xiaolincoding.com/gh/xiaolincoder/ImageHost2/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/TCP-%E5%8F%AF%E9%9D%A0%E7%89%B9%E6%80%A7/28.jpg?image_process=watermark,text_5YWs5LyX5Y-377ya5bCP5p6XY29kaW5n,type_ZnpsdHpoaw,x_10,y_10,g_se,size_20,color_0000CD,t_70,fill_0">
 <meta property="og:image" content="https://cdn.xiaolincoding.com/gh/xiaolincoder/ImageHost2/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/TCP-%E5%8F%AF%E9%9D%A0%E7%89%B9%E6%80%A7/29.jpg?image_process=watermark,text_5YWs5LyX5Y-377ya5bCP5p6XY29kaW5n,type_ZnpsdHpoaw,x_10,y_10,g_se,size_20,color_0000CD,t_70,fill_0">
 <meta property="og:image" content="https://cdn.xiaolincoding.com/gh/xiaolincoder/ImageHost4@main/%E7%BD%91%E7%BB%9C/%E6%8B%A5%E5%A1%9E%E5%8F%91%E7%94%9F-%E5%BF%AB%E9%80%9F%E9%87%8D%E4%BC%A0.drawio.png?image_process=watermark,text_5YWs5LyX5Y-377ya5bCP5p6XY29kaW5n,type_ZnpsdHpoaw,x_10,y_10,g_se,size_20,color_0000CD,t_70,fill_0">
+<meta property="og:image" content="https://cdn.xiaolincoding.com/gh/xiaolincoder/ImageHost4@main/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8/tcp_socket.png">
 <meta property="article:published_time" content="2022-05-13T06:38:33.000Z">
-<meta property="article:modified_time" content="2022-06-11T02:51:08.848Z">
+<meta property="article:modified_time" content="2022-07-14T03:24:06.470Z">
 <meta property="article:author" content="John Doe">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://cdn.xiaolincoding.com/gh/xiaolincoder/ImageHost/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/HTTP/19-HTTPS%E4%B8%8EHTTP.png">
@@ -124,6 +125,11 @@
 <li>在网络包的传输过程中，<strong>源IP和目标IP始终不变</strong>，而为了两两设备在以太网中传输，必须<strong>实时变化MAC地址</strong>。</li>
 <li>在发送数据包的时候，<strong>如果目标主机不是本地局域网内的主机，那MAC地址填入的是路由器地址</strong>，通过路由器的层层转发，<strong>一直转发到目标主机的路由器</strong>，发现IP地址是自己局域网内的主机，就会通过ARP请求<strong>获取目标主机的MAC地址</strong>，进而转发到这个服务器主机。</li>
 </ol>
+<h2 id="交换机相关知识"><a href="#交换机相关知识" class="headerlink" title="交换机相关知识"></a>交换机相关知识</h2><p>交换机的端口<strong>没有MAC地址</strong>，不像网卡（有MAC地址），所以交换机收到包之后，<strong>不核对接收方MAC地址</strong>对不对。但是交换机<strong>有MAC地址表</strong>。</p>
+<h2 id="路由器和交换机的区别"><a href="#路由器和交换机的区别" class="headerlink" title="路由器和交换机的区别"></a>路由器和交换机的区别</h2><ul>
+<li>因为<strong>路由器</strong>是基于 IP 设计的，俗称<strong>三层</strong>网络设备，路由器的各个端口<strong>都具有</strong> MAC 地址和 IP 地址；</li>
+<li>而<strong>交换机</strong>是基于以太网设计的，俗称<strong>二层</strong>网络设备，交换机的端口<strong>不具有</strong> MAC 地址。</li>
+</ul>
 <h2 id="GET和POST区别？"><a href="#GET和POST区别？" class="headerlink" title="GET和POST区别？"></a>GET和POST区别？</h2><p>GET请求的参数一般<strong>写在URL中</strong>，URL规定<strong>只能支持ASCII</strong>，虽然HTTP协议并没有限制URL长度，但是<strong>浏览器自身会对URL长度有限制</strong>。</p>
 <p>POST请求的参数一般<strong>放在请求报文（body）中</strong>，body参数<strong>没有格式限制</strong>，只要浏览器和服务器都可接受就行，而且body参数的<strong>长度没有限制</strong>。</p>
 <h2 id="HTTPS和HTTP"><a href="#HTTPS和HTTP" class="headerlink" title="HTTPS和HTTP"></a>HTTPS和HTTP</h2><p>前者就是在HTTP的基础上，在TCP和HTTP之间添加了一层SSL&#x2F;TLS安全协议，使得报文能够加密传输。</p>
@@ -167,7 +173,7 @@
 <h4 id="IPv6相比IPv4的首部改进："><a href="#IPv6相比IPv4的首部改进：" class="headerlink" title="IPv6相比IPv4的首部改进："></a>IPv6相比IPv4的首部改进：</h4><p>1）<strong>取消首部校验和字段</strong>：因为数据链路层和传输层都要校验，所以v6直接取消了IP校验</p>
 <p>2）<strong>取消分片&#x2F;重新组装相关字段</strong>：中间路由器不准分片和重组了</p>
 <p>3）<strong>取消选项字段</strong></p>
-<h2 id="IP协议相关技术"><a href="#IP协议相关技术" class="headerlink" title="IP协议相关技术"></a>IP协议相关技术</h2><h3 id="DNS"><a href="#DNS" class="headerlink" title="DNS"></a>DNS</h3><p>解析域名的</p>
+<h2 id="IP协议相关技术"><a href="#IP协议相关技术" class="headerlink" title="IP协议相关技术"></a>IP协议相关技术</h2><h3 id="DNS（有缓存）"><a href="#DNS（有缓存）" class="headerlink" title="DNS（有缓存）"></a>DNS（有缓存）</h3><p>解析域名的，解析成Ip地址。不是每次请求都要寻址的，<strong>先查缓存</strong>有没有。</p>
 <h3 id="ARP（有缓存）"><a href="#ARP（有缓存）" class="headerlink" title="ARP（有缓存）"></a>ARP（有缓存）</h3><p>根据IP地址查询MAC地址的，主机A想找主机B的IP对应的MAC地址，就要先<strong>在同一数据链路下进行广播</strong>发送一个ARP请求包，包内<strong>包含了主机B的IP地址</strong>。</p>
 <p>RARP就是通过MAC获取IP，一般在无法通过DHCP获取IP的情况下应用到。</p>
 <h3 id="DHCP"><a href="#DHCP" class="headerlink" title="DHCP"></a>DHCP</h3><p>1）DHCP客户端也就是没有IP地址的客户端<strong>发送DHCP发现报文</strong>（DHCP DISCOVER），在数据链路中以<strong>广播</strong>形式发送；</p>
@@ -205,8 +211,15 @@
 <h3 id="TCP和UDP各自的应用场景？"><a href="#TCP和UDP各自的应用场景？" class="headerlink" title="TCP和UDP各自的应用场景？"></a>TCP和UDP各自的应用场景？</h3><p>TCP可靠，所以多应用于FTP文件传输，HTTP&#x2F;HTTPS</p>
 <p>UDP可以随时发送，高效。所以多应用于包较少的通信，如DNS、SNMP(Simple Network Management Protocol)等；视频，音频等；广播通信</p>
 <h3 id="TCP三次握手"><a href="#TCP三次握手" class="headerlink" title="TCP三次握手"></a>TCP三次握手</h3><p>第三次握手<strong>可以携带数据</strong>，前两次握手不可携带数据。</p>
-<p><u>三次握手意义</u>：阻止重复历史连接的初始化（<strong>主要意义</strong>），同步双方初始序列号，避免资源浪费。</p>
-<p>每次<u>初始化序列号不一样的意义</u>：很大程度避免<strong>历史报文被下一个相同四元组的连接接收</strong>。</p>
+<p><u>三次握手意义</u>：</p>
+<ul>
+<li>阻止重复历史连接的初始化（<strong>主要意义</strong>），同步双方初始序列号，避免资源浪费；</li>
+<li>确保发送端和接收端都具备发送和接收信息的能力。</li>
+</ul>
+<p>每次<u>初始化序列号不一样的意义</u>：</p>
+<ul>
+<li>很大程度避免<strong>历史报文被下一个相同四元组的连接接收</strong>。</li>
+</ul>
 <p>TCP头部字段的<strong>序列号</strong>和TCP建立连接的<strong>初始序列号都不是无限递增</strong>的，会发生<strong>回绕为初始值</strong>的情况，所以无法通过序列号来<strong>判断新老数据</strong>。</p>
 <p>MTU和MSS的区别如下：</p>
 <p>MTU(Maximum Transmission Unit)</p>
@@ -319,6 +332,16 @@
 </ul>
 <img src="https://cdn.xiaolincoding.com/gh/xiaolincoder/ImageHost4@main/%E7%BD%91%E7%BB%9C/%E6%8B%A5%E5%A1%9E%E5%8F%91%E7%94%9F-%E5%BF%AB%E9%80%9F%E9%87%8D%E4%BC%A0.drawio.png?image_process=watermark,text_5YWs5LyX5Y-377ya5bCP5p6XY29kaW5n,type_ZnpsdHpoaw,x_10,y_10,g_se,size_20,color_0000CD,t_70,fill_0" alt="快速重传和快速恢复" style="zoom:40%;" />
 
+<h2 id="Socket编程"><a href="#Socket编程" class="headerlink" title="Socket编程"></a>Socket编程</h2><p><u>服务端：</u></p>
+<p>服务端调用**socket()<strong>——》创建支持ipv4&#x2F;ipv6，TCP协议的Socket——》调用</strong>bind()**——》绑定ip地址及端口</p>
+<p>——》调用<strong>listen()<strong>——》服务器进入监听状态——》调用</strong>accept()<strong>——》从</strong>内核获取</strong>客户端连接</p>
+<p><u>客户端：</u></p>
+<p>客户端调用<strong>socket()<strong>——》创建支持ipv4&#x2F;ipv6，TCP协议的Socket——》调用</strong>connect()<strong>——》参数指明服务端ip和端口号——》开始</strong>TCP三次握手</strong></p>
+<img src="https://cdn.xiaolincoding.com/gh/xiaolincoder/ImageHost4@main/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8/tcp_socket.png" alt="img" style="zoom: 60%;" />
+
+<p>TCP握手阶段，服务器的内核会为每个Socket维护两个队列——半连接队列和全连接队列。当<strong>全连接队列不为空</strong>时，服务端的<strong>accept()<strong>就从队列中拿出一个完成连接的Socket返回给应用程序，后续的</strong>数据传输</strong>都用这个Socket。</p>
+<p>注意：用来监听的Socket和传输数据的Socket是不同的两个。</p>
+
       
     </div>
     <footer class="article-footer">
@@ -336,7 +359,7 @@
       <strong class="article-nav-caption">Newer</strong>
       <div class="article-nav-title">
         
-          我的项目
+          (no title)
         
       </div>
     </a>
@@ -382,6 +405,10 @@
       <ul>
         
           <li>
+            <a href="/2022/07/06/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92%E5%9F%BA%E7%A1%80%E5%8F%8A%E8%83%8C%E5%8C%85%E9%A2%98%E8%A7%A3/">动态规划基础及背包题解</a>
+          </li>
+        
+          <li>
             <a href="/2022/07/06/SQL%E9%A2%98%E8%A7%A3/">SQL题解</a>
           </li>
         
@@ -395,10 +422,6 @@
         
           <li>
             <a href="/2022/06/26/Linux%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">Linux学习笔记</a>
-          </li>
-        
-          <li>
-            <a href="/2022/06/24/%E9%93%BE%E8%A1%A8%E9%A2%98%E8%A7%A3/">链表题解</a>
           </li>
         
       </ul>

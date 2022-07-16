@@ -15,7 +15,7 @@
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://code-thinking.cdn.bcebos.com/gifs/977.%E6%9C%89%E5%BA%8F%E6%95%B0%E7%BB%84%E7%9A%84%E5%B9%B3%E6%96%B9.gif">
 <meta property="article:published_time" content="2022-05-11T09:01:55.000Z">
-<meta property="article:modified_time" content="2022-06-21T11:43:45.303Z">
+<meta property="article:modified_time" content="2022-07-13T09:22:51.140Z">
 <meta property="article:author" content="John Doe">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://code-thinking.cdn.bcebos.com/gifs/977.%E6%9C%89%E5%BA%8F%E6%95%B0%E7%BB%84%E7%9A%84%E5%B9%B3%E6%96%B9.gif">
@@ -139,7 +139,7 @@
 
 <p><img src="https://code-thinking.cdn.bcebos.com/gifs/977.%E6%9C%89%E5%BA%8F%E6%95%B0%E7%BB%84%E7%9A%84%E5%B9%B3%E6%96%B9.gif" alt="img"></p>
 <p>题解来自Carl大佬，这个图足够说明解题思路了。要注意的就是while的循环条件。</p>
-<h1 id="☆leetcode-209-长度最小的子数组"><a href="#☆leetcode-209-长度最小的子数组" class="headerlink" title="☆leetcode 209.长度最小的子数组"></a>☆leetcode 209.长度最小的子数组</h1><p><u><strong>题目</strong>：给定一个含有 n 个正整数的数组和一个正整数 target 。</u></p>
+<h1 id="CodeTop-☆leetcode-209-长度最小的子数组-剑指-II-008"><a href="#CodeTop-☆leetcode-209-长度最小的子数组-剑指-II-008" class="headerlink" title="(CodeTop) ☆leetcode 209.长度最小的子数组(剑指 II 008)"></a>(CodeTop) ☆leetcode 209.长度最小的子数组(剑指 II 008)</h1><p><u><strong>题目</strong>：给定一个含有 n 个正整数的数组和一个正整数 target 。</u></p>
 <p><u>找出该数组中满足其和 ≥ target 的长度最小的<strong>连续子数组</strong> [numsl, numsl+1, …, numsr-1, numsr]，并返回其长度。如果不存在符合条件的子数组，返回0。</u></p>
 <p><u><strong>示例 1：</strong></u></p>
 <p><u>输入：target &#x3D; 7, nums &#x3D; [2,3,1,2,4,3]</u><br><u>输出：2</u><br><u>解释：子数组 [4,3] 是该条件下的长度最小的子数组。</u></p>
@@ -164,7 +164,14 @@
 <p>总的来说，<strong>容易出现问题的地方</strong>，首先是：</p>
 <p>​		①左指针i向右移动的时机</p>
 <p>​		②更新ans的时机。</p>
-<h1 id="leetcode-76-最小覆盖字串（未完成）"><a href="#leetcode-76-最小覆盖字串（未完成）" class="headerlink" title="leetcode 76.最小覆盖字串（未完成）"></a>leetcode 76.最小覆盖字串（未完成）</h1>
+<h1 id="leetcode-76-最小覆盖字串（未完成）"><a href="#leetcode-76-最小覆盖字串（未完成）" class="headerlink" title="leetcode 76.最小覆盖字串（未完成）"></a>leetcode 76.最小覆盖字串（未完成）</h1><h1 id="leetcode-167-两数之和-II-输入有序数组"><a href="#leetcode-167-两数之和-II-输入有序数组" class="headerlink" title="leetcode 167 两数之和 II-输入有序数组"></a>leetcode 167 两数之和 II-输入有序数组</h1><p><u><strong>题目</strong>：给你一个下标从 1 开始的整数数组 numbers ，<strong>该数组已按 非递减顺序排列</strong>  ，请你从数组中找出满足相加之和等于目标数 target 的两个数。如果设这两个数分别是 numbers[index1] 和 numbers[index2] ，则 **1 &lt;&#x3D; index1 &lt; index2 &lt;&#x3D; numbers.length** 。</u></p>
+<p><u>以长度为 2 的整数数组 [index1, index2] 的形式返回这两个整数的下标 index1 和 index2。</u></p>
+<p><u>你可以假设每个输入 只对应唯一的答案 ，而且你 不可以 重复使用相同的元素。</u></p>
+<p><u>你所设计的解决方案必须只使用常量级的额外空间。</u></p>
+<p><u>输入：numbers &#x3D; [2,3,4], target &#x3D; 6</u><br><u>输出：[1,3]</u></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//其实就是三数之和、四数之和while中的解法</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span>[] twoSum(<span class="type">int</span>[] numbers, <span class="type">int</span> target) &#123;</span><br><span class="line">        <span class="type">int</span> <span class="variable">left</span> <span class="operator">=</span> <span class="number">0</span>, right = numbers.length - <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">while</span>(left &lt; right) &#123;</span><br><span class="line">            <span class="type">int</span> <span class="variable">sum</span> <span class="operator">=</span> numbers[left] + numbers[right];</span><br><span class="line">            <span class="keyword">if</span>(sum == target) &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">int</span>[] &#123;left + <span class="number">1</span>, right + <span class="number">1</span>&#125;;</span><br><span class="line">            &#125;<span class="keyword">else</span> <span class="keyword">if</span>(sum &gt; target) &#123;</span><br><span class="line">                right--;</span><br><span class="line">            &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">                left++;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">int</span>[<span class="number">2</span>];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
       
     </div>
     <footer class="article-footer">
@@ -228,6 +235,10 @@
       <ul>
         
           <li>
+            <a href="/2022/07/06/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92%E5%9F%BA%E7%A1%80%E5%8F%8A%E8%83%8C%E5%8C%85%E9%A2%98%E8%A7%A3/">动态规划基础及背包题解</a>
+          </li>
+        
+          <li>
             <a href="/2022/07/06/SQL%E9%A2%98%E8%A7%A3/">SQL题解</a>
           </li>
         
@@ -241,10 +252,6 @@
         
           <li>
             <a href="/2022/06/26/Linux%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">Linux学习笔记</a>
-          </li>
-        
-          <li>
-            <a href="/2022/06/24/%E9%93%BE%E8%A1%A8%E9%A2%98%E8%A7%A3/">链表题解</a>
           </li>
         
       </ul>

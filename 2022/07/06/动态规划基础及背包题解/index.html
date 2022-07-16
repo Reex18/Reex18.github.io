@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>动态规划基础及背包题解 | Reex</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="leetcode 509.斐波那契数题目：斐波那契数 （通常用 F(n) 表示）形成的序列称为 斐波那契数列 。该数列由 0 和 1 开始，后面的每一项数字都是前面两项数字的和。也就是： F(0) &#x3D; 0，F(1) &#x3D; 1F(n) &#x3D; F(n - 1) + F(n - 2)，其中 n &gt; 1给定 n ，请计算 F(n) 。  0 &lt;&#x3D; n &lt;&#x3D; 30">
+<meta property="og:type" content="article">
+<meta property="og:title" content="动态规划基础及背包题解">
+<meta property="og:url" content="http://example.com/2022/07/06/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92%E5%9F%BA%E7%A1%80%E5%8F%8A%E8%83%8C%E5%8C%85%E9%A2%98%E8%A7%A3/index.html">
+<meta property="og:site_name" content="Reex">
+<meta property="og:description" content="leetcode 509.斐波那契数题目：斐波那契数 （通常用 F(n) 表示）形成的序列称为 斐波那契数列 。该数列由 0 和 1 开始，后面的每一项数字都是前面两项数字的和。也就是： F(0) &#x3D; 0，F(1) &#x3D; 1F(n) &#x3D; F(n - 1) + F(n - 2)，其中 n &gt; 1给定 n ，请计算 F(n) 。  0 &lt;&#x3D; n &lt;&#x3D; 30">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210113161941835.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210110104240545.png">
+<meta property="article:published_time" content="2022-07-06T07:43:12.000Z">
+<meta property="article:modified_time" content="2022-07-08T12:14:50.271Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img-blog.csdnimg.cn/20210113161941835.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Reex" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+<meta name="generator" content="Hexo 6.1.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Reex</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-动态规划基础及背包题解" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2022/07/06/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92%E5%9F%BA%E7%A1%80%E5%8F%8A%E8%83%8C%E5%8C%85%E9%A2%98%E8%A7%A3/" class="article-date">
+  <time class="dt-published" datetime="2022-07-06T07:43:12.000Z" itemprop="datePublished">2022-07-06</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      动态规划基础及背包题解
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h2 id="leetcode-509-斐波那契数"><a href="#leetcode-509-斐波那契数" class="headerlink" title="leetcode 509.斐波那契数"></a>leetcode 509.斐波那契数</h2><p><u><strong>题目</strong>：斐波那契数 （通常用 F(n) 表示）形成的序列称为 斐波那契数列 。该数列由 0 和 1 开始，后面的每一项数字都是前面两项数字的和。也就是：</u></p>
+<p><u>F(0) &#x3D; 0，F(1) &#x3D; 1</u><br><u>F(n) &#x3D; F(n - 1) + F(n - 2)，其中 n &gt; 1</u><br><u>给定 n ，请计算 F(n) 。</u></p>
+<ul>
+<li><code>0 &lt;= n &lt;= 30</code></li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">fib</span><span class="params">(<span class="type">int</span> n)</span> &#123;</span><br><span class="line">        <span class="comment">//n的取值从0开始，一定要注意</span></span><br><span class="line">        <span class="keyword">if</span>(n == <span class="number">0</span> || n == <span class="number">1</span>) <span class="keyword">return</span> n;</span><br><span class="line">        <span class="type">int</span>[] dp = <span class="keyword">new</span> <span class="title class_">int</span>[n + <span class="number">1</span>];</span><br><span class="line">        dp[<span class="number">0</span>] = <span class="number">0</span>;</span><br><span class="line">        dp[<span class="number">1</span>] = <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">2</span>;i &lt;= n;i++) &#123;</span><br><span class="line">            dp[i] = dp[i - <span class="number">1</span>] + dp[i - <span class="number">2</span>];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> dp[n];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="leetcode-70-爬楼梯"><a href="#leetcode-70-爬楼梯" class="headerlink" title="leetcode 70.爬楼梯"></a>leetcode 70.爬楼梯</h2><p><u><strong>题目</strong>：假设你正在爬楼梯。需要 <code>n</code> 阶你才能到达楼顶。</u></p>
+<p><u>每次你可以爬 <code>1</code> 或 <code>2</code> 个台阶。你有多少种不同的方法可以爬到楼顶呢？</u></p>
+<ul>
+<li><code>1 &lt;= n &lt;= 45</code></li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//空间复杂度为n的动态规划方法：</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">climbStairs</span><span class="params">(<span class="type">int</span> n)</span> &#123;</span><br><span class="line">        <span class="keyword">if</span>(n == <span class="number">1</span>) <span class="keyword">return</span> n;</span><br><span class="line">        <span class="type">int</span>[] dp = <span class="keyword">new</span> <span class="title class_">int</span>[n + <span class="number">1</span>];</span><br><span class="line">        dp[<span class="number">0</span>] = <span class="number">1</span>;</span><br><span class="line">        dp[<span class="number">1</span>] = <span class="number">1</span>;</span><br><span class="line">        dp[<span class="number">2</span>] = <span class="number">2</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">3</span>;i &lt;= n;i++) &#123;</span><br><span class="line">            dp[i] = dp[i - <span class="number">1</span>] + dp[i - <span class="number">2</span>];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> dp[n];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//空间复杂度为1的滚动法：</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">climbStairs</span><span class="params">(<span class="type">int</span> n)</span> &#123;</span><br><span class="line">        <span class="keyword">if</span>(n &lt;= <span class="number">2</span>) <span class="keyword">return</span> n;</span><br><span class="line">        <span class="type">int</span> <span class="variable">a</span> <span class="operator">=</span> <span class="number">1</span>, b = <span class="number">2</span>, c = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">3</span>;i &lt;= n;i++) &#123;</span><br><span class="line">            c = a + b;</span><br><span class="line">            a = b;</span><br><span class="line">            b = c;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> b;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="leetcode-746-使用最小花费爬楼梯"><a href="#leetcode-746-使用最小花费爬楼梯" class="headerlink" title="leetcode 746.使用最小花费爬楼梯"></a>leetcode 746.使用最小花费爬楼梯</h2><p><u><strong>题目</strong>：给你一个整数数组 cost ，其中 cost[i] 是从楼梯第 i 个台阶向上爬需要支付的费用。一旦你支付此费用，即可选择向上爬一个或者两个台阶。</u></p>
+<p><u>你可以选择<strong>从下标为 0 或下标为 1</strong> 的台阶开始爬楼梯。</u></p>
+<p><u>请你计算并返回达到楼梯顶部的最低花费。</u></p>
+<ul>
+<li><code>2 &lt;= cost.length &lt;= 1000</code></li>
+<li><code>0 &lt;= cost[i] &lt;= 999</code></li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">minCostClimbingStairs</span><span class="params">(<span class="type">int</span>[] cost)</span> &#123;</span><br><span class="line">        <span class="type">int</span>[] dp = <span class="keyword">new</span> <span class="title class_">int</span>[cost.length + <span class="number">1</span>];</span><br><span class="line">        dp[<span class="number">0</span>] = <span class="number">0</span>;</span><br><span class="line">        dp[<span class="number">1</span>] = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">2</span>;i &lt;= cost.length;i++) &#123;</span><br><span class="line">            dp[i] = Math.min(dp[i - <span class="number">1</span>] + cost[i - <span class="number">1</span>], dp[i - <span class="number">2</span>] + cost[i - <span class="number">2</span>]);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//注意最后要走到数组最后一位的后边才可以</span></span><br><span class="line">        <span class="keyword">return</span> dp[cost.length];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="leetcode-62-不同路径"><a href="#leetcode-62-不同路径" class="headerlink" title="leetcode 62 不同路径"></a>leetcode 62 不同路径</h2><p><u><strong>题目</strong>：一个机器人位于一个 m x n 网格的左上角 （起始点在下图中标记为 “Start” ）。</u></p>
+<p><u>机器人每次只能向下或者向右移动一步。机器人试图达到网格的右下角（在下图中标记为 “Finish” ）。</u></p>
+<p><u>问总共有多少条不同的路径？</u></p>
+<ul>
+<li><code>1 &lt;= m, n &lt;= 100</code></li>
+<li>题目数据保证答案小于等于 <code>2 * 109</code></li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">uniquePaths</span><span class="params">(<span class="type">int</span> m, <span class="type">int</span> n)</span> &#123;</span><br><span class="line">        <span class="type">int</span>[][] dp = <span class="keyword">new</span> <span class="title class_">int</span>[m][n];</span><br><span class="line">        <span class="comment">//只沿着一条边走，只有1条路</span></span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>;i &lt; m;i++) dp[i][<span class="number">0</span>] = <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> <span class="variable">j</span> <span class="operator">=</span> <span class="number">0</span>;j &lt; n;j++) dp[<span class="number">0</span>][j] = <span class="number">1</span>;</span><br><span class="line">        <span class="comment">//每个格都是上边或左边走过来，所以要把这两个位置的dp加起来</span></span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">1</span>;i &lt; m;i++) &#123;</span><br><span class="line">            <span class="keyword">for</span>(<span class="type">int</span> <span class="variable">j</span> <span class="operator">=</span> <span class="number">1</span>;j &lt; n;j++) &#123;</span><br><span class="line">                dp[i][j] = dp[i - <span class="number">1</span>][j] + dp[i][j - <span class="number">1</span>];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> dp[m - <span class="number">1</span>][n - <span class="number">1</span>];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="leetcode-63-不同路径-II"><a href="#leetcode-63-不同路径-II" class="headerlink" title="leetcode 63.不同路径 II"></a>leetcode 63.不同路径 II</h2><p><u><strong>题目</strong>：一个机器人位于一个 m x n 网格的左上角 （起始点在下图中标记为 “Start” ）。</u></p>
+<p><u>机器人每次只能向下或者向右移动一步。机器人试图达到网格的右下角（在下图中标记为 “Finish”）。</u></p>
+<p><u>现在考虑网格中有障碍物。那么从左上角到右下角将会有多少条不同的路径？</u></p>
+<p><u>网格中的障碍物和空位置分别用 1 和 0 来表示。</u></p>
+<ul>
+<li><p>m &#x3D;&#x3D; obstacleGrid.length</p>
+</li>
+<li><p>n &#x3D;&#x3D; obstacleGrid[i].length</p>
+</li>
+<li><p>1 &lt;&#x3D; m, n &lt;&#x3D; 100</p>
+</li>
+<li><p>obstacleGrid[i][j] 为 0 或 1</p>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">uniquePathsWithObstacles</span><span class="params">(<span class="type">int</span>[][] obstacleGrid)</span> &#123;</span><br><span class="line">        <span class="type">int</span> <span class="variable">m</span> <span class="operator">=</span> obstacleGrid.length;</span><br><span class="line">        <span class="type">int</span> <span class="variable">n</span> <span class="operator">=</span> obstacleGrid[<span class="number">0</span>].length;</span><br><span class="line">        <span class="type">int</span>[][] dp = <span class="keyword">new</span> <span class="title class_">int</span>[m][n];</span><br><span class="line">        <span class="comment">//只有整个边界的一行或一列都没有障碍物才为1，否则障碍物前都是1，障碍物后面都是0</span></span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>;i &lt; m &amp;&amp; obstacleGrid[i][<span class="number">0</span>] == <span class="number">0</span>;i++) dp[i][<span class="number">0</span>] = <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> <span class="variable">j</span> <span class="operator">=</span> <span class="number">0</span>;j &lt; n &amp;&amp; obstacleGrid[<span class="number">0</span>][j] == <span class="number">0</span>;j++) dp[<span class="number">0</span>][j] = <span class="number">1</span>;</span><br><span class="line">        <span class="comment">//只有没有障碍物的位置可以累加前面的dp，有障碍物的位置dp[i][j] = 0</span></span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">1</span>;i &lt; m;i++) &#123;</span><br><span class="line">            <span class="keyword">for</span>(<span class="type">int</span> <span class="variable">j</span> <span class="operator">=</span> <span class="number">1</span>;j &lt; n;j++) &#123;</span><br><span class="line">                <span class="keyword">if</span>(obstacleGrid[i][j] == <span class="number">0</span>) &#123;</span><br><span class="line">                    dp[i][j] = dp[i - <span class="number">1</span>][j] + dp[i][j - <span class="number">1</span>];</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> dp[m - <span class="number">1</span>][n - <span class="number">1</span>];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="☆leetcode-343-整数拆分"><a href="#☆leetcode-343-整数拆分" class="headerlink" title="☆leetcode 343.整数拆分"></a>☆leetcode 343.整数拆分</h2><p><u><strong>题目</strong>：给定一个正整数 <code>n</code> ，将其拆分为 <code>k</code> 个 <strong>正整数</strong> 的和（ <code>k &gt;= 2</code> ），并使这些整数的乘积最大化。</u></p>
+<p><u>返回 <em>你可以获得的最大乘积</em> 。</u></p>
+<p><u>输入: n &#x3D; 10</u><br><u>输出: 36</u><br><u>解释: 10 &#x3D; 3 + 3 + 4, 3 × 3 × 4 &#x3D; 36。</u></p>
+<ul>
+<li><code>2 &lt;= n &lt;= 58</code></li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//动规解法（时间复杂度n2）:</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">integerBreak</span><span class="params">(<span class="type">int</span> n)</span> &#123;</span><br><span class="line">        <span class="type">int</span>[] dp = <span class="keyword">new</span> <span class="title class_">int</span>[n + <span class="number">1</span>];</span><br><span class="line">        <span class="comment">//0和1是无法拆分的，所以dp[0]和dp[1]都是没有意义的</span></span><br><span class="line">        dp[<span class="number">2</span>] = <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">3</span>;i &lt;= n;i++) &#123;</span><br><span class="line">            <span class="keyword">for</span>(<span class="type">int</span> <span class="variable">j</span> <span class="operator">=</span> <span class="number">1</span>;j &lt;= i - j;j++) &#123;</span><br><span class="line">            	<span class="comment">//j * (i - j)就是把i拆分的一种情况，而j * dp[i - j]是把j拆分成多种的情况</span></span><br><span class="line">                dp[i] = Math.max(dp[i], Math.max(j * (i - j), j * dp[i - j]));</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> dp[n];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//贪心解法（时间复杂度n）:</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">integerBreak</span><span class="params">(<span class="type">int</span> n)</span> &#123;</span><br><span class="line">        <span class="keyword">if</span>(n == <span class="number">2</span>) <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">if</span>(n == <span class="number">3</span>) <span class="keyword">return</span> <span class="number">2</span>;</span><br><span class="line">        <span class="keyword">if</span>(n == <span class="number">4</span>) <span class="keyword">return</span> <span class="number">4</span>;</span><br><span class="line">        <span class="type">int</span> <span class="variable">res</span> <span class="operator">=</span> <span class="number">1</span>;</span><br><span class="line">        <span class="comment">//只要能拆成3就拆3，最后剩下4或者比4小的，就不拆了，把这个n乘上即可</span></span><br><span class="line">        <span class="keyword">while</span>(n &gt; <span class="number">4</span>) &#123;</span><br><span class="line">            res *= <span class="number">3</span>;</span><br><span class="line">            n -= <span class="number">3</span>; </span><br><span class="line">        &#125;</span><br><span class="line">        res *= n;</span><br><span class="line">        <span class="keyword">return</span> res;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="☆leetcode-96-不同的二叉搜索树"><a href="#☆leetcode-96-不同的二叉搜索树" class="headerlink" title="☆leetcode 96.不同的二叉搜索树"></a>☆leetcode 96.不同的二叉搜索树</h2><p><u><strong>题目</strong>：给你一个整数 <code>n</code> ，求恰由 <code>n</code> 个节点组成且节点值从 <code>1</code> 到 <code>n</code> 互不相同的 <strong>二叉搜索树</strong> 有多少种？返回满足题意的二叉搜索树的种数。</u></p>
+<img src="https://img-blog.csdnimg.cn/20210113161941835.png" alt="img" style="zoom: 67%;" />
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">numTrees</span><span class="params">(<span class="type">int</span> n)</span> &#123;</span><br><span class="line">        <span class="type">int</span>[] dp = <span class="keyword">new</span> <span class="title class_">int</span>[n + <span class="number">1</span>];</span><br><span class="line">        dp[<span class="number">0</span>] = <span class="number">1</span>;</span><br><span class="line">        dp[<span class="number">1</span>] = <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">2</span>;i &lt;= n;i++)&#123;</span><br><span class="line">            <span class="keyword">for</span>(<span class="type">int</span> <span class="variable">j</span> <span class="operator">=</span> <span class="number">1</span>;j &lt;= i;j++)&#123;<span class="comment">//j就是当前遍历的根结点元素值</span></span><br><span class="line">                dp[i] += dp[j - <span class="number">1</span>] * dp[i - j];<span class="comment">//以j为根节点的左子树数量dp[j - 1]与右子树数量dp[i - j]的乘积</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> dp[n];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这道题虽然是中等题，代码量也很少，但除非背模板，否则很难写对。本题结合了二叉搜索树和动态规划的知识。</p>
+<p>我们最需要理解的就是递推公式，为什么是这个样子的？首先确定dp[i]数组的含义：<strong>i个元素组成的二叉搜索树的数量</strong>。</p>
+<p>我们假设当前元素为4，那么其根节点就可以为1，2，3，4。当根节点为1时，左子树没有比它小的，所以其只有右子树，我们会发现右子树的个数就是元素为3时二叉搜索树的个数dp[3]，所以根节点为1时，二叉搜索树的数量为dp[0] * dp[3]。以此类推，根节点为2时，dp[1] * dp[2]，根节点为3，dp[2] * dp[1]，根节点为4，dp[3] * dp[0]，最后的dp[4]就是把这四组乘积相加。</p>
+<p>我们不难发现一个规律，不管元素个数是多少，我们都需要让i逐一递增，从1一直增加到i为止，每次增加的过程中，都要来计算<strong>当前值作为根节点</strong>的二叉搜索树的个数，一直加到i为止，把前面的结果加在一起才是当前i个元素的二叉树个数。</p>
+<p>就比如前面的dp[4]我们需要dp[3]，dp[3]又需要dp[2]，dp[2]又需要dp[1]，dp[1]需要dp[0]。妥妥的动态规划问题，而dp[0]和dp[1]我们可以很容易的<strong>初始化为1</strong>，所以我们可以让元素个数i从2开始递增，<strong>每次递增都计算当前元素个数下二叉搜索树的数量</strong>，以便下一个i + 1利用。</p>
+<p>至于为什么dp[i] +&#x3D; dp[j - 1] * dp[i - j]，j是当前元素作为根节点，dp[j - 1]就是j - 1个元素左子树的二叉搜索树数量，因为<strong>左子树肯定元素值比j要小</strong>，所以是j - 1，而右子树肯定比j元素要大，而<strong>总元素个数又限定在i个以内</strong>，所以右子树元素个数为i - j。</p>
+<h1 id="01背包问题"><a href="#01背包问题" class="headerlink" title="01背包问题"></a>01背包问题</h1><h2 id="leetcode-416-分割等和子集"><a href="#leetcode-416-分割等和子集" class="headerlink" title="leetcode 416.分割等和子集"></a>leetcode 416.分割等和子集</h2><p><u><strong>题目</strong>：给你一个 <strong>只包含正整数</strong> 的 <strong>非空</strong> 数组 nums 。请你判断是否可以将这个数组分割成两个子集，使得两个子集的元素和相等。</u></p>
+<p><u>示例 1：</u></p>
+<p><u>输入：nums &#x3D; [1,5,11,5]</u><br><u>输出：true</u><br><u>解释：数组可以分割成 [1, 5, 5] 和 [11] 。</u></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">canPartition</span><span class="params">(<span class="type">int</span>[] nums)</span> &#123;</span><br><span class="line">        <span class="type">int</span> <span class="variable">sum</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> num : nums) &#123;</span><br><span class="line">            sum += num;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span>(sum % <span class="number">2</span> == <span class="number">1</span>) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        <span class="type">int</span> <span class="variable">target</span> <span class="operator">=</span> sum / <span class="number">2</span>;</span><br><span class="line">        <span class="type">int</span>[] dp = <span class="keyword">new</span> <span class="title class_">int</span>[target + <span class="number">1</span>];</span><br><span class="line">        <span class="comment">//依次遍历每个nums数组元素</span></span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>;i &lt; nums.length;i++) &#123;</span><br><span class="line">            <span class="comment">//每次从后向前遍历，如果当前背包j比物品重量nums[i]小，那就结束本层循环</span></span><br><span class="line">            <span class="keyword">for</span>(<span class="type">int</span> <span class="variable">j</span> <span class="operator">=</span> target;j &gt;= nums[i];j--) &#123;</span><br><span class="line">                dp[j] = Math.max(dp[j], dp[j - nums[i]] + nums[i]);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> dp[target] == target;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>本题就是以数组元素总和的一半，即target作为背包最大容量，每次遍历一个物品nums[i]，当每层循环的背包j小于物品重量nums[i]的时候，就进行下一层循环。</p>
+<img src="https://img-blog.csdnimg.cn/20210110104240545.png" alt="416.分割等和子集2" style="zoom: 60%;" />
+
+<h2 id="leetcode-698-划分为k个相等的子集"><a href="#leetcode-698-划分为k个相等的子集" class="headerlink" title="leetcode 698.划分为k个相等的子集"></a>leetcode 698.划分为k个相等的子集</h2><h2 id="leetcode-1049-最后一块石头的重量-II"><a href="#leetcode-1049-最后一块石头的重量-II" class="headerlink" title="leetcode 1049.最后一块石头的重量 II"></a>leetcode 1049.最后一块石头的重量 II</h2><p><u><strong>题目</strong>：有一堆石头，用整数数组 stones 表示。其中 stones[i] 表示第 i 块石头的重量。</u></p>
+<p><u>每一回合，从中选出任意两块石头，然后将它们一起粉碎。假设石头的重量分别为 x 和 y，且 x &lt;&#x3D; y。那么粉碎的可能结果如下：</u></p>
+<p><u>如果 x &#x3D;&#x3D; y，那么两块石头都会被完全粉碎；</u><br><u>如果 x !&#x3D; y，那么重量为 x 的石头将会完全粉碎，而重量为 y 的石头新重量为 y-x。</u><br><u>最后，最多只会剩下一块 石头。返回此石头 最小的可能重量 。如果没有石头剩下，就返回 0。</u></p>
+<p><u>输入：stones &#x3D; [2,7,4,1,8,1]</u><br><u>输出：1</u><br><u>解释：</u><br><u>组合 2 和 4，得到 2，所以数组转化为 [2,7,1,8,1]，</u><br><u>组合 7 和 8，得到 1，所以数组转化为 [2,1,1,1]，</u><br><u>组合 2 和 1，得到 1，所以数组转化为 [1,1,1]，</u><br><u>组合 1 和 1，得到 0，所以数组转化为 [1]，这就是最优值。</u></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">lastStoneWeightII</span><span class="params">(<span class="type">int</span>[] stones)</span> &#123;</span><br><span class="line">        <span class="type">int</span> <span class="variable">sum</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> stone : stones) &#123;</span><br><span class="line">            sum += stone;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//如果不能整除，就取较小的值</span></span><br><span class="line">        <span class="type">int</span> <span class="variable">target</span> <span class="operator">=</span> sum &gt;&gt; <span class="number">1</span>;</span><br><span class="line">        <span class="type">int</span>[] dp = <span class="keyword">new</span> <span class="title class_">int</span>[target + <span class="number">1</span>];</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>;i &lt; stones.length;i++) &#123;</span><br><span class="line">            <span class="keyword">for</span>(<span class="type">int</span> <span class="variable">j</span> <span class="operator">=</span> target;j &gt;= stones[i];j--) &#123;</span><br><span class="line">                dp[j] = Math.max(dp[j], dp[j - stones[i]] + stones[i]);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> sum - <span class="number">2</span> * dp[target];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2022/07/06/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92%E5%9F%BA%E7%A1%80%E5%8F%8A%E8%83%8C%E5%8C%85%E9%A2%98%E8%A7%A3/" data-id="cl5nllb9w0000uwv63y6k3lmx" data-title="动态规划基础及背包题解" class="article-share-link">Share</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2022/07/06/SQL%E9%A2%98%E8%A7%A3/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">SQL题解</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/07/">July 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/06/">June 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/05/">May 2022</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2022/07/06/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92%E5%9F%BA%E7%A1%80%E5%8F%8A%E8%83%8C%E5%8C%85%E9%A2%98%E8%A7%A3/">动态规划基础及背包题解</a>
+          </li>
+        
+          <li>
+            <a href="/2022/07/06/SQL%E9%A2%98%E8%A7%A3/">SQL题解</a>
+          </li>
+        
+          <li>
+            <a href="/2022/07/02/%E8%82%A1%E7%A5%A8%E9%97%AE%E9%A2%98%E9%A2%98%E8%A7%A3/">股票问题题解</a>
+          </li>
+        
+          <li>
+            <a href="/2022/07/01/%E5%8D%81%E5%A4%A7%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95/">十大排序算法</a>
+          </li>
+        
+          <li>
+            <a href="/2022/06/26/Linux%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">Linux学习笔记</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2022 John Doe<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

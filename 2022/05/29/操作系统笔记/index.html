@@ -26,7 +26,7 @@
 <meta property="og:image" content="https://cdn.xiaolincoding.com/gh/xiaolincoder/ImageHost/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/%E8%BF%9B%E7%A8%8B%E5%92%8C%E7%BA%BF%E7%A8%8B/10-%E8%BF%9B%E7%A8%8B%E4%B8%83%E4%B8%AD%E7%8A%B6%E6%80%81.jpg">
 <meta property="og:image" content="https://cdn.xiaolincoding.com/gh/xiaolincoder/ImageHost/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/%E8%BF%9B%E7%A8%8B%E5%92%8C%E7%BA%BF%E7%A8%8B/12-PCB%E7%8A%B6%E6%80%81%E9%93%BE%E8%A1%A8%E7%BB%84%E7%BB%87.jpg">
 <meta property="article:published_time" content="2022-05-29T10:54:55.000Z">
-<meta property="article:modified_time" content="2022-06-17T13:40:17.847Z">
+<meta property="article:modified_time" content="2022-07-10T07:26:43.812Z">
 <meta property="article:author" content="John Doe">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://img-blog.csdnimg.cn/72ab76ba697e470b8ceb14d5fc5688d9.png">
@@ -115,7 +115,7 @@
 <li><p>硬件中<strong>实际的空间地址</strong>——物理内存地址（Physical Memory Address）</p>
 <img src="https://img-blog.csdnimg.cn/72ab76ba697e470b8ceb14d5fc5688d9.png" alt="img" style="zoom:50%;" /></li>
 </ul>
-<p>进程持有的虚拟内存会通过CPU芯片中的<strong>内存管理单元（MMU）</strong>的映射关系来<strong>将虚拟内存转换为物理地址</strong>。</p>
+<p>进程持有的虚拟内存会通过CPU芯片中的<strong>内存管理单元（MMU: Memory Management Unit)<strong>的映射关系来</strong>将虚拟内存转换为物理地址</strong>。</p>
 <h2 id="2-内存分段"><a href="#2-内存分段" class="headerlink" title="2.内存分段"></a>2.内存分段</h2><p>因为程序是<strong>由若干个逻辑组成</strong>的，比如有代码段、数据段、栈段、堆段等。所以这些程序内存就可以通过分段来存储。而<strong>段表</strong>就是虚拟与物理内存之间映射的桥梁。</p>
 <img src="https://img-blog.csdnimg.cn/a9ed979e2ed8414f9828767592aadc21.png" alt="img" style="zoom: 40%;" />
 
@@ -163,7 +163,7 @@
 <p>应用程序如果<strong>要进入内核空间</strong>，就需要通过<strong>系统调用</strong>。</p>
 <img src="https://cdn.xiaolincoding.com/gh/xiaolincoder/ImageHost4@main/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/%E5%86%85%E6%A0%B8/systemcall.png" alt="img" style="zoom:50%;" />
 
-<p>当应用程序使用系统调用时，会产生一个中断，<strong>CPU会中断当前在执行的的用户程序</strong>，开始执行内核程序。处理完后，主动触发中断，把CPU执行权<strong>交还给用户程序</strong>，回到用户态继续工作。</p>
+<p>当应用程序<strong>使用系统调用</strong>时，会产生一个中断，<strong>CPU会中断当前在执行的的用户程序</strong>，开始执行内核程序。处理完后，主动触发中断，把CPU执行权<strong>交还给用户程序</strong>，回到用户态继续工作。</p>
 <h1 id="进程与线程"><a href="#进程与线程" class="headerlink" title="进程与线程"></a>进程与线程</h1><h2 id="1-进程"><a href="#1-进程" class="headerlink" title="1.进程"></a>1.进程</h2><p>我们写的代码不在内存里，而在外存也就是硬盘里，编译后生成二进制可执行文件，还是在硬盘里。只有运行的时候，才会被装载到内存中，这个时候就等待CPU执行程序中的指令，而这个<strong>运行中的程序</strong>就是进程。</p>
 <p>关于并行与并发，我们假设只有一个CPU，却有两个任务，那么我们只能完成一件再完成另一件，或者交替的完成一部分，直到两个任务都完成了，这个就是<u>并发</u>，<strong>涉及到[运行-暂停-运行]这么一个环节</strong>；如果我们有两个CPU，那么就可以让两个CPU分别同时这两个任务，<strong>不需要暂停任何一个CPU</strong>就可以同时完成，这就是<u>并行</u>。</p>
 <h3 id="进程的状态"><a href="#进程的状态" class="headerlink" title="进程的状态"></a>进程的状态</h3><img src="https://cdn.xiaolincoding.com/gh/xiaolincoder/ImageHost/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/%E8%BF%9B%E7%A8%8B%E5%92%8C%E7%BA%BF%E7%A8%8B/10-%E8%BF%9B%E7%A8%8B%E4%B8%83%E4%B8%AD%E7%8A%B6%E6%80%81.jpg" alt="七种状态变迁" style="zoom: 45%;" />
@@ -225,6 +225,10 @@
 <li>从阻塞队列中移除，并置为<strong>就绪状态</strong></li>
 <li>把该PCB<strong>插入到就绪队列</strong>，等待调度</li>
 </ul>
+<h2 id="2-线程"><a href="#2-线程" class="headerlink" title="2.线程"></a>2.线程</h2><h2 id="3-协程"><a href="#3-协程" class="headerlink" title="3.协程"></a>3.协程</h2><p>协程就是不交给操作系统内核来调度，而是<strong>由程序员自己调度</strong>，是一种<u>抽象于线程之上的</u>。因为进程和线程都是交由操作系统调度，而协程是交给程序员本身来调度，所以后者与前两者有着本质的区别。</p>
+<p>可以说，协程是用户角度的一种抽象，是“用户态线程”。</p>
+<p>首先协程的<strong>内存占用小</strong>，因为是用户态的一种数据结构，所以<strong>无需系统调用</strong>，大大减小了线程创建时的系统开销（当然线程一般通过线程池来缓解这个问题）。</p>
+<p>其次是可以由程序员通过<strong>手动地减少切换协程的次数</strong>，来大幅度减少上下文切换的开销（<strong>避免无意义的调度</strong>）。虽然协程是用户态数据结构，但是每切换一次都需要带来切换上下文的开销，这与线程是一样的。只不过线程的切换是操作系统来调度，可能需要频繁切换，比如明明两个线程可以切换几次就能完成任务，但是操作系统会频繁切换数十次，这个时候协程就可以<strong>通过手动设计只切换几次</strong>就可以完成任务。</p>
 
       
     </div>
@@ -289,6 +293,10 @@
       <ul>
         
           <li>
+            <a href="/2022/07/06/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92%E5%9F%BA%E7%A1%80%E5%8F%8A%E8%83%8C%E5%8C%85%E9%A2%98%E8%A7%A3/">动态规划基础及背包题解</a>
+          </li>
+        
+          <li>
             <a href="/2022/07/06/SQL%E9%A2%98%E8%A7%A3/">SQL题解</a>
           </li>
         
@@ -302,10 +310,6 @@
         
           <li>
             <a href="/2022/06/26/Linux%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">Linux学习笔记</a>
-          </li>
-        
-          <li>
-            <a href="/2022/06/24/%E9%93%BE%E8%A1%A8%E9%A2%98%E8%A7%A3/">链表题解</a>
           </li>
         
       </ul>
