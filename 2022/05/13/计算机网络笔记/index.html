@@ -6,13 +6,17 @@
   
   <title>计算机网络笔记 | Reex</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="路由器相关知识 MAC头部的作用就是将包传送到路由器，其中的接收方MAC地址，就是路由器端口的MAC地址。所以，当包到达了路由器，MAC头部任务就完成了，MAC头部即被丢弃。 在网络包的传输过程中，源IP和目标IP始终不变，而为了两两设备在以太网中传输，必须实时变化MAC地址。 在发送数据包的时候，如果目标主机不是本地局域网内的主机，那MAC地址填入的是路由器地址，通过路由器的层层转发，一直转发到">
+  <meta name="description" content="输入网址到网页显示都发生了什么？ 首先对URL进行解析，浏览器确定了Web服务器和文件名，接下来根据这些信息生成HTTP请求信息。 生成HTTP请求信息后，需要委托操作系统发送给Web服务器。因为发送时必须提供接收方的ip地址，网址是域名，我们需要DNS服务器对域名解析，即找到其对应的ip地址。 获取服务器ip地址之后，就可以将HTTP的传输工作交给操作系统的协议栈，这个委托实际就是应用程序调用S">
 <meta property="og:type" content="article">
 <meta property="og:title" content="计算机网络笔记">
 <meta property="og:url" content="http://example.com/2022/05/13/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E7%AC%94%E8%AE%B0/index.html">
 <meta property="og:site_name" content="Reex">
-<meta property="og:description" content="路由器相关知识 MAC头部的作用就是将包传送到路由器，其中的接收方MAC地址，就是路由器端口的MAC地址。所以，当包到达了路由器，MAC头部任务就完成了，MAC头部即被丢弃。 在网络包的传输过程中，源IP和目标IP始终不变，而为了两两设备在以太网中传输，必须实时变化MAC地址。 在发送数据包的时候，如果目标主机不是本地局域网内的主机，那MAC地址填入的是路由器地址，通过路由器的层层转发，一直转发到">
+<meta property="og:description" content="输入网址到网页显示都发生了什么？ 首先对URL进行解析，浏览器确定了Web服务器和文件名，接下来根据这些信息生成HTTP请求信息。 生成HTTP请求信息后，需要委托操作系统发送给Web服务器。因为发送时必须提供接收方的ip地址，网址是域名，我们需要DNS服务器对域名解析，即找到其对应的ip地址。 获取服务器ip地址之后，就可以将HTTP的传输工作交给操作系统的协议栈，这个委托实际就是应用程序调用S">
 <meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://cdn.xiaolincoding.com/gh/xiaolincoder/ImageHost4/%E7%BD%91%E7%BB%9C/%E6%95%B0%E6%8D%AE%E5%8C%85.drawio.png">
+<meta property="og:image" content="c:/Users/Reex/AppData/Roaming/Typora/typora-user-images/image-20220730215410175.png">
+<meta property="og:image" content="https://cdn.xiaolincoding.com/gh/xiaolincoder/ImageHost/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/%E9%94%AE%E5%85%A5%E7%BD%91%E5%9D%80%E8%BF%87%E7%A8%8B/7.jpg">
+<meta property="og:image" content="https://cdn.xiaolincoding.com/gh/xiaolincoder/ImageHost/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/%E9%94%AE%E5%85%A5%E7%BD%91%E5%9D%80%E8%BF%87%E7%A8%8B/15.jpg">
 <meta property="og:image" content="https://cdn.xiaolincoding.com/gh/xiaolincoder/ImageHost/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/HTTP/19-HTTPS%E4%B8%8EHTTP.png">
 <meta property="og:image" content="https://cdn.xiaolincoding.com/gh/xiaolincoder/ImageHost/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/IP/18.jpg">
 <meta property="og:image" content="https://cdn.xiaolincoding.com/gh/xiaolincoder/ImageHost/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/IP/30.jpg">
@@ -38,10 +42,10 @@
 <meta property="og:image" content="https://cdn.xiaolincoding.com/gh/xiaolincoder/ImageHost4@main/%E7%BD%91%E7%BB%9C/%E6%8B%A5%E5%A1%9E%E5%8F%91%E7%94%9F-%E5%BF%AB%E9%80%9F%E9%87%8D%E4%BC%A0.drawio.png?image_process=watermark,text_5YWs5LyX5Y-377ya5bCP5p6XY29kaW5n,type_ZnpsdHpoaw,x_10,y_10,g_se,size_20,color_0000CD,t_70,fill_0">
 <meta property="og:image" content="https://cdn.xiaolincoding.com/gh/xiaolincoder/ImageHost4@main/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8/tcp_socket.png">
 <meta property="article:published_time" content="2022-05-13T06:38:33.000Z">
-<meta property="article:modified_time" content="2022-07-14T03:24:06.470Z">
+<meta property="article:modified_time" content="2022-07-31T01:51:07.634Z">
 <meta property="article:author" content="John Doe">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://cdn.xiaolincoding.com/gh/xiaolincoder/ImageHost/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/HTTP/19-HTTPS%E4%B8%8EHTTP.png">
+<meta name="twitter:image" content="https://cdn.xiaolincoding.com/gh/xiaolincoder/ImageHost4/%E7%BD%91%E7%BB%9C/%E6%95%B0%E6%8D%AE%E5%8C%85.drawio.png">
   
     <link rel="alternate" href="/atom.xml" title="Reex" type="application/atom+xml">
   
@@ -120,12 +124,42 @@
     
     <div class="e-content article-entry" itemprop="articleBody">
       
-        <h2 id="路由器相关知识"><a href="#路由器相关知识" class="headerlink" title="路由器相关知识"></a>路由器相关知识</h2><ol>
+        <h2 id="输入网址到网页显示都发生了什么？"><a href="#输入网址到网页显示都发生了什么？" class="headerlink" title="输入网址到网页显示都发生了什么？"></a>输入网址到网页显示都发生了什么？</h2><ul>
+<li>首先对URL进行解析，浏览器确定了Web服务器和文件名，接下来根据这些信息生成HTTP请求信息。</li>
+<li>生成HTTP请求信息后，需要委托操作系统发送给Web服务器。因为发送时必须提供接收方的ip地址，网址是域名，我们需要DNS服务器对域名解析，即找到其对应的ip地址。</li>
+<li>获取服务器ip地址之后，就可以将HTTP的传输工作交给操作系统的协议栈，这个委托实际就是应用程序调用Socket库来完成的。</li>
+<li>协议栈首先就是TCP或UDP，以复杂的TCP为例。在真正的数据包传输之前，先需要与服务端进行三次握手，首先客户端向服务端发SYN &#x3D; 1, seq &#x3D; x，服务端回应SYN &#x3D; 1, ACK &#x3D; 1, ack(x + 1)，seq &#x3D; y，然后第三次握手时，TCP报文<u>头部</u>写上<strong>源端口号</strong>（浏览器端口随机生成）和<strong>目标端口号</strong>（HTTP默认80，HTTPS默认443）, ACK &#x3D; 1, ack(y + 1)，seq &#x3D; x + 1。TCP报文<u>数据</u>部分则是HTTP头部+数据。如果数据超过MSS（一个网络包所能容纳的最大的TCP数据的长度）还要分成多段组成各自的网络包，也就是分别加上TCP头部，再交给IP模块发送数据。</li>
+<li>接下来的协议栈是IP，首先IP头部写上协议号06（十六进制），表示TCP。还要写<strong>源IP</strong>和<strong>目标IP</strong>。源IP自然是发送方的网卡IP，如果有多个，需要由<strong>路由表规则</strong>确定哪一个网卡作为源IP地址。这样，IP头部+IP数据部分就组成了一个个网络包。</li>
+<li>因为数据需要在以太网中传输，我们必须知道源MAC和目标MAC来写入MAC头部。源MAC就是网卡的MAC，而目标MAC我们需要<strong>借助ARP协议</strong>（先查本地ARP缓存，找不到就在以太网中以广播的形式获取目标IP对应的路由MAC地址）来获取。</li>
+</ul>
+<p>​	（不过要注意的是：如果目标IP不在本地局域网，那么ARP广播得到的是路由器MAC，我们的目标MAC就是		路由MAC。后面路由器收到后继续转发给另一个路由器（包含交换机），最终发给目标主机的路由，当其发		现目标IP是自己局域网内的主机时，ARP就会请求获取目标主机MAC，从而转发到目标主机。）</p>
+<p>​		MAC包头也有<strong>自己的协议类型</strong>，当发送ARP请求时，协议字段是0806，代表ARP；当数据包为网络包传输		时，协议字段是0800，代表IP。</p>
+<ul>
+<li>至此，二进制数据就写完了。接下来就要将数字信息转换为电信号了。<strong>网卡驱动程序</strong>获取到网络包，将其复制到网卡的缓存区，接着在开头加上<strong>报头和起始帧分界符</strong>，尾部加上<strong>帧校验序列</strong>。这样一来，一个完整的数据包就构造好了，<strong>网卡负责</strong>将数据转换为电信号通过网线传输出去。</li>
+</ul>
+<img src="https://cdn.xiaolincoding.com/gh/xiaolincoder/ImageHost4/%E7%BD%91%E7%BB%9C/%E6%95%B0%E6%8D%AE%E5%8C%85.drawio.png" alt="数据包" style="zoom: 50%;" />
+
+<ul>
+<li>然后电信号来到了交换机，<strong>交换机是二层网络设备</strong>工作在MAC层，故没有MAC地址，所以它<strong>只负责转发</strong>。首先电信号转换为数字信息，检查帧校验序列无误后，查询自身MAC地址表中哪个端口对应着网络包的目标MAC地址，然后将信号发给对应的端口。如果找不到，则<strong>除了源端口都发一遍</strong>。</li>
+<li>经过交换机的转发，网络包到达了路由器。<strong>路由器是</strong>基于IP设计的，<strong>是三层网络设备</strong>，所以<strong>路由器各个端口都有IP和MAC</strong>（这是必然的，否则目标MAC也不会写路由器的MAC）。同样，路由器也先检查包尾的帧校验序列，无误后检查这个包的目标MAC是不是自己，不是就丢弃；是则放入接收缓冲区中。网络包头部的MAC完成了使命，被路由器去掉，接着根据目标IP选择新的MAC地址（还是依据<strong>路由表规则</strong>先找到IP再通过ARP找到MAC）。如果找不到，就用默认路由。最后，需要看路由表的<strong>网关列</strong>：如果网关IP不为空，说明下一个MAC仍然是路由，网络包未到达终点。如果网关IP为空，说明网络包抵达终点。接着通过ARP找到目标IP的MAC地址（路由器也有ARP缓存）。找到了目标MAC还要<strong>修改源MAC</strong>，这里填写<strong>输出端口的MAC</strong>，MAC协议字段仍是0800，代表IP。这样就组成了新的网络包（只改变了源MAC和目标MAC），继续以电信号通过交换机发送给下一个路由器。</li>
+</ul>
+<img src="C:\Users\Reex\AppData\Roaming\Typora\typora-user-images\image-20220730215410175.png" alt="image-20220730215410175" style="zoom: 67%;" />
+
+<ul>
+<li>接着网络包最终到达了目标服务器地址。服务器先检查MAC地址与自己的是否一样。然后检查IP头部，和自己一样。然后发现IP头部协议项，为TCP；于是检查TCP头部的序列号，如果是自己想要的就放入缓存中然后回复一个ack；TCP还有端口号，HTTP服务器正在监听这个端口号；于是该包被发送给HTTP进程；HTTP进程查看请求报文，于是将网页封装在响应报文中。然后响应报文依次按照上面的顺序穿上TCP、IP、MAC“外衣”继续进行与上面描述相反方向的网络包传输。</li>
+</ul>
+<img src="https://cdn.xiaolincoding.com/gh/xiaolincoder/ImageHost/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/%E9%94%AE%E5%85%A5%E7%BD%91%E5%9D%80%E8%BF%87%E7%A8%8B/7.jpg" alt="img" style="zoom:50%;" />
+
+<h2 id="路由表规则"><a href="#路由表规则" class="headerlink" title="路由表规则"></a>路由表规则</h2><p>在客户端有多个网卡的情况下，Linux系统可以使用route -n命令查看当前系统的路由表：</p>
+<img src="https://cdn.xiaolincoding.com/gh/xiaolincoder/ImageHost/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/%E9%94%AE%E5%85%A5%E7%BD%91%E5%9D%80%E8%BF%87%E7%A8%8B/15.jpg" alt="路由表" style="zoom:50%;" />
+
+<p>其中Genmask是子网掩码，我们用目标IP地址（假如为192.168.10.200）一一与子网掩码进行<strong>与运算</strong>。直到结果<strong>与Destination一致</strong>时，就使用这个网卡的IP作为源IP地址。</p>
+<h2 id="路由器相关知识"><a href="#路由器相关知识" class="headerlink" title="路由器相关知识"></a>路由器相关知识</h2><ol>
 <li>MAC头部的作用就是<strong>将包传送到路由器</strong>，其中的接收方MAC地址，就是路由器端口的MAC地址。所以，当包到达了路由器，MAC头部任务就完成了，<strong>MAC头部即被丢弃</strong>。</li>
 <li>在网络包的传输过程中，<strong>源IP和目标IP始终不变</strong>，而为了两两设备在以太网中传输，必须<strong>实时变化MAC地址</strong>。</li>
 <li>在发送数据包的时候，<strong>如果目标主机不是本地局域网内的主机，那MAC地址填入的是路由器地址</strong>，通过路由器的层层转发，<strong>一直转发到目标主机的路由器</strong>，发现IP地址是自己局域网内的主机，就会通过ARP请求<strong>获取目标主机的MAC地址</strong>，进而转发到这个服务器主机。</li>
 </ol>
-<h2 id="交换机相关知识"><a href="#交换机相关知识" class="headerlink" title="交换机相关知识"></a>交换机相关知识</h2><p>交换机的端口<strong>没有MAC地址</strong>，不像网卡（有MAC地址），所以交换机收到包之后，<strong>不核对接收方MAC地址</strong>对不对。但是交换机<strong>有MAC地址表</strong>。</p>
+<h2 id="交换机相关知识"><a href="#交换机相关知识" class="headerlink" title="交换机相关知识"></a>交换机相关知识</h2><p>交换机的端口<strong>没有MAC地址</strong>，不像网卡（有MAC地址），所以交换机收到包之后，<strong>不核对接收方MAC地址</strong>对不对（但<strong>要检查帧校验序列</strong>）。但是交换机<strong>有MAC地址表</strong>。</p>
 <h2 id="路由器和交换机的区别"><a href="#路由器和交换机的区别" class="headerlink" title="路由器和交换机的区别"></a>路由器和交换机的区别</h2><ul>
 <li>因为<strong>路由器</strong>是基于 IP 设计的，俗称<strong>三层</strong>网络设备，路由器的各个端口<strong>都具有</strong> MAC 地址和 IP 地址；</li>
 <li>而<strong>交换机</strong>是基于以太网设计的，俗称<strong>二层</strong>网络设备，交换机的端口<strong>不具有</strong> MAC 地址。</li>
@@ -359,7 +393,7 @@
       <strong class="article-nav-caption">Newer</strong>
       <div class="article-nav-title">
         
-          (no title)
+          我的项目
         
       </div>
     </a>
