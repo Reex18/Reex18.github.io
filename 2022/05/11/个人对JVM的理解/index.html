@@ -36,7 +36,7 @@
 <meta property="og:image" content="c:/Users/Reex/AppData/Roaming/Typora/typora-user-images/image-20220629193634936.png">
 <meta property="og:image" content="c:/Users/Reex/AppData/Roaming/Typora/typora-user-images/image-20220629200414624.png">
 <meta property="article:published_time" content="2022-05-11T12:04:43.000Z">
-<meta property="article:modified_time" content="2022-07-11T01:48:47.429Z">
+<meta property="article:modified_time" content="2022-08-29T06:12:56.957Z">
 <meta property="article:author" content="John Doe">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="d:/Picgo/img/image-20220511200810603.png">
@@ -123,7 +123,7 @@
 <p>而内存结构呢，就是运行时数据区部分，也就包括了：程序计数器、虚拟机栈、本地方法栈、堆、方法区。其中方法区在jdk8以后就变成元数据区了。</p>
 <p><u>程序计数器</u>：</p>
 <p>是内存中很小的一个存储空间，可以看作是<strong>当前线程所执行的字节码的行号指示器</strong>。在程序运行过程中，线程是非常多的，但是CPU的核心数却是有限的，所以我们必须要通过不断切换线程来来为处理器分配时间，进而完成程序的执行。程序计数器就是为了实现线程切换用的，<strong>每个线程都用独立的程序计数器</strong>，两两互不干扰，其生命周期也与线程保持一致。</p>
-<p>垃圾回收和内存溢出都与程序计数器无关。</p>
+<p><strong>垃圾回收和内存溢出都与程序计数器无关</strong>。</p>
 <h2 id="☆类加载机制整个过程是怎么样的"><a href="#☆类加载机制整个过程是怎么样的" class="headerlink" title="☆类加载机制整个过程是怎么样的"></a>☆类加载机制整个过程是怎么样的</h2><p><img src="D:\Picgo\img\image-20220512150709656.png" alt="image-20220512150709656"></p>
 <p>类加载机制的过程：首先Java虚拟机将描述类的数据从Class文件中<strong>加载到内存</strong>，然后对数据进行<strong>连接以及初始化</strong>的过程，最终形成了可以被JVM可以直接使用的类型。</p>
 <h3 id="1-加载"><a href="#1-加载" class="headerlink" title="1.加载"></a>1.加载</h3><p>加载只是整个“类加载”过程的第一步。这个过程Java虚拟机完成了三件事：</p>
@@ -197,6 +197,7 @@
 <p>4）方法返回地址：存放调用该方法的<strong>pc寄存器的值</strong>（存疑）。本质上就是：比如当前方法退出了，意为当前方法出栈，<strong>那么就要恢复上层方法的栈帧</strong>，这时我们就需要程序计数器的值，所以方法返回地址就存放了这个值（类比接力赛传棒）。</p>
 <p>动态链接，方法返回地址和其他附加信息被称为<strong>帧数据区</strong>。</p>
 <p>总的来说，每一个栈帧对应一个方法，但是方法要运行就必须有一个专门的数据结构来对数据进行操作，这个数据结构就是操作数栈，数据就是局部变量表中的数据，方法执行过程中，各种字节码指令负责操作数栈的入栈出栈操作。</p>
+<h1 id="面试题：栈中定义的局部变量是线程安全的吗"><a href="#面试题：栈中定义的局部变量是线程安全的吗" class="headerlink" title="面试题：栈中定义的局部变量是线程安全的吗"></a>面试题：栈中定义的局部变量是线程安全的吗</h1><p>如果局部变量在<strong>方法内部定义又在内部消亡的，那就是线程安全的</strong>。比如StringBuilder类型的数据，本身是线程不安全的，但是该方法只会有一个线程操作这个sb，所以就要看这个变量sb有没有逃出方法，如果return sb，那sb可能还会被其他线程所调用，那么sb就不是线程安全的了；如果方法最后不用return sb，或者return sb.toString()，那么sb就相当于在方法内部消亡了，sb就依然是线程安全的。</p>
 <h1 id="☆局部变量和静态变量的对比"><a href="#☆局部变量和静态变量的对比" class="headerlink" title="☆局部变量和静态变量的对比"></a>☆局部变量和静态变量的对比</h1><p>我们知道静态变量就是类变量，是在类加载阶段就有初始化操作的，其一是<strong>“准备”阶段的初始化零值</strong>，另一阶段是<strong>”初始化“阶段为类变量赋初始值</strong>。</p>
 <p>对于局部变量，<strong>因为要放在局部变量表中，表没有初始化过程</strong>，所以我们必须在写代码的时候，人为初始化。</p>
 <h1 id="静态绑定和动态绑定"><a href="#静态绑定和动态绑定" class="headerlink" title="静态绑定和动态绑定"></a>静态绑定和动态绑定</h1><p>静态绑定&#x2F;链接（对应早期绑定）就是（被调用的方法）<strong>符号引用转换为直接引用在编译期</strong>就可以确定下来，比如定义一个<strong>final的常量或方法</strong>，此时这个符号在编译期就可以确定，没有多态的特性。</p>
@@ -301,7 +302,7 @@
 <img src="C:\Users\Reex\AppData\Roaming\Typora\typora-user-images\image-20220627172846452.png" alt="image-20220627172846452" style="zoom:40%;" />
 
 <h1 id="直接内存会出现OOM异常吗？"><a href="#直接内存会出现OOM异常吗？" class="headerlink" title="直接内存会出现OOM异常吗？"></a>直接内存会出现OOM异常吗？</h1><p>直接内存与Java堆内存的<strong>总和受限于操作系统能给出的最大内存</strong>。所以Java堆内存分配过大，很容易造成直接内存过小，从而导致OOM异常发生。</p>
-<p>注意：由于栈等区域占用内存较小，我们可以简单认为<strong>Java程序占用的内存 &#x3D; 堆内存+本地内存</strong></p>
+<p>(注意：由于栈等区域占用内存较小，我们可以简单认为<strong>Java程序占用的内存 &#x3D; 堆内存+本地内存</strong>)</p>
 <h1 id="执行引擎相关问题"><a href="#执行引擎相关问题" class="headerlink" title="执行引擎相关问题"></a>执行引擎相关问题</h1><h2 id="为什么Java是半编译半解释型语言？"><a href="#为什么Java是半编译半解释型语言？" class="headerlink" title="为什么Java是半编译半解释型语言？"></a>为什么Java是半编译半解释型语言？</h2><p>因为在处理字节码指令的时候，执行器既有解释器，也有即时编译器JIT。JVM在执行代码时，是将两者结合使用的。</p>
 <p>解释器是根据规范<strong>对字节码采用逐行解释的方式执行</strong>，为每条字节码文件的内容“翻译”为对应平台的本地机器指令执行；</p>
 <p>JIT是<strong>将字节码直接编译成本地机器语言</strong>。这里的编译属于后端编译，要与前端编译生成字节码文件.class做区分。编译后的本地代码缓存到元空间（方法区）中。</p>
